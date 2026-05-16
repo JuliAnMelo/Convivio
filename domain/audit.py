@@ -13,5 +13,4 @@ class AuditLog:
     entity_id: int
     performed_at: datetime = field(default_factory=datetime.now)
     details: Optional[str] = None
-
     user: Optional["User"] = None

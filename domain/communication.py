@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
+
 from .user import User
 
 
@@ -11,7 +12,6 @@ class Communication:
     description: str
     created_at: datetime = field(default_factory=datetime.now)
     state: str = "open"  # open, closed, archived
-
     author: Optional["User"] = None
 
 @dataclass
@@ -27,7 +27,6 @@ class Question(Communication):
 @dataclass
 class Answer(Communication):
     is_internal: bool = True
-
     pqrs: Optional[PQRS] = None
     question: Optional[Question] = None
 
@@ -46,4 +45,4 @@ class Attachment:
     mime_type: str
     uploaded_at: datetime = field(default_factory=datetime.now)
 
-    communication: Optional[Communication] = None
+    communication: Optional[Communication] = None # Inverted logic, check later if this is better as a list of attachments in Communication instead of a reference to Communication here.

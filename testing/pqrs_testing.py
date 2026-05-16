@@ -1,7 +1,7 @@
-from datetime import date
-from repository.dummy_data import DUMMY_UNITS
-from domain.user import Inhabitant, Manager
-from service.pqrs_service import PQRStype, create_pqrs, answer_pqrs, create_audit_log
+from service.pqrs_service import PQRStype, create_pqrs, answer_pqrs
+from service.audit_service import create_audit_log
+from repository.dummy_data import DUMMY_UNITS, DUMMY_MANAGER, DUMMY_INHABITANTS
+
 
 def example_workflow(inhabitant, manager):
     # 1. Crear PQRS
@@ -9,7 +9,7 @@ def example_workflow(inhabitant, manager):
         inhabitant=inhabitant,
         title="Ruido excesivo en zona social",
         description="Se presenta ruido después del horario permitido.",
-        pqrs_type=PQRStype.queja,  # Tipo de PQRS
+        pqrs_type=PQRStype.QUEJA,  # Tipo de PQRS
     )
 
     # 2. Auditoría de creación
@@ -42,67 +42,21 @@ def example_workflow(inhabitant, manager):
 
 
 if __name__ == "__main__":
-    # ==========================================================
-    # Datos de prueba
-    # ==========================================================
-    # Se asume que existe el módulo dummy_data.py con:
-    # - DUMMY_BUILDINGS
-    # - DUMMY_UNITS
-    # y que ya están definidas las clases:
-    # - Inhabitant
-    # - Manager
-    
-    # ----------------------------------------------------------
     # Seleccionar una unidad existente para asociar al residente
-    # ----------------------------------------------------------
     selected_unit = DUMMY_UNITS[0]
 
-    # ----------------------------------------------------------
     # Crear un residente (Inhabitant)
-    # ----------------------------------------------------------
-    inhabitant = Inhabitant(
-        user_id=1,
-        full_name="Juan Pérez",
-        email="juan.perez@example.com",
-        phone="3001234567",
-        password_hash="hashed_password",
-        is_active=True,
-        created_at=date.today(),
-        last_login=None,
-        document_number="123456789",
-        birth_date=date(1990, 5, 15),
-        move_in_date=date.today(),
-        is_owner=True,
-        propertyunit=selected_unit,
-    )
+    inhabitant = DUMMY_INHABITANTS[0]
 
-    # ----------------------------------------------------------
     # Crear un administrador (Manager)
-    # ----------------------------------------------------------
-    manager = Manager(
-        user_id=2,
-        full_name="Laura Gómez",
-        email="laura.gomez@example.com",
-        phone="3019876543",
-        password_hash="hashed_password",
-        is_active=True,
-        created_at=date.today(),
-        last_login=None,
-        employee_code="ADM001",
-        office_phone="6015551234",
-        subordinates=[],
-    )
+    manager = DUMMY_MANAGER
 
-    # ----------------------------------------------------------
     # Ejecutar el flujo completo
-    # ----------------------------------------------------------
     pqrs, answer = example_workflow(inhabitant, manager)
 
-    # ----------------------------------------------------------
     # Mostrar resultados
-    # ----------------------------------------------------------
     print("=" * 60)
-    print("FLUJO DE PQRS COMPLETADO")
+    print("FLUJO DE PQRS RESIDENTE-ADMINISTRADOR")
     print("=" * 60)
 
     print(f"Residente: {inhabitant.full_name}")
@@ -125,9 +79,15 @@ if __name__ == "__main__":
 
     print("AUDITORÍA")
     print(f"  Logs del residente: {len(inhabitant.audit_logs)}")
-    print(f"  Logs del administrador: {len(manager.audit_logs)}")
+    print("DETALLE DE LOGS DEL RESIDENTE")
+    for index, log in enumerate(inhabitant.audit_logs, start=1):
+        print(
+            f"  {index}. {log.action} "
+            f"sobre {log.entity_name} "
+            f"({log.details})"
+        )
     print()
-
+    print(f"  Logs del administrador: {len(manager.audit_logs)}")
     print("DETALLE DE LOGS DEL ADMINISTRADOR")
     for index, log in enumerate(manager.audit_logs, start=1):
         print(
@@ -135,3 +95,5 @@ if __name__ == "__main__":
             f"sobre {log.entity_name} "
             f"({log.details})"
         )
+    print()
+    print("=" * 60)

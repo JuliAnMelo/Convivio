@@ -26,7 +26,6 @@ class Inhabitant(User):
     move_in_date: datetime
     propertyunit: "PropertyUnit"
     is_owner: bool = False
-    
 
 @dataclass
 class SecurityGuard(User):
@@ -44,7 +43,6 @@ class Subordinate(Manager):
     delegation_scope: Optional[str] = None
     supervisor_id: Optional[Manager] = None
 
-
 @dataclass
-class SuperUser(User):
+class SuperUser(Inhabitant, Manager):
     pass

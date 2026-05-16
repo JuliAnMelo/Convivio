@@ -7,9 +7,9 @@ from decimal import Decimal
 class Zone:
     zone_id: int
     name: str
+    price: Decimal
     description: Optional[str] = None
     capacity: Optional[int] = None
-    price: Decimal
-    availability: bool = False
+    available: bool = False
     reservation_limit_hours: Optional[int] = None
     is_active: bool = False
