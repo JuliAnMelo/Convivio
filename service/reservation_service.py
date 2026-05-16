@@ -27,10 +27,12 @@ def create_reservation(
         start_date=start_date,
         end_date=end_date,
         total_price=zone.price,  # Calculate total price based on zone's price and duration
+        approved_at=None,
         state=ReservationState.PENDING.name,  # Default state
         notes=notes,
         requester=inhabitant,
         zone=zone,
+        approved_by=None
     )
 
     return reservation

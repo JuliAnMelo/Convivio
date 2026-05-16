@@ -1,0 +1,142 @@
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../theme';
+import { useBooking } from '../context/BookingContext';
+import { formatDateLabel } from '../utils/calendar';
+
+export default function AreaDetailScreen({ navigation, route }) {
+  const {
+    areaName = 'Área Común',
+    day = 15,
+    month = 'Noviembre',
+    year = 2025,
+    monthIndex = 10,
+  } = route.params || {};
+
+  const { getSlotsForDate } = useBooking();
+
+  const slots = useMemo(
+    () => getSlotsForDate(areaName, year, monthIndex, day),
+    [areaName, year, monthIndex, day, getSlotsForDate],
+  );
+
+  const dateLabel = formatDateLabel(day, month);
+
+  return (
+    <View style={styles.container}>
+      <SafeAreaView>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle} numberOfLines={1}>{areaName}</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        <View style={styles.imageWrapper}>
+          <Image
+            source={require('../../assets/Images/imagen home.png')}
+            style={styles.areaImage}
+            contentFit="cover"
+          />
+        </View>
+      </SafeAreaView>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.dateTitle}>{dateLabel}</Text>
+
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          {slots.map((slot) => {
+            const isAvailable = slot.status === 'Disponible';
+            return (
+              <View key={slot.id} style={styles.slotRow}>
+                <View style={styles.iconCircle}>
+                  <Ionicons name="key" size={20} color="#FFF" />
+                </View>
+
+                <View style={styles.slotInfo}>
+                  <Text style={[styles.slotStatus, isAvailable && styles.slotStatusAvailable]}>
+                    {slot.status}
+                  </Text>
+                  <Text style={styles.slotTime}>{slot.time}</Text>
+                </View>
+
+                {isAvailable && (
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() =>
+                      navigation.navigate('AreaForm', {
+                        areaName,
+                        day,
+                        month,
+                        year,
+                        monthIndex,
+                        time: slot.time,
+                      })
+                    }
+                  >
+                    <Text style={styles.actionButtonText}>Me interesa</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: COLORS.mainGreen },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  backButton: { padding: 5 },
+  headerTitle: { flex: 1, fontSize: 20, fontWeight: '700', color: '#FFF', textAlign: 'center' },
+  headerSpacer: { width: 34 },
+  imageWrapper: { alignItems: 'center', marginVertical: 16 },
+  areaImage: { width: '85%', height: 150, borderRadius: 15 },
+  contentContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    paddingHorizontal: 25,
+    paddingTop: 30,
+  },
+  dateTitle: { fontSize: 18, fontWeight: '700', color: '#111', marginBottom: 20 },
+  scrollContent: { paddingBottom: 40 },
+  slotRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 22 },
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.oceanBlueButton,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  slotInfo: {
+    flex: 1,
+    borderLeftWidth: 2,
+    borderLeftColor: COLORS.mainGreen,
+    paddingLeft: 12,
+  },
+  slotStatus: { fontSize: 14, fontWeight: '700', color: COLORS.darkmodeGreenBlack },
+  slotStatusAvailable: { color: COLORS.oceanBlueButton },
+  slotTime: { fontSize: 13, color: COLORS.oceanBlueButton, fontWeight: '600', marginTop: 2 },
+  actionButton: {
+    backgroundColor: COLORS.mainGreen,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+  },
+  actionButtonText: { color: COLORS.darkmodeGreenBlack, fontSize: 12, fontWeight: '700' },
+});

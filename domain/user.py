@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
+from .property import PropertyUnit
 
 if TYPE_CHECKING:
     from .audit import AuditLog
@@ -22,7 +23,8 @@ class User:
 class Inhabitant(User):
     document_number: str
     birth_date: datetime
-    move_in_date: Optional[datetime] = None
+    move_in_date: datetime
+    propertyunit: "PropertyUnit"
     is_owner: bool = False
 
 @dataclass

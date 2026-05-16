@@ -1,88 +1,109 @@
-# **Prototipo Convivio**
-Los archivos ejecutables actualmente son:
-* [testing/pqrs_testing.py](testing/pqrs_testing.py) - Ejecuta y procesa una PQRS (creación y respuesta) de un Residente a la Administración, retorna el "registro" del procedimiento.
-* [testing/reservation_testing.py](testing/reservation_testing.py) - Ejecuta y procesa una reserva de una "zona común", retorna el "registro" del procedimiento.
-* [testing/property_testing.py](testing/property_testing.py) - Ejecuta y procesa la "creación" de una copropiedad con 3 "unidades", retorna el "contenido" del procedimiento.
-* [testing/user_testing.py](testing/user_testing.py) - Ejecuta y procesa la llegada de 3 residentes a una "unidad", retorna el "registro" del procedimiento.
+# Convivio
 
+Aplicación móvil para residentes de conjuntos: reservas de áreas comunes, PQRs con administración y notificaciones.
 
+## Requisitos previos
 
-## **Database and Frontend Placeholder Files**
+Instala esto **antes** de clonar el proyecto:
 
-### **Configuration Module** (config)
+| Herramienta | Versión recomendada | Descarga |
+|-------------|---------------------|----------|
+| **Node.js** | 20 LTS o superior | https://nodejs.org/ |
+| **Git** | Cualquier versión reciente | https://git-scm.com/ |
+| **Expo Go** (celular) | Última en App Store / Play Store | Para probar en dispositivo físico |
 
-| File | Status | Purpose |
-|------|--------|---------|
-| __init__.py | Stub | Module initialization file |
-| database.py | **Partially Implemented** | PostgreSQL connection configuration with environment variables. Stores DB credentials, host, port, database name, and connection pool settings. Will be used by `DatabaseConnection` to establish and manage the database engine. |
-| api.py | **Partially Implemented** | FastAPI server configuration including CORS settings for React frontend (localhost:3000). Defines API title, version, and allowed origins. Will be used by the main app.py to initialize the server. |
+Opcional (emuladores):
 
----
+- **Android Studio** — emulador Android: https://developer.android.com/studio  
+- **Xcode** (solo macOS) — simulador iOS  
 
-### **Infrastructure Module** (infrastructure)
+## Instalación rápida
 
-| File | Status | Purpose |
-|------|--------|---------|
-| __init__.py | Stub | Module initialization file |
-| db_connection.py | **Partially Implemented** | Database connection handler that creates and manages SQLAlchemy engine with connection pooling. Includes `test_connection()` method to validate PostgreSQL connectivity. Will be called during app startup to establish database connections. |
-| database_session.py | **Partially Implemented** | SQLAlchemy session factory and dependency injector. Provides `get_db()` for FastAPI dependency injection and `DatabaseSession` context manager. Will be used in all route handlers to access the database. |
+### Windows (PowerShell)
 
----
-
-### **API Module** (api)
-
-| File | Status | Purpose |
-|------|--------|---------|
-| __init__.py | Stub | Module initialization file |
-| middleware.py | **Placeholder** | CORS and error handling middleware setup. Currently includes basic exception handlers. Will be expanded to add request/response logging, authentication, and request validation for React frontend communication. |
-| routes.py | **Placeholder** | FastAPI route definitions. Contains health check endpoints and placeholder endpoints for users, properties, reservations, and PQRS. Will be expanded with full CRUD operations connected to business logic in service module. |
-
----
-
-### **Main Application**
-
-| File | Status | Purpose |
-|------|--------|---------|
-| app.py | **Partially Implemented** | Main FastAPI application entry point. Creates the app, sets up middleware, includes routes, and defines startup/shutdown events. Run with `python app.py` to start the backend server on http://localhost:8000. React frontend will call this API. |
-
----
-
-### **Dependencies**
-
-| File | Status | Purpose |
-|------|--------|---------|
-| requirements.txt | **Updated** | Python package dependencies including FastAPI, SQLAlchemy, psycopg2, uvicorn, and development tools. Run `pip install -r requirements.txt` to install all required packages. |
-
----
-
-## **Quick Reference Table**
-
-```
-config/
-├── __init__.py                          [Stub]
-├── database.py                          [Partially Impl] → PostgreSQL config
-└── api.py                               [Partially Impl] → FastAPI/CORS config
-
-infrastructure/
-├── __init__.py                          [Stub]
-├── db_connection.py                     [Partially Impl] → DB engine manager
-└── database_session.py                  [Partially Impl] → Session factory
-
-api/
-├── __init__.py                          [Stub]
-├── middleware.py                        [Placeholder] → CORS/Error handling
-└── routes.py                            [Placeholder] → API endpoints
-
-app.py                                   [Partially Impl] → FastAPI main app
-requirements.txt                         [Updated] → Dependencies
+```powershell
+git clone <URL-DE-TU-REPO>
+cd Convivio-main
+.\instalar.ps1
 ```
 
----
+### macOS / Linux
 
-## **Implementation Notes for Collaborators:**
+```bash
+git clone <URL-DE-TU-REPO>
+cd Convivio-main
+chmod +x instalar.sh
+./instalar.sh
+```
 
-- **Placeholders** need endpoint implementations connected to the existing service layer (audit_service, pqrs_service, reservation_service)
-- **Partially Implemented** files have core structure but need error handling refinement and validation
-- **Stubs** (`__init__.py`) are ready as-is
-- PostgreSQL must be running locally or accessible at configured host/port for app startup
-- React frontend should be configured to call `http://localhost:8000/api/v1/*` endpoints
+### Manual
+
+```bash
+cd front
+npm install
+npm start
+```
+
+## Ejecutar la aplicación
+
+```bash
+cd front
+npm start
+```
+
+En la terminal de Expo:
+
+- **`w`** — abrir en navegador web  
+- **`a`** — Android (emulador o dispositivo)  
+- **`i`** — iOS (solo Mac con Xcode)  
+- Escanea el **código QR** con **Expo Go** (misma red Wi‑Fi que el PC)
+
+Si el QR no aparece, en Expo Go usa **Enter URL manually**:
+
+```
+exp://<IP-DE-TU-PC>:8081
+```
+
+(La IP la muestra la terminal al iniciar con `npm start`.)
+
+## Estructura del proyecto
+
+```
+Convivio-main/
+├── front/                 # App React Native (Expo)
+│   ├── App.js
+│   ├── package.json
+│   └── src/
+│       ├── screens/       # Pantallas
+│       ├── components/
+│       ├── context/
+│       └── services/
+├── instalar.ps1           # Instalador Windows
+├── instalar.sh            # Instalador Mac/Linux
+└── README.md
+```
+
+## Funciones principales
+
+- **Inicio** — últimas 3 notificaciones y enlace a ver todas  
+- **Categorías** — áreas comunes, PQRs, etc.  
+- **Reservas** — calendario, horarios y solicitud de área común  
+- **PQR** — peticiones, quejas y reclamos con chat de respuesta  
+
+## Problemas frecuentes
+
+**`npm` no se reconoce**  
+→ Instala Node.js y reinicia la terminal.
+
+**`node` no se reconoce al hacer `npm start`**  
+→ Añade Node al PATH o abre una terminal nueva tras instalar Node.
+
+**No conecta Expo Go**  
+→ Mismo Wi‑Fi en PC y celular; prueba `npm start` y usa la URL manual.
+
+**Error al instalar dependencias**  
+→ Borra `front/node_modules` y ejecuta de nuevo `npm install` dentro de `front/`.
+
+## Licencia
+
+Proyecto privado / uso del conjunto residencial.
