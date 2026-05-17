@@ -4,6 +4,13 @@ from typing import Optional
 
 from .user import User
 
+@dataclass
+class Attachment:
+    attachment_id: int
+    file_name: str
+    file_path: str
+    mime_type: str
+    uploaded_at: datetime = field(default_factory=datetime.now)
 
 @dataclass(kw_only=True)
 class Communication:
@@ -13,6 +20,7 @@ class Communication:
     created_at: datetime = field(default_factory=datetime.now)
     state: str = "open"  # open, closed, archived
     author: Optional["User"] = None
+    attachment: list["Attachment"] = field(default_factory=list)
 
 @dataclass
 class PQRS(Communication):
@@ -35,14 +43,3 @@ class Announcement(Communication):
     published_at: datetime = field(default_factory=datetime.now)
     expire_at: Optional[datetime] = None
     is_urgent: bool = False
-
-
-@dataclass
-class Attachment:
-    attachment_id: int
-    file_name: str
-    file_path: str
-    mime_type: str
-    uploaded_at: datetime = field(default_factory=datetime.now)
-
-    communication: Optional[Communication] = None # Inverted logic, check later if this is better as a list of attachments in Communication instead of a reference to Communication here.

@@ -15,30 +15,44 @@ building_a = Property(
 
 unit_101 = PropertyUnit(
     propertyunit_id=101,
-    unit_number="101",
+    unit_name="101",
     occupied=True,
     is_active=True
 )
 
 unit_102 = PropertyUnit(
     propertyunit_id=102,
-    unit_number="102",
+    unit_name="102",
     occupied=False,
     is_active=True
 )
 
 unit_201 = PropertyUnit(
     propertyunit_id=201,
-    unit_number="201",
+    unit_name="201",
     occupied=True,
     is_active=True
 )
 
 unit_202 = PropertyUnit(
     propertyunit_id=202,
-    unit_number="202",
+    unit_name="202",
     occupied=True,
     is_active=True,
+)
+
+unit_301 = PropertyUnit(
+    propertyunit_id=301,
+    unit_name="301",
+    occupied=True,
+    is_active=True,
+)
+
+unit_302 = PropertyUnit(
+    propertyunit_id=302,
+    unit_name="302",
+    occupied=False,
+    is_active=False,
 )
 
 building_a.units = [
@@ -46,6 +60,8 @@ building_a.units = [
     unit_102,
     unit_201,
     unit_202,
+    unit_301,
+    unit_302,
 ]
 
 
@@ -56,6 +72,8 @@ DUMMY_UNITS = [
     unit_102,
     unit_201,
     unit_202,
+    unit_301,
+    unit_302,
 ]
 
 
@@ -70,7 +88,18 @@ zone_1 = Zone(
     is_active=True,
 )
 
-DUMMY_ZONES = [zone_1]
+zone_2 = Zone(
+    zone_id=1,
+    name="Pool",
+    description="Piscina climatizada",
+    capacity=15,
+    price=Decimal("120000.00"),
+    available=True,
+    reservation_limit_hours=4,
+    is_active=True,
+)
+
+DUMMY_ZONES = [zone_1, zone_2]
 
 
 DUMMY_MANAGER = Manager(
@@ -101,13 +130,12 @@ inhabitant_01 = Inhabitant(
     birth_date=date(1990, 5, 15),
     move_in_date=date.today(),
     is_owner=True,
-    propertyunit=unit_101,
     )
 
 inhabitant_02 = Inhabitant(
     user_id=3,
-    full_name="Julian Melo",
-    email="julian@example.com",
+    full_name="Cesar Londoño",
+    email="cesar@example.com",
     phone="3001234567",
     password_hash="hashed_password",
     is_active=True,
@@ -117,19 +145,42 @@ inhabitant_02 = Inhabitant(
     birth_date=datetime(1998, 5, 15).date(),
     move_in_date=datetime(2024, 1, 10).date(),
     is_owner=True,
-    propertyunit=unit_201,
 )
 
-DUMMY_INHABITANTS = [inhabitant_01, inhabitant_02]
+inhabitant_03 = Inhabitant(
+    user_id=4,
+    full_name="Martín Francisco",
+    email="martin@example.com",
+    phone="3114304797",
+    password_hash="hashed_password",
+    is_active=True,
+    created_at=datetime.now(),
+    last_login=None,
+    document_number="123456789",
+    birth_date=datetime(2003, 5, 26).date(),
+    move_in_date=datetime(2022, 3, 12).date(),
+    is_owner=True,
+)
 
+inhabitant_04 = Inhabitant(
+    user_id=4,
+    full_name="Carlos Velez",
+    email="carlos@example.com",
+    phone="3124330555",
+    password_hash="hashed_password",
+    is_active=True,
+    created_at=datetime.now(),
+    last_login=None,
+    document_number="123456789",
+    birth_date=datetime(1962, 3, 19).date(),
+    move_in_date=datetime(2016, 7, 1).date(),
+    is_owner=True,
+)
 
-if __name__ == "__main__":
-    print(f"Building: {building_a.name}")
-    print(f"Total units: {len(building_a.units)}")
+DUMMY_INHABITANTS = [inhabitant_01, inhabitant_02, inhabitant_03, inhabitant_04]
 
-    for unit in building_a.units:
-        status = "Occupied" if unit.occupied else "Available"
-        print(
-            f"Unit {unit.unit_number} | "
-            f"{status}"
-        )
+# assign inhabitants to their units (PropertyUnit now owns inhabitants)
+unit_101.inhabitants.append(inhabitant_01)
+unit_201.inhabitants.append(inhabitant_02)
+unit_202.inhabitants.append(inhabitant_03)
+unit_301.inhabitants.append(inhabitant_04)
