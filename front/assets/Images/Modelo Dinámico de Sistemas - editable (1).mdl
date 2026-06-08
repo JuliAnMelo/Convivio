@@ -1,0 +1,3490 @@
+{UTF-8}
+Promedio de informes mensuales=
+	6
+	~	 [0,50,1]
+	~		|
+
+Promedio de informes presentados=
+	Promedio de informes mensuales*Entrada de informes*Efecto de las actividades de divulgación y pedagogia en la presentación de informes
+	~	
+	~		|
+
+Promedio de víctimas por informes=
+	300
+	~	 [0,1000,50]
+	~		|
+
+"% de fichas de proyectos gestionadas"=
+	0.2
+	~	 [0,1,0.01]
+	~		|
+
+Impulso para cooperación internacional=
+	1.1
+	~	 [1,2,0.01]
+	~		|
+
+Nuevos aliados=
+	(Fichas de proyecto*"% de fichas de proyectos gestionadas")+Efecto de la articulación interna en los nuevos aliados internacioanales
+	~	
+	~		|
+
+Fichas de proyecto=
+	Fichas de proyecto promedio*Impulso para cooperación internacional
+	~	
+	~		|
+
+Nuevas víctimas que participan extrajudicialmente=
+	((Nuevo talento humano total disponible/Promedio de personas por equipo territorial)\
+		*Víctimas extrajudiciales atendidas por equipo territorial
+	)*Efecto de la legitimidad en la participación extrajudicial
+	~	
+	~		|
+
+Presupuesto anual para inversión de la Secretaría Ejecutiva=
+	Valor del presupuesto anual
+	~	
+	~		|
+
+Total recursos inversión=
+	Presupuesto anual para inversión de la Secretaría Ejecutiva+Recursos por proyectos de cooperación internacional
+	~	
+	~		|
+
+"% recursos cooperación"=
+	Recursos por proyectos de cooperación internacional/Total recursos inversión
+	~	
+	~		|
+
+"% recursos presupuesto de inversión SE"=
+	Presupuesto anual para inversión de la Secretaría Ejecutiva/Total recursos inversión
+	~	
+	~		|
+
+Aumento talento humano asistencia técnica=
+	Talento humano por proyectos de asistencia técnica
+	~	
+	~		|
+
+Talento humano por recursos=
+	Recursos para contratar nuevo talento humano/Salario promedio del Talento Humano
+	~	
+	~		|
+
+Peso de las víctimas en participación judicial en el requerimiento=
+	0.6
+	~	 [0,1,0.1]
+	~		|
+
+valor inicial demora víctimas que terminan participación extrajudicial=
+	0
+	~	 [0,?]
+	~		|
+
+Entrada octubre 2018=
+	PULSE(10,0 )
+	~	
+	~		|
+
+Requerimientos de equipos territoriales=
+	Peso de las víctimas en participación judicial en el requerimiento*("Víctimas que participan judicialmente/mes"\
+		/Víctimas que participan judicialmente atendidas por equipo territorial
+	)+Peso de las víctimas en participación extrajudicial en el requerimiento*("Víctimas que participan extrajudicialmente/mes"\
+		/Víctimas extrajudiciales atendidas por equipo territorial)
+	~	
+	~		|
+
+TOAR certificados= INTEG (
+	Nuevos TOAR certificados,
+		0)
+	~	
+	~		|
+
+TOAR en procesamiento= INTEG (
+	Nuevos TOAR en procesamiento-Finalización de procesamiento de TOAR,
+		0)
+	~	
+	~		|
+
+Disminución talento humano asistencia técnica=
+	DELAY N(Aumento talento humano asistencia técnica, Tiempo de finalización de proyectos\
+		 , Valor inicial de la demora disminución talento humano
+	 , Orden de la demora disminución talento humano asistencia técnica )
+	~	
+	~		|
+
+Orden de la demora disminución talento humano asistencia técnica=
+	12
+	~	
+	~		|
+
+suma flujos de salida=
+	"Inversión en difusión de estructura, funciones y logros de la JEP"+Inversión en SIVJRNR\
+		+Otras inversiones
+	~	
+	~		|
+
+"Inversión en difusión de estructura, funciones y logros de la JEP"=
+	Porcentaje de inversión en difusión*Recursos de inversión
+	~	
+	~		|
+
+Actividades de divulgación y pedagogía a víctimas y comparecientes=
+	"Promedio actividades divulgación y pedagogía/mes"+Efecto de la participación en las actividades de divulgación y pedagogía
+	~	
+	~		|
+
+Porcentaje de TOAR NO certificados=
+	1-Porcentaje de TOAR certificados
+	~	 [0,1,0.01]
+	~		|
+
+Nuevos recursos=
+	Presupuesto anual para inversión de la Secretaría Ejecutiva*Entrada de recursos de presupuesto\
+		+Recursos por proyectos de cooperación internacional+Entrada octubre 2018*Presupuesto anual para inversión de la Secretaría Ejecutiva
+	~	
+	~		|
+
+Aumento de informes=
+	Informes procesados
+	~	
+	~		|
+
+Nuevos TOAR no certificados=
+	Finalización de procesamiento de TOAR*Porcentaje de TOAR NO certificados
+	~	
+	~		|
+
+Porcentaje de inversión en difusión=
+	0.029
+	~	 [0,0.1,0.01]
+	~		|
+
+Valor inicial de la demora disminución talento humano=
+	0
+	~	
+	~		|
+
+Finalización de procesamiento de TOAR=
+	IF THEN ELSE(TOAR en procesamiento>Capacidad de certificación TOAR, Capacidad de certificación TOAR\
+		 , TOAR en procesamiento )
+	~	
+	~		|
+
+Víctimas que terminan participación extrajudicial=
+	DELAY N(Nuevas víctimas que participan extrajudicialmente, Tiempo de participación extrajudicial\
+		 , valor inicial demora víctimas que terminan participación extrajudicial , orden de la demora extrajudicial
+	 )
+	~	
+	~		|
+
+Valor inicial demora perdida buenas prácticas=
+	0
+	~	
+	~		|
+
+Pérdida de buenas prácticas=
+	DELAY N(Consolidación de buenas prácticas,Tiempo de pérdida de buenas prácticas \
+		, Valor inicial demora perdida buenas prácticas
+	, orden de la demora perdida buenas prácticas )
+	~	
+	~		|
+
+"Promedio actividades divulgación y pedagogía/mes"=
+	45
+	~	 [0,70,1]
+	~		|
+
+Nuevos TOAR certificados=
+	Finalización de procesamiento de TOAR*Porcentaje de TOAR certificados
+	~	
+	~		|
+
+Entrada de recursos de presupuesto=
+	PULSE TRAIN(1,0 , 12 , 240 )
+	~	
+	~		|
+
+TOAR NO certificados= INTEG (
+	Nuevos TOAR no certificados,
+		0)
+	~	
+	~		|
+
+orden de la demora perdida buenas prácticas=
+	12
+	~	
+	~		|
+
+Histórico de informes de víctimas= INTEG (
+	Aumento de informes,
+		0)
+	~	
+	~		|
+
+Peso de las víctimas en participación extrajudicial en el requerimiento=
+	1-Peso de las víctimas en participación judicial en el requerimiento
+	~	
+	~		|
+
+Porcentaje de TOAR certificados=
+	0.8
+	~	 [0,1,0.01]
+	~		|
+
+Presupuesto anual=
+	IF THEN ELSE(Time<=14, Presupuesto 2019 , IPC proyección promedio*Valor del presupuesto anual
+	*Entrada presupuesto anual*(1+Incremento en el presupuesto))
+	~	
+	~		|
+
+Nuevos TOAR en procesamiento=
+	TOAR para revisión
+	~	
+	~		|
+
+Incremento en el presupuesto=
+	0
+	~	 [0,1,0.1]
+	~		|
+
+Dinero promedio recibido por proyecto de cooperación internacional= INTEG (
+	Aumento de dinero recibido por proyecto de cooperación,
+		2.32524e+07)
+	~	
+	~		|
+
+Fichas de proyecto promedio = WITH LOOKUP (
+	Time,
+		([(0,0)-(240,20)],(0,18.9474),(60.1835,16.6667),(115.963,12.5439),(157.798,8.85965)\
+		,(206.972,5),(238.532,1.84211),(240,1) ))
+	~	
+	~		|
+
+Aumento salario=
+	IPC proyección promedio*Salario promedio del Talento Humano*Entrada aumento salarial anual
+	~	
+	~		|
+
+Recursos por proyectos de cooperación internacional=
+	"Nuevos proyectos."*"% proyectos que dan recursos financieros"*Dinero promedio recibido por proyecto de cooperación internacional
+	~	
+	~		|
+
+Inversión por talento humano=
+	Salario promedio del Talento Humano*Talento humano contratistas misionales de la JEP
+	~	
+	~		|
+
+Salario promedio del Talento Humano= INTEG (
+	Aumento salario,
+		2.84337e+06)
+	~	
+	~		|
+
+Aumento de dinero recibido por proyecto de cooperación=
+	IPC proyección promedio*Dinero promedio recibido por proyecto de cooperación internacional\
+		*Entrada aumento salarial anual
+	~	
+	~		|
+
+Entrada aumento salarial anual=
+	PULSE TRAIN(0, 1 , 12, FINAL TIME )
+	~	
+	~		|
+
+Capacidad de inversión en talento humano=
+	IF THEN ELSE(Brecha talento humano>0, MIN(Brecha talento humano, Recursos para contratar nuevo talento humano\
+		/Salario promedio del Talento Humano) , 0 )
+	~	
+	~		|
+
+Tiempo final de recepción de informes=
+	46
+	~	 [46,240,1]
+	~		|
+
+Promedio de nuevos TOAR = WITH LOOKUP (
+	Time,
+		([(0,0)-(240,10)],(0,0.0438595),(20.5505,2.58772),(72.6606,4.12281),(119.633,4.95614\
+		),(166.605,5.92105),(222.385,7.80702),(239.266,9.91228),(240,10) ))
+	~	 [0,50,1]
+	~		|
+
+Nuevos informes=
+	IF THEN ELSE(Time<Tiempo final de recepción de informes, Informes de víctimas presentados\
+		+Informes que llegan a través de la justicia ordinaria, 0 )
+	~	
+	~		|
+
+Víctimas con atención psicosocial=
+	MIN(Víctimas que requieren acompañamiento psicosocial, (Talento humano total para actividades misionales\
+		/Promedio de personas por equipo territorial)*(0.7*Víctimas que participan judicialmente atendidas por equipo territorial
+	+0.3*Víctimas extrajudiciales atendidas por equipo territorial
+	 ))
+	~	
+	~		|
+
+Orden de la demora de apropiación=
+	3
+	~	 [1,?,1]
+	~		|
+
+Nuevas personas que NO reconocen=
+	Personas que reconocen la legitimidad de la JEP*"% que empiezan a rechazar la legitimidad de la JEP"
+	~	
+	~		|
+
+Personas que reconocen la legitimidad de la JEP= INTEG (
+	Nuevas personas que reconocen-Nuevas personas que NO reconocen,
+		Población colombiana*Porcentaje inicial de las personas que reconocen la legitimidad de la JEP\
+		)
+	~	
+	~		|
+
+Valor inicio demora de apropiación por capacitaciones=
+	0
+	~	 [0,?]
+	~		|
+
+Apropiación por capacitación=
+	DELAY N(Número de capacitaciones mensuales*Incremento por capacitación en la apropiación\
+		, Tiempo de la demora de apropiación , Valor inicio demora de apropiación por capacitaciones\
+		, Orden de la demora de apropiación )
+	~	
+	~		|
+
+Apropiación TI=
+	IF THEN ELSE(Actividades de apropiación=1, IF THEN ELSE(Time>=Tiempo de inicio actividades de apropiación\
+		, (Porcentaje de apropiación
+	+Apropiación por capacitación)*"% de la organización que NO ha apropiado TI" , "% de la organización que NO ha apropiado TI"
+	*Porcentaje de apropiación),"% de la organización que NO ha apropiado TI"
+	*Porcentaje de apropiación)
+	~	
+	~		|
+
+Tiempo de la demora de apropiación=
+	2
+	~	 [1,?,1]
+	~		|
+
+Porcentaje inicial de las personas que reconocen la legitimidad de la JEP=
+	1-Porcentaje inicial de las personas que NO reconocen la legitimidad de la JEP
+	~	
+	~		|
+
+Capacidad promedio de registro = WITH LOOKUP (
+	Time,
+		([(0,0)-(240,70)],(0,0),(24.2202,2.76316),(119.633,35),(138.716,50.6579),(165.872,60.4825\
+		),(238.532,69.693),(240,70) ))
+	~	
+	~		|
+
+Personas que NO reconocen la legitimidad de la JEP= INTEG (
+	Nuevas personas que NO reconocen-Nuevas personas que reconocen,
+		Población colombiana*Porcentaje inicial de las personas que NO reconocen la legitimidad de la JEP\
+		)
+	~	
+	~		|
+
+Víctimas que han participado judicialmente ante la JEP= INTEG (
+	Nuevos registros de víctimas que terminan participación judicial,
+		0)
+	~	
+	~		|
+
+Nuevos registros de víctimas que terminan participación extrajudicial=
+	Víctimas que terminan participación extrajudicial
+	~	
+	~		|
+
+"Porcentaje de víctimas extrajudiciales que requiere acomp. psicosocial"=
+	0.3
+	~	 [0,1,0.01]
+	~		|
+
+Nuevos TOAR=
+	
+	
+	IF THEN ELSE( Time<216, (Efecto de las actividades de divulgación y pedagogía en los TOAR\
+		+Promedio de nuevos TOAR)*Inicio de TOAR, 0)
+	~	
+	~		|
+
+Porcentaje inicial de las personas que NO reconocen la legitimidad de la JEP=
+	0.66
+	~	 [0,1,0.1]
+	~		|
+
+Incremento por capacitación en la apropiación=
+	0.016666
+	~	 [0,?]
+	~		|
+
+Víctimas que requieren acompañamiento psicosocial=
+	"Víctimas que participan judicialmente/mes"*"Porcentaje de víctimas judiciales requiere acomp. psicosocial"\
+		+"Víctimas que participan extrajudicialmente/mes"*"Porcentaje de víctimas extrajudiciales que requiere acomp. psicosocial"
+	~	
+	~		|
+
+Capacidad de certificación promedio = WITH LOOKUP (
+	Time,
+		([(0,0)-(240,50)],(0,0.219299),(53.578,4.38596),(93.211,10.7456),(119.633,24.7807),\
+		(135.046,37.7193),(184.954,45.614),(240,49.5614) ))
+	~	
+	~		|
+
+Víctimas con atención psicojurídica=
+	IF THEN ELSE("Víctimas que participan judicialmente/mes">1, MIN(Víctimas que requieren acompañamiento psicojurídico\
+		, (Talento humano total para actividades misionales/Promedio de personas por equipo territorial\
+		)
+	*Víctimas que participan judicialmente atendidas por equipo territorial), 0)
+	~	
+	~		|
+
+Víctimas que han participado extrajudicialmente ante la JEP= INTEG (
+	Nuevos registros de víctimas que terminan participación extrajudicial,
+		0)
+	~	
+	~		|
+
+Nuevos registros de víctimas que terminan participación judicial=
+	Víctimas que terminan participación judicial
+	~	
+	~		|
+
+Nuevas víctimas acreditadas=
+	DELAY N(Informes procesados*Promedio de víctimas por informes, Tiempo de la demora nuevas víctimas acreditadas\
+		 , Valor inicial nuevas víctimas acreditadas, Orden de la demora nuevas víctimas acreditadas\
+		 )
+	~	
+	~		|
+
+Tiempo de la demora nuevas víctimas acreditadas=
+	12
+	~	 [1,?]
+	~		|
+
+TOAR finalizados con efecto negativo=
+	Porcentaje de TOAR finalizados con efecto negativo*TOAR finalizados
+	~	
+	~		|
+
+Efecto negativo de los TOAR finalizados en el rechazo de la legitimidad = WITH LOOKUP\
+		 (
+	TOAR finalizados con efecto negativo,
+		([(0,0)-(80,0.035)],(0,0.00030702),(0.489297,0.00030702),(10.5199,0.0205702),(32.2936\
+		,0.0296272),(59.2049,0.0333114),(79.5107,0.0348465),(80,0.035) ))
+	~	
+	~		|
+
+Valor inicial nuevas víctimas acreditadas=
+	0
+	~	 [0,?]
+	~		|
+
+Efecto de las actividades de divulgación y pedagogía a la sociedad sobre el tiempo de pérdida\
+		 = WITH LOOKUP (
+	"Inversión en difusión de estructura, funciones y logros de la JEP",
+		([(0,0)-(3e+09,12)],(0,0.0526314),(1.21101e+09,1.73684),(1.49541e+09,5.94737),(2.20183e+09\
+		,9.52632),(2.97248e+09,11.9474),(3e+09,12) ))
+	~	
+	~		|
+
+Orden de la demora nuevas víctimas acreditadas=
+	15
+	~	 [1,?]
+	~		|
+
+Efecto positivo de los TOAR finalizados en el reconocimiento de la legitimidad = WITH LOOKUP\
+		 (
+	TOAR finalizados con efecto positivo,
+		([(0,0)-(80,0.02)],(0,0),(28.8685,0.0027193),(57.0031,0.00719298),(79.7553,0.0199123\
+		),(80,0.02) ))
+	~	
+	~		|
+
+TOAR finalizados con efecto positivo=
+	Porcentaje de TOAR Finalizados con efecto positivo*TOAR finalizados
+	~	
+	~		|
+
+Gestión de conocimiento=
+	0
+	~	 [0,1,1]
+	~		|
+
+Porcentaje de TOAR finalizados con efecto negativo=
+	1-Porcentaje de TOAR Finalizados con efecto positivo
+	~	
+	~		|
+
+Porcentaje de TOAR Finalizados con efecto positivo=
+	0.8
+	~	
+	~		|
+
+Valor del presupuesto anual= INTEG (
+	Aumento presupuesto 2018+Presupuesto anual-Gasto presupuesto 2018,
+		0)
+	~	
+	~		|
+
+Tiempo de entrada presupuesto 2019=
+	PULSE(13, 1)
+	~	
+	~		|
+
+Presupuesto 2019=
+	Entrada presupuesto 2019*Tiempo de entrada presupuesto 2019
+	~	
+	~		|
+
+Aumento presupuesto 2018=
+	Entrada del presupuesto octubre 2018
+	~	
+	~		|
+
+Entrada del presupuesto octubre 2018=
+	Entrada presupuesto*Presupuesto octubre 2018
+	~	
+	~		|
+
+Efecto negativo de las actividades de divulgación y pedagogía a la sociedad = WITH LOOKUP\
+		 (
+	"Inversión en difusión de estructura, funciones y logros de la JEP",
+		([(0,0)-(3e+09,0.03)],(0,0),(2.507e+09,0),(2.62912e+09,0.00118421),(2.71807e+09,0.00263158\
+		),(2.80551e+09,0.00592105),(2.88693e+09,0.0117105),(2.95326e+09,0.0194737),(2.99849e+09\
+		,0.0294737),(3e+09,0.03) ))
+	~	
+	~		|
+
+Entrada presupuesto 2019=
+	9.03582e+10
+	~	 [9.03582e+10,9.03582e+10]
+	~		|
+
+Gasto presupuesto 2018=
+	DELAY FIXED(Aumento presupuesto 2018,2 , 0 )
+	~	
+	~		|
+
+Entrada presupuesto anual=
+	PULSE TRAIN(25, 1 , 12 , FINAL TIME)
+	~	
+	~		|
+
+Nuevas personas que reconocen=
+	Personas que NO reconocen la legitimidad de la JEP*"% que empieza a aceptar la legitimidad de la JEP"
+	~	
+	~		|
+
+Efecto de los convenios en la información disponible = WITH LOOKUP (
+	Nuevos convenios,
+		([(0,0)-(5,0.1)],(0,0.00307018),(1.22324,0.00482456),(2.59939,0.0166667),(3.3792,0.0364035\
+		),(4.90826,0.0557018) ))
+	~	
+	~		|
+
+Olvido de información=
+	DELAY N(Nueva información, Tiempo de desactualización de la información , Valor inicial de la demora de información disponible\
+		 , Orden de la demora de información )
+	~	
+	~		|
+
+Proyectos financiados por la JEP mensualmente=
+	1
+	~	 [0,?,1]
+	~		|
+
+Informes procesados=
+	DELAY N(Nuevos informes, Tiempo de priorización de macrocasos , Valor inicial demora informes de víctimas\
+		 , Orden demora informes de víctimas )
+	~	
+	~		|
+
+Disolución talento humano contratistas misionales de la JEP=
+	DELAY N(Nuevo talento humano contratistas misionales de la JEP, Tiempo de disolución de equipos\
+		 , Valor inicial talento humano personal JEP
+	 , Orden de la demora de talento humano personal JEP )
+	~	
+	~		|
+
+Orden de la demora de información=
+	15
+	~	 [1,?]
+	~		|
+
+Orden de la demora de talento humano personal JEP=
+	12
+	~	 [1,?,1]
+	~		|
+
+Brecha entre víctimas deseadas y víctimas participando=
+	Meta de víctimas participando-"Víctimas que participan judicialmente/mes"
+	~	
+	~		|
+
+Orden demora informes de víctimas=
+	15
+	~	 [1,?,1]
+	~		|
+
+TH SAAD representación victimas=
+	Porcentaje de TH destinado a SAAD representación víctimas*Talento humano total para actividades misionales
+	~	
+	~		|
+
+Universo de víctimas=
+	7.31682e+06
+	~	 [0,?]
+	~		|
+
+Talento humano total para actividades misionales=
+	Talento humano contratistas misionales de la JEP+Talento humano por asistencia técnica
+	~	
+	~		|
+
+TH Departamento de Atención a Víctimas=
+	Porcentaje de TH destinado al Departamento de Atención a Víctimas*Talento humano total para actividades misionales
+	~	
+	~		|
+
+TH Departamento de Atención al Ciudadano=
+	Porcentaje de TH destinado a Departamento de Atención al Ciudadano*Talento humano total para actividades misionales
+	~	
+	~		|
+
+TH Departamento de Enfoques Diferenciales=
+	Porcentaje de TH destinado a SAAD Departamento de Enfoques Diferenciales*Talento humano total para actividades misionales
+	~	
+	~		|
+
+TH Departamento de Gestión Territorial=
+	Porcentaje de TH destinado a Departamento de Gestión Territorial*Talento humano total para actividades misionales
+	~	
+	~		|
+
+TH en SAAD a defensa a comparecientes=
+	Porcentaje de TH destinado a SAAD defensa a comparecientes*Talento humano total para actividades misionales
+	~	
+	~		|
+
+Efecto de la participación en las actividades de divulgación y pedagogía = WITH LOOKUP\
+		 (
+	Brecha entre víctimas deseadas y víctimas participando,
+		([(0,0)-(800000,15)],(0,0.131579),(269113,1.31579),(543119,4.60526),(726606,9.34211\
+		),(800000,15) ))
+	~	
+	~		|
+
+Efecto de las actividades de divulgación y pedagogia en la presentación de informes\
+		 = WITH LOOKUP (
+	Actividades de divulgación y pedagogía a víctimas y comparecientes,
+		([(0,1)-(65,1.5)],(0,1.00439),(24.6483,1.05702),(47.3089,1.23465),(65,1.49781) ))
+	~	
+	~		|
+
+Porcentaje que se espera que participe=
+	0.1
+	~	 [0,1,0.01]
+	~		|
+
+Nuevos proyectos por la JEP=
+	Proyectos financiados por la JEP mensualmente
+	~	
+	~		|
+
+Inicio de TOAR=
+	IF THEN ELSE(Time>=18, 1 , 0)
+	~	
+	~		|
+
+Valor inicial talento humano personal JEP=
+	0
+	~	 [0,?]
+	~		|
+
+Valor inicial de la demora de información disponible=
+	0
+	~	 [0,?]
+	~		|
+
+Valor inicial demora informes de víctimas=
+	0
+	~	 [0,?]
+	~		|
+
+Meta de víctimas participando=
+	Universo de víctimas*Porcentaje que se espera que participe
+	~	
+	~		|
+
+Porcentaje de inversión en SIVJRNR=
+	0.56
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de otras inversiones=
+	1-(Porcentaje de inversión en difusión+Porcentaje de inversión en SIVJRNR)
+	~	
+	~		|
+
+Entrada presupuesto=
+	PULSE(9,0)
+	~	
+	~		|
+
+Recursos de inversión= INTEG (
+	Nuevos recursos-"Inversión en difusión de estructura, funciones y logros de la JEP"\
+		-Inversión en SIVJRNR-Otras inversiones,
+		0)
+	~	
+	~		|
+
+Otras inversiones=
+	Recursos de inversión*Porcentaje de otras inversiones
+	~	 [0,?]
+	~		|
+
+Inversión en SIVJRNR=
+	Porcentaje de inversión en SIVJRNR*Recursos de inversión
+	~	
+	~		|
+
+Presupuesto octubre 2018=
+	2.67269e+10
+	~	 [2.67269e+10,2.67269e+10]
+	~		|
+
+Disminución de apropiación TI=
+	Porcentaje de pérdida de TI*"% de la organización que ha apropiado TI"
+	~	
+	~		|
+
+"% de la organización que NO ha apropiado TI"= INTEG (
+	Disminución de apropiación TI-Apropiación TI,
+		0.9)
+	~	
+	~		|
+
+"% de la organización que ha apropiado TI"= INTEG (
+	Apropiación TI-Disminución de apropiación TI,
+		0.1)
+	~	
+	~		|
+
+Porcentaje de pérdida de TI = WITH LOOKUP (
+	Time,
+		([(-1,0)-(240,0.02)],(0,0.000263158),(0.733945,8.77194e-05),(46.2385,0.0114912),(121.835\
+		,0.0163158),(203.303,0.0187719),(238.532,0.0194737),(240,0.02) ))
+	~	 [0,1]
+	~		|
+
+Entrada de informes=
+	PULSE TRAIN(0, 1, 8 , 240 )
+	~	
+	~		|
+
+Revisión de procesos y procedimientos=
+	PULSE TRAIN(12, Duración de la revisión de procesos y procedimientos , Frecuencia revisión procesos y procedimientos
+	 ,FINAL TIME)
+	~	
+	~	Inicia al final del año 1 (mes 12); toma un tiempo de 3 meses; se repite \
+		cada 12 meses; se hace hasta el final.
+	|
+
+Porcentaje de apropiación = WITH LOOKUP (
+	Time,
+		([(0,0)-(240,0.03)],(0,0.0297368),(12.4771,0.0238158),(27.8899,0.0192105),(56.5138,\
+		0.0157895),(83.6697,0.0140789),(143.119,0.0135526),(184.22,0.0131579),(240,0.0131579\
+		) ))
+	~	
+	~		|
+
+IPC proyección promedio=
+	0.03
+	~	 [0,?,0.01]
+	~		|
+
+Nuevo talento humano total disponible=
+	Aumento talento humano asistencia técnica+Nuevo talento humano contratistas misionales de la JEP
+	~	
+	~		|
+
+Aliados internacionales= INTEG (
+	Nuevos aliados-Fin de alianzas,
+		0)
+	~	
+	~		|
+
+"Nuevos proyectos."=
+	Proyectos por aliados internacionales
+	~	
+	~		|
+
+Efecto de los proyectos con cooperantes en la creación de Memoria Institucional = WITH LOOKUP\
+		 (
+	Proyectos con cooperantes,
+		([(0,0)-(60,0.01)],(0,8.77194e-05),(20.1835,0.00127193),(42.3853,0.00328947),(52.6605\
+		,0.00640351),(60,0.01) ))
+	~	
+	~		|
+
+Brecha de instituciones por realizar convenios=
+	Total de instituciones para hacer convenios-Convenios de intercambio de información
+	~	
+	~		|
+
+Brecha talento humano=
+	IF THEN ELSE(Requerimientos de equipos territoriales>(Talento humano contratistas misionales de la JEP\
+		+Talento humano por asistencia técnica), Requerimientos de equipos territoriales-(\
+		Talento humano contratistas misionales de la JEP+Talento humano por asistencia técnica\
+		) , 0)
+	~	
+	~		|
+
+Proyectos de asistencia técnica=
+	"% de proyectos de asistencia técnica"*"Nuevos proyectos."
+	~	
+	~		|
+
+Proyectos por aliados internacionales=
+	Nuevos aliados*"% de aliados con los que se hacen proyectos"
+	~	
+	~		|
+
+Talento humano por proyectos de asistencia técnica=
+	Proyectos de asistencia técnica*Personas por proyecto de asistencia técnica
+	~	
+	~		|
+
+Personas por proyecto de asistencia técnica=
+	5
+	~	 [0,?,1]
+	~		|
+
+Peso del efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes\
+		=
+	0.16
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de las víctimas que participan extrajudicialmente=
+	0.12
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de las víctimas restauradas=
+	0.1
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de los proyectos con cooperantes=
+	0.09
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto negativo de las actividades de divulgación y pedagogía=
+	0.6
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto negativo de los TOAR finalizados=
+	0.4
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto positivo de los TOAR finalizados=
+	0.1
+	~	 [0,1,0.01]
+	~		|
+
+Fin de alianzas=
+	Aliados internacionales/Tiempo promedio de finalización de alianzas
+	~	
+	~		|
+
+Población colombiana=
+	4.965e+07
+	~	 [4.965e+07,?,1000]
+	~		|
+
+Efecto de las víctimas restauradas en el reconocimiento de la legitimidad = WITH LOOKUP\
+		 (
+	Histórico de víctimas restauradas,
+		([(0,0)-(1.46336e+06,0.02)],(0,8.77194e-05),(290882,0.0111404),(886071,0.0179825),(\
+		1.45441e+06,0.0198246),(1.46336e+06,0.02) ))
+	~	
+	~		|
+
+Convenios de intercambio de información= INTEG (
+	Nuevos convenios-Fin de convenios,
+		0)
+	~	
+	~		|
+
+"% que reconocen la legitimidad de la JEP"=
+	Personas que reconocen la legitimidad de la JEP/Población colombiana
+	~	
+	~		|
+
+Información disponible= INTEG (
+	Nueva información-Olvido de información,
+		0.4)
+	~	
+	~		|
+
+"% de proyectos de asistencia técnica"=
+	0.73
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de TH destinado a Departamento de Atención al Ciudadano=
+	0.11
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de TH destinado a Departamento de Gestión Territorial=
+	0.11
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de TH destinado a SAAD defensa a comparecientes=
+	0.17
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de TH destinado a SAAD Departamento de Enfoques Diferenciales=
+	0.17
+	~	 [0,1,0.01]
+	~		|
+
+Porcentaje de TH destinado a SAAD representación víctimas=
+	0.17
+	~	 [0,1,0.01]
+	~		|
+
+Efecto de la apropiación TI en la información disponible = WITH LOOKUP (
+	"% de la organización que ha apropiado TI",
+		([(0,0)-(1,0.1)],(0.0122324,0.00307018),(0.314985,0.00701755),(0.486239,0.0311403),\
+		(0.675841,0.0447368),(0.98471,0.054386) ))
+	~	
+	~		|
+
+Efecto de la articulación interna en los nuevos aliados internacioanales = WITH LOOKUP\
+		 (
+	Articulación interna,
+		([(0,0)-(1,0.5)],(0.0030581,0.00657895),(0.30581,0.0679825),(0.498471,0.247807),(0.657492\
+		,0.399123),(0.996942,0.502193) ))
+	~	
+	~		|
+
+Efecto de la Memoria Histórica en el reconocimiento de la legitimidad = WITH LOOKUP \
+		(
+	Memoria Histórica,
+		([(0,0)-(1,0.02)],(0,0),(0.391437,0.00219298),(0.685015,0.00692982),(0.993884,0.0198246\
+		),(1,0.02) ))
+	~	
+	~		|
+
+Efecto de la Memoria Institucional en el reconocimiento de la legitimidad = WITH LOOKUP\
+		 (
+	Memoria institucional,
+		([(0,0)-(1,0.02)],(0,8.77194e-05),(0.394495,0.00307018),(0.810398,0.00877193),(0.996942\
+		,0.02),(1,0.02) ))
+	~	
+	~		|
+
+"% de aliados con los que se hacen proyectos"=
+	0.6
+	~	 [0,1,0.01]
+	~		|
+
+Efecto positivo ponderado de los TOAR finalizados=
+	Efecto positivo de los TOAR finalizados en el reconocimiento de la legitimidad*Peso del efecto positivo de los TOAR finalizados
+	~	
+	~		|
+
+Efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes en la legitimidad\
+		 = WITH LOOKUP (
+	Actividades de divulgación y pedagogía a víctimas y comparecientes,
+		([(0,0)-(65,0.02)],(0,8.77194e-05),(22.8593,0.00157895),(32.4006,0.00973684),(45.5199\
+		,0.0178947),(64.4037,0.0198246),(65,0.02) ))
+	~	
+	~		|
+
+Nuevas víctimas restauradas=
+	(Víctimas que terminan participación judicial+Víctimas que terminan participación extrajudicial\
+		+Víctimas restauradas por finalización de sanciones propias)*Efecto de legitimidad en las víctimas restauradas
+	~	
+	~		|
+
+Nuevo talento humano contratistas misionales de la JEP=
+	Capacidad de inversión en talento humano
+	~	
+	~		|
+
+Efecto de la legitimidad de la JEP en los convenios = WITH LOOKUP (
+	Personas que reconocen la legitimidad de la JEP,
+		([(0,0)-(4.82585e+07,0.06)],(0,0.000526316),(6.4935e+06,0.0252632),(2.08087e+07,0.0476316\
+		),(3.74852e+07,0.0563158),(4.84061e+07,0.0594737) ))
+	~	
+	~		|
+
+Efecto de las victimas que participan extrajudicialmente en el reconocimiento de la legitimidad\
+		 = WITH LOOKUP (
+	"Víctimas que participan extrajudicialmente/mes",
+		([(0,0)-(2.92673e+06,0.02)],(0,0),(1.25303e+06,0.00184211),(2.10331e+06,0.00578947)\
+		,(2.91778e+06,0.0198246),(2.92673e+06,0.02) ))
+	~	
+	~		|
+
+Efecto de las víctimas que participan judicialmente en el reconocimiento de la legitimidad\
+		 = WITH LOOKUP (
+	"Víctimas que participan judicialmente/mes",
+		([(0,0)-(1.46336e+06,0.02)],(0,8.77194e-05),(519112,0.00175439),(930822,0.00552632)\
+		,(1.45441e+06,0.0199123),(1.46336e+06,0.02) ))
+	~	
+	~		|
+
+Promedio de personas por equipo territorial=
+	10
+	~	
+	~		|
+
+Nuevos convenios=
+	Brecha de instituciones por realizar convenios*Efecto de la legitimidad de la JEP en los convenios
+	~	
+	~		|
+
+Efecto ponderado de las víctimas que participan judicialmente=
+	Efecto de las víctimas que participan judicialmente en el reconocimiento de la legitimidad\
+		*Peso del efecto de las víctimas que participan judicialmente
+	~	
+	~		|
+
+Proyectos con cooperantes= INTEG (
+	Nuevos proyectos por la JEP+"Nuevos proyectos."-Fin de proyectos,
+		0)
+	~	
+	~		|
+
+Efecto de los proyectos con cooperantes en el reconocimiento de la legitmidad = WITH LOOKUP\
+		 (
+	Proyectos con cooperantes,
+		([(0,0)-(60,0.02)],(0,0.000263158),(17.6147,0.00289474),(30.0917,0.0100877),(40.1835\
+		,0.0167544),(59.4495,0.0198246),(60,0.02) ))
+	~	
+	~		|
+
+Efecto negativo ponderado de las actividades de divulgación y pedagogía a la sociedad\
+		=
+	Efecto negativo de las actividades de divulgación y pedagogía a la sociedad*Peso del efecto negativo de las actividades de divulgación y pedagogía
+	~	
+	~		|
+
+Efecto negativo ponderado de los TOAR finalizados=
+	Efecto negativo de los TOAR finalizados en el rechazo de la legitimidad*Peso del efecto negativo de los TOAR finalizados
+	~	
+	~		|
+
+Efecto ponderado de la Memoria Histórica=
+	Efecto de la Memoria Histórica en el reconocimiento de la legitimidad*Peso del efecto de la Memoria Histórica
+	~	
+	~		|
+
+Efecto ponderado de la Memoria Institucional=
+	Efecto de la Memoria Institucional en el reconocimiento de la legitimidad*Peso del efecto de la Memoria Institucional
+	~	
+	~		|
+
+Efecto ponderado de las actividades de divulgación y pedagogía a la sociedad=
+	Efecto positivo de las actividades de divulgación y pedagogía a la sociedad en el reconocimiento de la legitimidad\
+		*Peso de las actividades de divulgación y pedagogía a la sociedad
+	~	
+	~		|
+
+Efecto ponderado de las actividades de divulgación y pedagogía a víctimas y comparecientes\
+		=
+	Efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes en la legitimidad\
+		*Peso del efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes
+	~	
+	~		|
+
+Efecto ponderado de las víctimas que participan extrajudicialmente=
+	Efecto de las victimas que participan extrajudicialmente en el reconocimiento de la legitimidad\
+		*Peso del efecto de las víctimas que participan extrajudicialmente
+	~	
+	~		|
+
+Efecto ponderado de las víctimas restauradas=
+	Efecto de las víctimas restauradas en el reconocimiento de la legitimidad*Peso del efecto de las víctimas restauradas
+	~	
+	~		|
+
+Efecto ponderado de los proyectos con cooperantes=
+	Efecto de los proyectos con cooperantes en el reconocimiento de la legitmidad*Peso del efecto de los proyectos con cooperantes
+	~	
+	~		|
+
+Efecto positivo de las actividades de divulgación y pedagogía a la sociedad en el reconocimiento de la legitimidad\
+		 = WITH LOOKUP (
+	"Inversión en difusión de estructura, funciones y logros de la JEP",
+		([(0,0)-(2.5e+09,0.02)],(0,0.000175439),(3.66972e+08,0.0110526),(1.46024e+09,0.0166667\
+		),(2.48471e+09,0.0199123),(2.5e+09,0.02) ))
+	~	
+	~		|
+
+Nueva información=
+	0.4*Efecto de la apropiación TI en la información disponible+0.6*Efecto de los convenios en la información disponible
+	~	
+	~		|
+
+Tiempo de finalización de proyectos=
+	12
+	~	 [1,?,1]
+	~		|
+
+Tiempo de desactualización de la información=
+	24
+	~	 [1,?]
+	~		|
+
+Fin de convenios=
+	Convenios de intercambio de información/Tiempo de finalización convenios
+	~	
+	~		|
+
+Fin de proyectos=
+	Proyectos con cooperantes/Tiempo de finalización de proyectos
+	~	
+	~		|
+
+"% que empiezan a rechazar la legitimidad de la JEP"=
+	(Efecto negativo ponderado de las actividades de divulgación y pedagogía a la sociedad\
+		+Efecto negativo ponderado de los TOAR finalizados)
+	~	
+	~		|
+
+"% que empieza a aceptar la legitimidad de la JEP"=
+	Efecto ponderado de la Memoria Histórica+Efecto ponderado de la Memoria Institucional\
+		+Efecto ponderado de las actividades de divulgación y pedagogía a la sociedad+Efecto ponderado de las actividades de divulgación y pedagogía a víctimas y comparecientes\
+		+Efecto ponderado de las víctimas que participan extrajudicialmente+Efecto ponderado de las víctimas que participan judicialmente\
+		+Efecto ponderado de las víctimas restauradas+Efecto ponderado de los proyectos con cooperantes\
+		+Efecto positivo ponderado de los TOAR finalizados
+	~	
+	~		|
+
+"% que NO reconocen la legitimidad de la JEP"=
+	Personas que NO reconocen la legitimidad de la JEP/Población colombiana
+	~	
+	~		|
+
+"Víctimas que participan judicialmente/mes"= INTEG (
+	Nuevas víctimas que participan judicialmente-Víctimas que terminan participación judicial\
+		,
+		0)
+	~	
+	~		|
+
+Tiempo promedio de finalización de alianzas=
+	24
+	~	 [1,?,1]
+	~		|
+
+Recursos para contratar nuevo talento humano=
+	Inversión en SIVJRNR*Porcentaje para contratar nuevo talento humano
+	~	
+	~		|
+
+"% proyectos que dan recursos financieros"=
+	1-"% de proyectos de asistencia técnica"
+	~	 [0,1]
+	~		|
+
+Porcentaje para contratar nuevo talento humano=
+	0.24
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de las víctimas que participan judicialmente=
+	0.14
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de la Memoria Histórica=
+	0.03
+	~	 [0,1,0.01]
+	~		|
+
+Peso del efecto de la Memoria Institucional=
+	0.06
+	~	 [0,1,0.01]
+	~		|
+
+Tiempo de finalización convenios=
+	36
+	~	 [1,?,1]
+	~		|
+
+Peso de las actividades de divulgación y pedagogía a la sociedad=
+	0.2
+	~	 [0,1,0.01]
+	~		|
+
+Víctimas que terminan participación judicial=
+	DELAY N(Nuevas víctimas que participan judicialmente, Tiempo de participación judicial\
+		 , Valor inicial, orden de la demora )
+	~	
+	~		|
+
+Porcentaje de TH destinado al Departamento de Atención a Víctimas=
+	0.25
+	~	 [0,1,0.01]
+	~		|
+
+Talento humano por asistencia técnica= INTEG (
+	Aumento talento humano asistencia técnica-Disminución talento humano asistencia técnica\
+		,
+		0)
+	~	
+	~		|
+
+Total de instituciones para hacer convenios=
+	50
+	~	 [0,?,1]
+	~		|
+
+Valor inicial=
+	0
+	~	 [0,?]
+	~		|
+
+Nuevos comparecientes con información completa=
+	Capacidad de registro de información
+	~	
+	~		|
+
+Comparecientes con información completa= INTEG (
+	Nuevos comparecientes con información completa,
+		0)
+	~	
+	~		|
+
+Comparecientes en proceso de registro= INTEG (
+	Nuevos comparecientes-Nuevos comparecientes con información completa,
+		12625)
+	~	
+	~		|
+
+Tiempo de ejecución TOAR=
+	6
+	~	
+	~		|
+
+Efecto de las actividades de divulgación y pedagogía en los TOAR = WITH LOOKUP (
+	Actividades de divulgación y pedagogía a víctimas y comparecientes,
+		([(0,0)-(65,10)],(0,0.087719),(19.0826,1.00877),(32.2018,4.95614),(35.7798,7.19298)\
+		,(49.6942,9.21053),(64.6024,9.91228),(65,10) ))
+	~	
+	~		|
+
+TOAR finalizados=
+	TOAR en ejecución/Tiempo de ejecución TOAR
+	~	
+	~		|
+
+Comparecientes provenientes de salas y secciones=
+	5
+	~	
+	~		|
+
+Capacidad de certificación TOAR=
+	Capacidad de certificación promedio+Efecto de la apropiación TI en la capacidad de evacuación
+	~	
+	~		|
+
+Capacidad de registro de información=
+	Capacidad promedio de registro+Efecto de la apropiación TI en la capacidad de evacuación
+	~	
+	~		|
+
+TOAR en ejecución= INTEG (
+	Nuevos TOAR-TOAR finalizados,
+		0)
+	~	
+	~		|
+
+Porcentaje de TOAR revisados por la Secretaría Ejecutiva=
+	0.8
+	~	 [0,1,0.01]
+	~		|
+
+TOAR para revisión=
+	Porcentaje de TOAR revisados por la Secretaría Ejecutiva*TOAR finalizados
+	~	
+	~		|
+
+Efecto de la apropiación TI en la capacidad de evacuación = WITH LOOKUP (
+	"% de la organización que ha apropiado TI",
+		([(0,0)-(1,20)],(0,0.087719),(0.0642202,6.75439),(0.477064,14.2982),(1,19.9123) ))
+	~	
+	~		|
+
+Nuevos comparecientes=
+	Comparecientes provenientes de salas y secciones
+	~	
+	~		|
+
+Actividades de apropiación=
+	0
+	~	 [0,1,1]
+	~		|
+
+orden de la demora extrajudicial=
+	3
+	~	 [1,?]
+	~		|
+
+Número de capacitaciones mensuales=
+	1
+	~	 [1,4,1]
+	~		|
+
+"Porcentaje que requiere acomp. psicojurídico"=
+	0.4
+	~	 [0,1,0.01]
+	~		|
+
+"Porcentaje de víctimas judiciales requiere acomp. psicosocial"=
+	0.6
+	~	 [0,1,0.01]
+	~		|
+
+Promedio de construcción de Memoria Histórica=
+	0.004
+	~	 [0,1,0.01]
+	~		|
+
+Construcción de Memoria Histórica=
+	Promedio de construcción de Memoria Histórica+0.5*efecto de las víctimas restauradas en la Memoria Histórica\
+		+0.2*Efecto de la proporción de apropiación TI en la Memoria Histórica
+	+0.3*efecto de la memoria institucional en la Memoria Histórica
+	~	
+	~		|
+
+Promedio de víctimas que participan por sanción propia=
+	50
+	~	 [0,?,5]
+	~		|
+
+efecto de la apropiación TI en la articulación interna = WITH LOOKUP (
+	"% de la organización que ha apropiado TI",
+		([(0,0)-(1,1)],(0.00611621,0.00877196),(0.311927,0.0921053),(0.495413,0.25),(0.70948\
+		,0.412281),(1,0.495614) ))
+	~	
+	~		|
+
+Efecto de la legitimidad en la participación extrajudicial = WITH LOOKUP (
+	Personas que reconocen la legitimidad de la JEP,
+		([(0,0)-(4.82585e+07,1)],(147580,0.00438595),(4.57496e+06,0.245614),(2.40555e+07,0.5\
+		),(3.719e+07,0.719298),(4.82585e+07,0.995614) ))
+	~	
+	~		|
+
+Efecto de la legitimidad en la presentación de informes = WITH LOOKUP (
+	Personas que reconocen la legitimidad de la JEP,
+		([(0,0)-(4.82585e+07,100)],(147580,0.87719),(1.04781e+07,11.4035),(2.06611e+07,32.4561\
+		),(2.40555e+07,49.5614),(3.06965e+07,78.9474),(4.82585e+07,99.1228) ))
+	~	
+	~		|
+
+efecto de la memoria institucional en la Memoria Histórica = WITH LOOKUP (
+	Incremento memoria institucional,
+		([(0,0)-(1,0.01)],(0,4.38597e-05),(0.348624,0.00223684),(0.504587,0.00495614),(0.587156\
+		,0.00785088),(0.996942,0.00991228) ))
+	~	
+	~		|
+
+Efecto de la proporción de apropiación TI en la Memoria Histórica = WITH LOOKUP (
+	"% de la organización que ha apropiado TI",
+		([(0,0)-(1,0.01)],(0.0030581,0.000131579),(0.351682,0.00100877),(0.504587,0.005),(0.654434\
+		,0.00785088),(0.993884,0.00995614) ))
+	~	
+	~		|
+
+Efecto de las actividades de divulgación y pedagogía de víctimas y comparecientes sobre el tiempo de pérdida\
+		 = WITH LOOKUP (
+	Actividades de divulgación y pedagogía a víctimas y comparecientes,
+		([(0,0)-(65,24)],(0,0.105263),(11.9266,1.78947),(22.8593,6.31579),(32.2018,11.7895)\
+		,(43.3333,18.5263),(56.2538,21.5789),(64.8012,23.7895) ))
+	~	
+	~		|
+
+Efecto de las actividades de divulgación y pedagogía en la presentación de informes\
+		 = WITH LOOKUP (
+	Actividades de divulgación y pedagogía a víctimas y comparecientes,
+		([(0,0)-(65,100)],(0.198777,0.438599),(25.6422,14.9123),(32.4006,50),(42.1407,83.3333\
+		),(65,99.1228) ))
+	~	
+	~		|
+
+efecto de las víctimas restauradas en la Memoria Histórica = WITH LOOKUP (
+	Nuevas víctimas restauradas,
+		([(0,0)-(30000,0.01)],(0,4.38597e-05),(6788.99,0.00557018),(20825.7,0.00864035),(29908.3\
+		,0.01) ))
+	~	
+	~		|
+
+Tiempo de participación judicial=
+	42
+	~	 [1,?]
+	~		|
+
+Efecto de legitimidad en las víctimas restauradas = WITH LOOKUP (
+	Personas que reconocen la legitimidad de la JEP,
+		([(0,0.5)-(4.82585e+07,1)],(295159,0.506579),(8.26445e+06,0.767544),(2.73022e+07,0.936404\
+		),(4.79633e+07,0.995614) ))
+	~	
+	~		|
+
+tiempo de pérdida de Memoria Histórica=
+	Tiempo promedio de pérdida de Memoria Histórica+Efecto de las actividades de divulgación y pedagogía a la sociedad sobre el tiempo de pérdida\
+		+Efecto de las actividades de divulgación y pedagogía de víctimas y comparecientes sobre el tiempo de pérdida
+	~	
+	~		|
+
+Pérdida de Memoria Histórica=
+	Memoria Histórica/tiempo de pérdida de Memoria Histórica
+	~	
+	~		|
+
+Tiempo de priorización de macrocasos=
+	5.5
+	~	 [1,?]
+	~		|
+
+Nuevas víctimas que participan judicialmente=
+	Nuevas víctimas acreditadas
+	~	
+	~		|
+
+Incremento articulación interna=
+	(Espacios de trabajo en equipo*Incremento por espacio de trabajo en equipo)*0.8*efecto de la apropiación TI en la articulación interna
+	~	
+	~		|
+
+Tiempo promedio de pérdida de Memoria Histórica=
+	72
+	~	 [1,?,1]
+	~		|
+
+Víctimas acreditadas= INTEG (
+	Nuevas víctimas acreditadas,
+		0)
+	~	
+	~		|
+
+Informes de víctimas= INTEG (
+	Nuevos informes-Informes procesados,
+		0)
+	~	
+	~		|
+
+Informes de víctimas presentados=
+	Promedio de informes presentados+0.7*Efecto de la legitimidad en la presentación de informes\
+		+0.3*Efecto de las actividades de divulgación y pedagogía en la presentación de informes
+	~	
+	~		|
+
+Informes que llegan a través de la justicia ordinaria=
+	10
+	~	 [0,?]
+	~		|
+
+Memoria Histórica= INTEG (
+	Construcción de Memoria Histórica-Pérdida de Memoria Histórica,
+		0.1)
+	~	
+	~		|
+
+Víctimas que requieren acompañamiento psicojurídico=
+	"Porcentaje que requiere acomp. psicojurídico"*"Víctimas que participan judicialmente/mes"
+	~	
+	~		|
+
+Tiempo de disolución de equipos=
+	24
+	~	 [1,?,1]
+	~		|
+
+Tiempo de inicio actividades de apropiación=
+	37
+	~	 [37,240,1]
+	~		|
+
+orden de la demora=
+	3
+	~	 [1,?]
+	~		|
+
+Tiempo de participación extrajudicial=
+	18
+	~	 [1,?]
+	~		|
+
+Sanciones propias terminadas=
+	1
+	~	 [0,?,1]
+	~		|
+
+Talento humano contratistas misionales de la JEP= INTEG (
+	Nuevo talento humano contratistas misionales de la JEP-Disolución talento humano contratistas misionales de la JEP\
+		,
+		0)
+	~	
+	~		|
+
+Histórico de víctimas restauradas= INTEG (
+	Nuevas víctimas restauradas,
+		0)
+	~	
+	~		|
+
+Víctimas que participan judicialmente atendidas por equipo territorial=
+	1500
+	~	
+	~		|
+
+Víctimas extrajudiciales atendidas por equipo territorial=
+	3000
+	~	
+	~		|
+
+"Víctimas que participan extrajudicialmente/mes"= INTEG (
+	Nuevas víctimas que participan extrajudicialmente-Víctimas que terminan participación extrajudicial\
+		,
+		0)
+	~	
+	~		|
+
+Víctimas restauradas por finalización de sanciones propias=
+	Promedio de víctimas que participan por sanción propia*Sanciones propias terminadas
+	~	
+	~		|
+
+Incremento memoria institucional=
+	Efecto de las buenas prácticas institucionales en Incremento Memoria+Efecto de los proyectos con cooperantes en la creación de Memoria Institucional
+	~	
+	~		|
+
+Duración de la revisión de procesos y procedimientos=
+	3
+	~	 [1,12,1]
+	~		|
+
+Efecto de las buenas prácticas institucionales en Incremento Memoria = WITH LOOKUP (
+	Buenas prácticas institucionales,
+		([(0,0)-(50,0.012)],(0,5.26318e-05),(9.78593,0.00721053),(28.5933,0.0105263),(49.5413\
+		,0.0117895),(50,0.012) ))
+	~	
+	~		|
+
+Consolidación de buenas prácticas=
+	IF THEN ELSE (Gestión de conocimiento=1, IF THEN ELSE (Time>=Tiempo inicio gestión de conocimiento\
+		, Buenas prácticas*Revisión de procesos y procedimientos, Revisión de procesos y procedimientos\
+		), Revisión de procesos y procedimientos)
+	~	
+	~		|
+
+Frecuencia revisión procesos y procedimientos=
+	12
+	~	 [1,24,1]
+	~		|
+
+Incremento por espacio de trabajo en equipo=
+	0.1
+	~	
+	~		|
+
+Tiempo normal pérdida de articulación=
+	12
+	~	
+	~		|
+
+Disminución articulación interna=
+	Articulación interna/Tiempo de pérdida de articulación
+	~	
+	~		|
+
+Tiempo de pérdida de articulación=
+	Tiempo normal pérdida de articulación+(Memoria institucional*3)
+	~	
+	~		|
+
+Divulgación=
+	Memoria institucional*(Comunicación interna correo+Comunicación interna revista)
+	~	
+	~		|
+
+Comunicación interna correo=
+	30
+	~	 [0,?]
+	~		|
+
+Comunicación interna revista=
+	1/3
+	~	 [0,?]
+	~		|
+
+Buenas prácticas institucionales= INTEG (
+	Consolidación de buenas prácticas-Pérdida de buenas prácticas,
+		0)
+	~	
+	~		|
+
+Articulación interna= INTEG (
+	Incremento articulación interna-Disminución articulación interna,
+		0.1)
+	~	 [0,1]
+	~		|
+
+Buenas prácticas=
+	Articulación interna*Divulgación
+	~	
+	~	Anderson & Lewis (2014) pág 366. - productividad.
+	|
+
+Disminución memoria institucional=
+	Memoria institucional/Tiempo de pérdida memoria institucional
+	~	
+	~		|
+
+Espacios de trabajo en equipo=
+	2
+	~	
+	~		|
+
+Memoria institucional= INTEG (
+	Incremento memoria institucional-Disminución memoria institucional,
+		0)
+	~	 [0,1]
+	~		|
+
+Tiempo de pérdida de buenas prácticas=
+	48
+	~	
+	~		|
+
+Tiempo de pérdida memoria institucional=
+	48
+	~	
+	~		|
+
+Tiempo inicio gestión de conocimiento=
+	37
+	~	 [37,240,1]
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 240
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.25
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*1. Justicia digital
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,50,0
+12,1,0,1196,765,1086,712,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1615,727,636,153,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1367,757,337,100,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1202,1185,1057,270,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,1612,330,633,218,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,554,496,409,384,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1196,56,282,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Justicia digital
+12,8,0,554,110,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,9,0,1613,110,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,10,0,1615,573,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,11,0,1202,911,162,21,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,12,14027530,1296,365,306,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Apropiación_TI
+12,13,2756654,1928,365,306,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Memoria_histórica
+12,14,0,1367,657,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Apropiación TI
+12,15,987346,1198,719,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Actividades de apropiación,0,1,1
+12,16,14027494,1534,719,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de inicio actividades de apropiación,37,240,1
+12,17,9571738,1343,793,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Número de capacitaciones mensuales,1,4,1
+12,18,50398670,506,1208,345,231,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"% de la organización que NO ha apropiado TI",Graph
+12,19,2101354,1205,1208,345,231,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"% de la organización que ha apropiado TI",Graph
+12,20,2166886,1905,1208,345,231,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Memoria Histórica,Graph
+12,21,0,1613,158,623,24,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,22,0,1616,617,627,16,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,23,0,1204,957,1045,15,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,24,0,1976,758,182,100,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,25,0,1976,657,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía 
+12,26,1773776,1976,717,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de inversión en difusión,0,1,0.05
+12,27,14093692,1976,801,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"Promedio actividades divulgación y pedagogía/mes",0,65,1
+30,28,Modelo Dinámico de Sistemas - editable0000.bmp,554,496,405,301,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*2. Articulación entre unidades y dependencias
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,50,0
+12,1,0,1202,871,1088,831,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1210,1327,1056,356,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1621,768,638,170,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1620,333,637,234,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,562,517,413,418,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,1202,45,510,27,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Articulación entre unidades y dependencias
+12,7,0,558,97,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,8,0,1618,97,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,9,0,1618,597,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,10,0,1210,968,157,22,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,11,51250640,1300,362,299,191,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Articulación_interna
+12,12,1904180,1944,362,299,191,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Memoria_institucional
+12,13,0,1195,803,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,14,0,1197,678,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Apropiación TI
+12,15,4000298,1193,728,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Actividades de apropiación,0,1,1
+12,16,4197062,1193,796,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de inicio actividades de apropiación,37,240,1
+12,17,4196898,1193,870,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Número de capacitaciones mensuales,1,4,1
+12,18,0,1616,807,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,19,0,1618,678,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Gestión de conocimiento
+12,20,2820748,1617,761,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Gestión de conocimiento,0,1,1
+12,21,14158602,1615,851,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo inicio gestión de conocimiento,37,240,1
+12,22,0,2046,807,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,23,0,2048,678,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Revisión procesos y procedimientos
+12,24,50529742,2044,761,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Frecuencia revisión procesos y procedimientos,1,24,1
+12,25,7735936,2044,851,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Duración de la revisión de procesos y procedimientos,1,12,1
+12,26,14748072,521,1350,341,316,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Buenas prácticas institucionales,Graph
+12,27,6491772,1215,1350,339,315,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Memoria institucional,Graph
+12,28,7867646,1906,1350,338,315,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Articulación interna,Graph
+12,29,0,1209,1011,1034,15,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,30,0,1619,636,613,14,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,31,0,1622,145,621,22,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+30,32,Modelo Dinámico de Sistemas - editable0001.bmp,561,517,409,275,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*3. Articulación y relacionamiento interinstituci
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,60,0
+12,1,0,1400,710,510,175,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1656,750,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,994,741,943,706,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1008,1169,911,256,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,1401,299,511,205,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,490,486,391,394,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1109,38,528,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Articulación y relacionamiento interinstitucional
+12,8,0,508,90,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,9,0,1397,92,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,10,0,1400,534,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,11,0,1008,913,160,23,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,12,0,1157,337,235,164,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Proyectos_con_cooperantes
+12,13,0,1646,337,235,164,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Información_disponible
+12,14,0,1130,753,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,15,0,1132,624,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Apropiación TI
+12,16,0,1128,678,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Actividades de apropiación,0,1,1
+12,17,0,1128,746,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de inicio actividades de apropiación,37,240,1
+12,18,0,1128,820,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Número de capacitaciones mensuales,1,4,1
+12,19,0,1658,621,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Aliados y proyectos
+12,20,0,1659,700,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de fichas de proyectos gestionadas",0,1,0.01
+12,21,0,1662,797,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de aliados con los que se hacen proyectos",0,1,0.01
+12,22,0,406,1197,284,216,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Proyectos con cooperantes,Graph
+12,23,0,1014,1197,284,216,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Convenios de intercambio de información,Graph
+12,24,0,1622,1197,284,216,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Información disponible,Graph
+12,25,0,1016,955,895,17,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,26,0,1404,574,489,15,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,27,0,1397,143,498,27,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+30,28,Modelo Dinámico de Sistemas - editable0002.bmp,490,486,386,269,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*4. Seguimiento al régimen de condicionalidad
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,60,0
+12,1,0,1686,887,185,50,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1059,786,884,743,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1067,1256,855,258,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1480,792,436,181,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,1476,343,432,241,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,620,537,410,435,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1063,46,472,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Seguimiento al régimen de condicionalidad
+12,8,0,619,100,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,9,0,1476,106,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,10,0,1480,612,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,11,0,1067,1004,166,21,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,12,51250636,1476,378,320,195,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Comparecientes_con_información_completa
+12,13,0,1264,823,183,128,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,14,0,1268,693,107,17,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Apropiación TI
+12,15,6098146,1264,758,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Actividades de apropiación,0,1,1
+12,16,4983338,1264,826,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de inicio actividades de apropiación,37,240,1
+12,17,3280998,1264,900,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Número de capacitaciones mensuales,1,4,1
+12,18,4591212,497,1286,273,220,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Comparecientes con información completa,Graph
+12,19,0,1681,744,185,50,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,20,0,1682,693,106,17,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+TOAR 
+12,21,2429132,1681,741,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de TOAR certificados,0,1,0.01
+12,22,51447246,1064,1286,273,220,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+TOAR certificados,Graph
+12,23,4330412,1632,1286,273,220,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+TOAR NO certificados,Graph
+12,24,0,1482,155,419,23,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,25,0,1481,654,423,17,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,26,0,1065,1044,839,15,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,27,3018946,1688,885,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"Promedio actividades divulgación y pedagogía/mes",0,70,1
+12,28,0,1687,836,106,17,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía
+30,29,Modelo Dinámico de Sistemas - editable0003.bmp,620,537,405,364,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*5. Participación de víctimas
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,50,0
+12,1,0,1252,1276,1289,1229,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1250,1198,1264,170,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1518,1226,162,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1158,1226,178,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,2340,1226,151,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,323,1226,315,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1254,1972,1266,581,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,8,0,1776,557,739,446,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,9,0,500,549,519,446,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,10,0,1252,44,342,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Participación de víctimas
+12,11,0,507,109,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,12,0,1776,109,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,13,0,1277,1032,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,14,0,1255,1387,166,21,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,15,51905998,1290,384,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Víctimas_que_participan_judicialmente_al_mes_
+12,16,4789164,2252,783,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Histórico_de_víctimas_restauradas
+12,17,0,338,1123,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Recepción de informes y priorización
+12,18,3608622,172,1182,129,29,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo final de recepción de informes,33,240,1
+12,19,8456832,473,1183,129,29,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de priorización de macrocasos,1,48,1
+12,20,0,809,1226,151,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,21,0,812,1123,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Participación
+12,22,14879498,811,1183,126,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de participación judicial,8.4,210,1
+12,23,14945660,811,1276,126,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de participación extrajudicial,3,240,1
+12,24,0,1933,1226,233,103,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,25,0,1940,1123,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Despliegue territorial
+12,26,10749696,1940,1185,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas que participan judicialmente atendidas por equipo territorial,300,7500,50
+12,27,6753506,1938,1276,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas extrajudiciales atendidas por equipo territorial,600,15000,100
+12,28,0,2340,1123,122,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Proyectos y asistencia técnica
+12,29,5638698,2340,1183,127,23,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de proyectos de asistencia técnica",0,1,0.01
+12,30,3805286,318,1699,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Víctimas que han participado judicialmente ante la JEP,Graph
+12,31,2625746,944,1699,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Víctimas que han participado extrajudicialmente ante la JEP,Graph
+12,32,2953420,1570,1699,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Histórico de víctimas restauradas,Graph
+12,33,2623780,2252,384,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Atención_de_víctimas
+12,34,3543234,1290,783,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Informes_de_víctimas
+12,35,5638854,318,2198,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"Víctimas que participan judicialmente/mes",Graph
+12,36,5115500,944,2198,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"Víctimas que participan extrajudicialmente/mes",Graph
+12,37,51774924,2198,2198,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Víctimas con atención psicojurídica,Graph
+12,38,50595274,1570,2198,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Víctimas con atención psicosocial,Graph
+12,39,1577064,2198,1701,303,239,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Informes procesados,Graph
+12,40,1577138,1771,384,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Víctimas_que_participan_extrajudicialmente_al_mes
+12,41,50595272,1771,783,233,196,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Histórico_de_víctimas_acreditadas
+12,42,0,1771,159,714,25,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,43,0,1265,1434,1245,19,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,44,0,1253,1079,1238,17,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,45,1708144,172,1276,129,29,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Promedio de informes mensuales,0,50,1
+12,46,1577140,473,1276,129,29,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Promedio de víctimas por informes,0,1000,50
+12,47,50791878,2340,1276,127,23,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de aliados con los que se hacen proyectos",0,1,0.01
+12,48,50922946,1158,1226,127,23,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"Promedio actividades divulgación y pedagogía/mes",0,70,1
+12,49,1708146,1518,1226,127,23,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Sanciones propias terminadas,0,1,1
+12,50,0,1171,1123,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía
+12,51,0,1518,1123,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Sanciones propias
+30,52,Modelo Dinámico de Sistemas - editable0004.bmp,500,549,513,309,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*6. Imagen y visibilidad
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,50,0
+12,1,0,752,762,173,91,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1214,748,1046,700,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1220,721,1013,150,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1619,762,193,90,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,1175,762,237,92,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,393,762,173,91,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1219,1165,1016,257,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,8,0,1635,323,598,216,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,9,0,614,321,411,214,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,10,0,1217,51,282,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Imagen y visibilidad
+12,11,0,612,105,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,12,0,1635,102,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,13,0,1218,570,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,14,0,1219,906,162,23,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,15,0,393,670,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía a la sociedad
+12,16,0,1175,670,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Atención de víctimas
+12,17,0,1631,670,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||255-255-255,0,0,0,0,0,0
+Restauración 
+12,18,12454312,395,762,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de inversión en difusión,0,1,0.05
+12,19,1642352,1169,722,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas extrajudiciales atendidas por equipo territorial,1,6000,100
+12,20,4326968,1175,804,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas que participan judicialmente atendidas por equipo territorial,1,3000,100
+12,21,2886986,1616,722,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Sanciones propias terminadas,0,5,1
+12,22,1642124,1616,804,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Promedio de víctimas que participan por sanción propia,10,250,2.4
+12,23,2690296,455,1190,233,213,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"% que reconocen la legitimidad de la JEP",Graph
+12,24,11274402,1469,1190,233,213,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+"% que NO reconocen la legitimidad de la JEP",Graph
+12,25,2035164,1635,353,326,179,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Legitimidad_de_la_JEP
+12,26,0,752,670,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía a víctimas y comparecientes
+12,27,1773224,754,762,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"Promedio actividades divulgación y pedagogía/mes",0,65,1
+12,28,0,2015,762,193,90,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,29,0,2027,670,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||255-255-255,0,0,0,0,0,0
+TOAR
+12,30,5115974,2015,762,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de TOAR Finalizados con efecto positivo,0,1,0.05
+12,31,4067988,962,1190,233,213,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Nuevas personas que reconocen,Graph
+12,32,3672552,1976,1190,233,213,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Nuevas personas que NO reconocen,Graph
+12,33,0,1637,149,592,21,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,34,0,1226,622,1000,19,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,35,0,1216,952,1000,18,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+30,36,Modelo Dinámico de Sistemas - editable0005.bmp,614,328,407,199,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*7. Recursos
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,60,0
+12,1,0,1011,714,970,661,3,131,0,1,-1,3,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1019,1155,942,202,3,131,0,1,-1,2,0,0,160-160-160,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,1433,734,525,176,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,1436,321,526,209,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,487,511,411,399,3,131,0,1,-1,2,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,1011,46,282,25,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|30|B|255-255-255,0,0,0,0,0,0
+Módulo de Recursos
+12,7,0,485,110,149,22,3,135,0,31,-1,0,0,0,92-92-92,92-92-92,|20|B|255-255-255,0,0,0,0,0,0
+Modelo Conceptual
+12,8,0,1436,110,149,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|20|B|255-255-255,0,0,0,0,0,0
+Simulación de variables
+12,9,0,1433,557,149,22,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|20|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,10,0,1019,946,164,22,3,135,0,29,-1,0,0,0,160-160-160,192-192-192,|20|B|255-255-255,0,0,0,0,0,0
+Comparación de escenarios
+12,11,0,1181,352,256,159,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Talento_humano
+12,12,0,1161,777,216,123,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,13,0,1161,645,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Cooperación internacional
+12,14,0,1159,702,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de aliados con los que se hacen proyectos",0,1,0.01
+12,15,0,1159,783,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Personas por proyecto de asistencia técnica,0,100,5
+12,16,0,1157,856,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de proyectos de asistencia técnica",0,1,0.01
+12,17,0,1706,777,216,123,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,18,0,1706,645,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Presupuesto anual
+12,19,0,1699,352,256,159,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Recursos_de_inversión
+12,20,0,1715,777,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Incremento en el presupuesto,0,1,0.1
+12,21,0,323,1182,225,165,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Talento humano contratistas misionales de la JEP,Graph
+12,22,0,787,1182,225,165,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Talento humano por asistencia técnica,Graph
+12,23,0,1251,1182,225,165,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Recursos por proyectos de cooperación internacional,Graph
+12,24,0,1715,1182,225,165,3,188,0,0,2,0,0,0,0,0,0,0,0,0
+Presupuesto anual para inversión de la Secretaría Ejecutiva,Graph
+12,25,0,1432,163,510,23,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,26,0,1020,986,924,13,3,135,0,13,0,0,0,0,128-128-128,192-192-192,|16||128-128-128,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de cada variable en los diferentes escenarios de simulación. 
+12,27,0,1433,600,489,15,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+30,28,Modelo Dinámico de Sistemas - editable0006.bmp,487,511,405,227,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*8. Panel general
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,40,0
+12,1,0,1536,895,1407,835,3,131,0,1,-1,3,0,0,92-92-92,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,2,0,1539,1395,1377,311,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,3,0,893,1303,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,4,0,2159,1303,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,5,0,2310,1575,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,6,0,1538,598,1380,459,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,7,0,1283,1303,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,8,0,503,421,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,9,0,1192,421,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,10,0,1877,420,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,11,0,1532,60,215,39,8,135,0,31,-1,0,0,0,128-128-128,64-64-64,|48|B|255-255-255,0,0,0,0,0,0
+Panel general
+12,12,0,1534,137,183,22,3,135,0,31,-1,0,0,0,0-64-128,0-64-128,|24|B|255-255-255,0,0,0,0,0,0
+Simulación de escenarios
+12,13,0,503,224,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Imagen y visibilidad
+12,14,0,1192,224,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Justicia Digital
+12,15,0,1877,223,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Articulación entre unidades y dependencias
+12,16,0,503,837,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,17,0,1192,837,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,18,0,1877,836,326,195,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,19,0,498,639,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Seguimiento al régimen de condicionalidad
+12,20,0,1192,640,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Participación de Víctimas
+12,21,0,1877,637,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Articulación y relacionamiento interinstitucional
+12,22,0,2561,630,326,409,3,131,0,1,-1,2,0,0,0-64-128,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,23,0,2561,220,275,18,3,135,0,31,-1,2,0,0,0-64-128,255-255-255,|18|B|0-64-128,0,0,0,0,0,0
+Recursos
+12,24,2101348,503,421,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Imagen_y_visibilidad
+12,25,51250626,1192,421,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Justicia_digital
+12,26,4132966,1877,420,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Articulación_entre_unidades_y_dependencias
+12,27,2953426,503,837,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Seguimiento_al_régimen_de_condicionalidad
+12,28,1904826,1192,837,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Participación_de_víctimas
+12,29,5116844,1877,836,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Articulación_y_relacionamiento_interinstitucional
+12,30,5443180,2561,420,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Talento_humano_-_Panel_general_
+12,31,1839208,2561,836,300,178,3,188,0,0,1,0,0,0,0,0,0,0,0,0
+Recursos_de_inversión
+12,32,0,1540,1085,188,24,3,135,0,29,-1,0,0,0,128-192-0,128-192-0,|24|B|255-255-255,0,0,0,0,0,0
+Escenarios
+12,33,0,503,1303,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,34,0,505,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Apropiación TI
+12,35,50857418,501,1231,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Actividades de apropiación,0,1,1
+12,36,1839282,501,1299,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de inicio actividades de apropiación,37,240,1
+12,37,1773748,501,1373,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Número de capacitaciones mensuales,1,4,1
+12,38,0,895,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Recepción de informes y priorización
+12,39,1904752,897,1231,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo final de recepción de informes,33,240,1
+12,40,5835306,899,1373,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de priorización de macrocasos,1,48,1
+12,41,0,1534,1575,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,42,0,1538,1454,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Gestión de conocimiento
+12,43,6950114,1537,1522,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Gestión de conocimiento,0,1,1
+12,44,10946304,1535,1621,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo inicio gestión de conocimiento,37,240,1
+12,45,0,1147,1575,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,46,0,1157,1454,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Revisión procesos y procedimientos
+12,47,15142268,1153,1525,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Frecuencia revisión procesos y procedimientos,1,24,1
+12,48,15076106,1153,1624,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Duración de la revisión de procesos y procedimientos,1,12,1
+12,49,0,1287,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Participación
+12,50,8653440,1280,1253,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de participación judicial,8,210,1
+12,51,3805230,1282,1352,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Tiempo de participación extrajudicial,3,240,1
+12,52,0,1721,1303,233,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,53,0,1713,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Despliegue territorial
+12,54,3936070,1728,1253,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas que participan judicialmente atendidas por equipo territorial,300,7500,50
+12,55,8588542,1730,1352,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Víctimas extrajudiciales atendidas por equipo territorial,600,15000,100
+12,56,0,760,1575,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,57,0,760,1454,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Disponibilidad de Talento Humano
+12,58,2625744,756,1502,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de inversión en SIVJRNR,0,1,0.01
+12,59,13699820,755,1645,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de proyectos de asistencia técnica",0,1,0.01
+12,60,3870576,756,1570,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje para contratar nuevo talento humano,0,1,0.01
+12,61,0,2169,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Aliados y proyectos
+12,62,15076070,2170,1253,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de fichas de proyectos gestionadas",0,1,0.01
+12,63,53020112,2173,1352,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de aliados con los que se hacen proyectos",0,1,0.01
+12,64,0,2549,1303,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,65,0,2551,1177,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Asistencia técnica
+12,66,1708222,2551,1253,159,24,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Personas por proyecto de asistencia técnica,0,100,5
+12,67,11865304,2552,1352,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"% de proyectos de asistencia técnica",0,1,0.01
+12,68,0,1921,1575,185,120,3,131,0,1,-1,2,0,0,128-192-0,0-0-0,|12||0-0-0,0,0,0,0,0,0
+12,69,0,1923,1454,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|16||0-0-0,0,0,0,0,0,0
+Presupuesto anual
+12,70,6228508,1932,1576,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Incremento en el presupuesto,0,1,0.1
+12,71,0,2318,1454,107,22,3,135,0,13,-1,2,0,0,128-192-0,255-255-255,|14||0-0-0,0,0,0,0,0,0
+Divulgación y pedagogía 
+12,72,7278426,2310,1521,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Porcentaje de inversión en difusión,0,1,0.05
+12,73,1969712,2311,1629,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+"Promedio actividades divulgación y pedagogía/mes",0,65,1
+12,74,0,1533,177,1359,15,3,135,0,15,0,0,0,0,0-64-128,0-64-128,|16||255-255-255,0,0,0,0,0,0
+En este sector se muestran las gráficas del comportamiento de las variables del módulo a través del tiempo. Las gráficas corresponden a los resultados de un sólo escenario de simulación. 
+12,75,0,1549,1132,1363,20,3,135,0,13,0,0,0,0,128-192-0,128-192-0,|16||128-128-128,0,0,0,0,0,0
+En este sector se se encuentran los controles para crear escenarios de simulación 
+12,76,2624970,897,1299,159,22,3,252,0,0,0,0,0,0,0,0,0,0,0,0
+Promedio de víctimas por informes,0,1000,50
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*9. Modelo de simulación
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,30,0
+10,1,Memoria institucional,2841,1364,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,2,Buenas prácticas institucionales,3250,1498,50,25,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,3,Articulación interna,2773,1564,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,4,48,2859,1212,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,5,7,1,4,0,0,22,0,0,0,-1--1--1,,1|(2860,1318)|
+1,6,7,4,100,0,0,22,0,0,0,-1--1--1,,1|(2860,1248)|
+11,7,48,2860,1284,6,8,34,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,8,Incremento memoria institucional,2940,1284,74,24,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,9,48,3040,1362,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,10,12,9,4,0,0,22,0,0,0,-1--1--1,,1|(2999,1362)|
+1,11,12,1,100,0,0,22,0,0,0,-1--1--1,,1|(2918,1362)|
+11,12,48,2962,1362,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,13,Disminución memoria institucional,2962,1389,68,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,14,48,2594,1565,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,15,17,3,4,0,0,22,0,0,0,-1--1--1,,1|(2703,1565)|
+1,16,17,14,100,0,0,22,0,0,0,-1--1--1,,1|(2633,1565)|
+11,17,48,2668,1565,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,18,Incremento articulación interna,2668,1592,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,19,48,2951,1563,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,20,22,19,4,0,0,22,0,0,0,-1--1--1,,1|(2912,1563)|
+1,21,22,3,100,0,0,22,0,0,0,-1--1--1,,1|(2842,1563)|
+11,22,48,2877,1563,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,23,Disminución articulación interna,2877,1590,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,24,1,41,1,0,0,0,3,128,0,0-0-255,|12||0-0-0,1|(2817,1410)|
+12,25,48,3411,1495,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,26,28,2,4,0,0,22,0,0,0,-1--1--1,,1|(3325,1495)|
+1,27,28,25,100,0,0,22,0,0,0,-1--1--1,,1|(3382,1495)|
+11,28,48,3357,1495,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,29,Consolidación de buenas prácticas,3357,1522,56,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,30,Buenas prácticas,3153,1677,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,31,3,30,1,0,0,0,0,128,0,-1--1--1,,1|(2837,1643)|
+10,32,Divulgación,2446,1704,37,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,33,1,32,1,0,0,0,0,128,0,-1--1--1,,1|(2657,1384)|
+1,34,32,30,1,0,0,0,0,128,0,-1--1--1,,1|(2661,1813)|
+1,35,30,29,1,0,0,0,0,128,0,-1--1--1,,1|(3252,1648)|
+10,36,Tiempo de pérdida memoria institucional,2973,1458,66,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,37,36,13,1,0,0,0,0,128,0,-1--1--1,,1|(2985,1409)|
+1,38,1,13,1,0,0,0,0,128,0,-1--1--1,,1|(2873,1402)|
+10,39,Espacios de trabajo en equipo,2633,1505,64,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,40,39,17,1,0,0,0,0,128,0,-1--1--1,,1|(2663,1532)|
+10,41,Tiempo de pérdida de articulación,2823,1450,61,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,42,41,22,1,0,0,0,0,128,0,-1--1--1,,1|(2871,1520)|
+1,43,3,22,1,0,0,0,0,128,0,-1--1--1,,1|(2827,1539)|
+10,44,Revisión de procesos y procedimientos,3505,1369,74,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,45,44,28,1,0,0,0,0,128,0,-1--1--1,,1|(3379,1442)|
+1,46,2,70,1,0,0,0,0,128,0,-1--1--1,,1|(3256,1417)|
+12,47,48,3031,1502,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,48,50,47,4,0,0,22,0,0,0,-1--1--1,,1|(3078,1507)|
+1,49,50,2,100,0,0,22,0,0,0,-1--1--1,,1|(3163,1507)|
+11,50,48,3121,1507,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,51,Pérdida de buenas prácticas,3121,1534,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,52,Tiempo de pérdida de buenas prácticas,3120,1439,71,19,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,53,52,50,1,0,0,0,0,128,0,-1--1--1,,1|(3129,1477)|
+10,54,Efecto de los proyectos con cooperantes en la creación de Memoria Institucional,2723,1158,95,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,55,54,7,1,0,0,0,0,128,0,-1--1--1,,1|(2779,1198)|
+10,56,Gestión de conocimiento,3493,1432,43,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,57,56,28,1,0,0,0,0,128,0,-1--1--1,,1|(3420,1451)|
+10,58,Tiempo inicio gestión de conocimiento,3544,1512,67,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,59,58,29,1,0,0,0,0,128,0,-1--1--1,,1|(3447,1504)|
+10,60,Time,3456,1579,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,61,60,29,1,0,0,0,0,128,0,-1--1--1,,1|(3403,1563)|
+10,62,Comunicación interna correo,2497,1440,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,63,Comunicación interna revista,2461,1801,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,64,62,32,1,0,0,0,0,128,0,-1--1--1,,1|(2411,1585)|
+1,65,63,32,1,0,0,0,0,128,0,-1--1--1,,1|(2449,1748)|
+10,66,Incremento por espacio de trabajo en equipo,2589,1660,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,67,66,18,0,0,0,0,0,128,0,-1--1--1,,1|(2622,1630)|
+10,68,Tiempo normal pérdida de articulación,2686,1435,72,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,69,68,41,1,0,0,0,0,128,0,-1--1--1,,1|(2755,1485)|
+10,70,Efecto de las buenas prácticas institucionales en Incremento Memoria,3207,1326,96,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,71,70,8,1,0,0,0,0,128,0,-1--1--1,,1|(3084,1284)|
+10,72,Duración de la revisión de procesos y procedimientos,3509,1243,85,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,73,72,44,1,0,0,0,0,128,0,-1--1--1,,1|(3520,1299)|
+10,74,Frecuencia revisión procesos y procedimientos,3679,1310,61,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,75,74,44,0,0,0,0,0,128,0,-1--1--1,,1|(3596,1337)|
+10,76,Memoria Histórica,3194,932,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,77,48,3020,930,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,78,80,76,4,0,0,22,0,0,0,-1--1--1,,1|(3126,930)|
+1,79,80,77,100,0,0,22,0,0,0,-1--1--1,,1|(3058,930)|
+11,80,48,3092,930,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,81,Construcción de Memoria Histórica,3092,966,60,19,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,82,48,3367,934,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,83,85,82,4,0,0,22,0,0,0,-1--1--1,,1|(3329,934)|
+1,84,85,76,100,0,0,22,0,0,0,-1--1--1,,1|(3261,934)|
+11,85,48,3295,934,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,86,Pérdida de Memoria Histórica,3295,961,60,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,87,"% de la organización que NO ha apropiado TI",3746,634,60,36,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,88,"% de la organización que ha apropiado TI",3402,630,64,37,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,89,91,87,4,0,0,22,0,0,0,-1--1--1,,3|(3667,730)|(3667,729)|(3746,729)|
+1,90,91,88,100,0,0,22,0,0,0,-1--1--1,,1|(3402,730)|
+11,91,4468,3589,730,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,92,Disminución de apropiación TI,3589,757,49,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,93,95,88,4,0,0,22,0,0,0,-1--1--1,,3|(3409,521)|(3409,527)|(3409,560)|
+1,94,95,87,100,0,0,22,0,0,0,-1--1--1,,1|(3746,521)|
+11,95,4424,3595,521,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,96,Apropiación TI,3595,540,49,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,97,87,95,1,0,0,0,0,128,0,-1--1--1,,1|(3673,629)|
+1,98,88,92,1,0,0,0,0,128,0,-1--1--1,,1|(3511,668)|
+10,99,efecto de la memoria institucional en la Memoria Histórica,2925,1106,84,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,100,99,81,1,0,0,0,0,128,0,-1--1--1,,1|(3032,1040)|
+10,101,Promedio de construcción de Memoria Histórica,2940,789,81,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,102,101,80,1,0,0,0,0,128,0,-1--1--1,,1|(3030,850)|
+10,103,Histórico de víctimas restauradas,2708,644,56,26,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,104,48,2499,643,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,105,107,103,4,0,0,22,0,0,0,-1--1--1,,1|(2620,643)|
+1,106,107,104,100,0,0,22,0,0,0,-1--1--1,,1|(2542,643)|
+11,107,48,2582,643,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,108,Nuevas víctimas restauradas,2582,670,52,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,109,efecto de las víctimas restauradas en la Memoria Histórica,3118,716,84,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,110,108,109,1,0,0,0,0,64,0,-1--1--1,,1|(2825,549)|
+1,111,109,80,0,0,0,0,0,64,0,-1--1--1,,1|(3104,828)|
+10,112,tiempo de pérdida de Memoria Histórica,3357,1068,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,113,112,86,1,0,0,0,0,64,0,-1--1--1,,1|(3308,1009)|
+10,114,Tiempo promedio de pérdida de Memoria Histórica,3485,958,67,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,115,114,112,1,0,0,0,0,64,0,-1--1--1,,1|(3464,1014)|
+10,116,Efecto de las actividades de divulgación y pedagogía de víctimas y comparecientes sobre el tiempo de pérdida,3679,927,119,38,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,117,116,112,1,0,0,0,0,64,0,-1--1--1,,1|(3519,1051)|
+10,118,Efecto de las actividades de divulgación y pedagogía a la sociedad sobre el tiempo de pérdida,3625,1132,116,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,119,118,112,1,0,0,0,0,64,0,-1--1--1,,1|(3435,1109)|
+10,120,Actividades de divulgación y pedagogía a víctimas y comparecientes,3912,795,91,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,121,120,116,0,0,0,0,0,64,0,-1--1--1,,1|(3810,853)|
+10,122,Porcentaje de apropiación,3465,309,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,123,Número de capacitaciones mensuales,3505,29,47,28,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,124,Actividades de apropiación,3676,356,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,125,Tiempo de inicio actividades de apropiación,3798,366,53,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,126,Time,3336,433,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,127,126,95,1,0,0,0,0,64,0,-1--1--1,,1|(3457,489)|
+1,128,124,95,0,0,0,0,0,64,0,-1--1--1,,1|(3635,440)|
+1,129,125,95,1,0,0,0,0,64,0,-1--1--1,,1|(3713,468)|
+10,130,Porcentaje de pérdida de TI,3646,848,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,131,7,99,1,0,0,0,0,64,0,-1--1--1,,1|(2922,1220)|
+1,132,76,85,1,0,0,0,0,64,0,-1--1--1,,1|(3259,895)|
+10,133,efecto de la apropiación TI en la articulación interna,2773,1727,85,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,134,88,133,1,0,0,0,0,64,0,-1--1--1,,1|(2825,1716)|
+1,135,133,18,0,0,0,0,0,64,0,-1--1--1,,1|(2724,1664)|
+10,136,"Víctimas que participan judicialmente/mes",2071,675,64,28,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,137,"Víctimas que participan extrajudicialmente/mes",2012,1381,89,38,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,138,48,1843,676,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,139,141,136,4,0,0,22,0,0,0,-1--1--1,,1|(1972,676)|
+1,140,141,138,100,0,0,22,0,0,0,-1--1--1,,1|(1889,676)|
+11,141,48,1930,676,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,142,Nuevas víctimas que participan judicialmente,1930,712,59,28,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,143,48,2289,674,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,144,146,143,4,0,0,22,0,0,0,-1--1--1,,1|(2242,674)|
+1,145,146,136,100,0,0,22,0,0,0,-1--1--1,,1|(2164,674)|
+11,146,48,2199,674,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,147,Víctimas que terminan participación judicial,2199,712,64,30,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,148,48,2275,1381,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,149,151,148,4,0,0,22,0,0,0,-1--1--1,,1|(2231,1377)|
+1,150,151,137,100,0,0,22,0,0,0,-1--1--1,,1|(2143,1377)|
+11,151,48,2190,1377,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,152,Víctimas que terminan participación extrajudicial,2190,1413,73,28,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,153,Víctimas acreditadas,1761,795,54,29,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,154,48,1501,800,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,155,157,153,4,0,0,22,0,0,0,-1--1--1,,1|(1662,800)|
+1,156,157,154,100,0,0,22,0,0,0,-1--1--1,,1|(1558,800)|
+11,157,48,1611,800,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,158,Nuevas víctimas acreditadas,1611,827,52,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,159,Informes de víctimas,1289,1173,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,160,48,1155,1177,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,161,163,159,4,0,0,22,0,0,0,-1--1--1,,1|(1231,1177)|
+1,162,163,160,100,0,0,22,0,0,0,-1--1--1,,1|(1183,1177)|
+11,163,48,1207,1177,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,164,Nuevos informes,1207,1202,40,17,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,165,48,1449,1177,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,166,168,165,4,0,0,22,0,0,0,-1--1--1,,1|(1415,1177)|
+1,167,168,159,100,0,0,22,0,0,0,-1--1--1,,1|(1354,1177)|
+11,168,48,1384,1177,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,169,Informes procesados,1384,1204,37,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,170,48,1971,1603,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,171,173,137,4,0,0,22,0,0,0,-1--1--1,,1|(1971,1459)|
+1,172,173,170,100,0,0,22,0,0,0,-1--1--1,,1|(1971,1553)|
+11,173,48,1971,1506,8,6,33,3,0,0,2,0,0,0,0,0,0,0,0,0
+10,174,Nuevas víctimas que participan extrajudicialmente,1897,1506,66,28,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,175,173,152,1,0,0,0,0,64,0,-1--1--1,,1|(2086,1521)|
+10,176,Tiempo de priorización de macrocasos,1402,1070,73,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,177,176,168,1,0,0,0,0,64,0,-1--1--1,,1|(1399,1119)|
+1,178,168,158,1,0,0,0,0,64,0,-1--1--1,,1|(1514,1048)|
+10,179,Promedio de víctimas por informes,1590,694,69,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,180,157,141,1,0,0,0,0,64,0,-1--1--1,,1|(1710,644)|
+10,181,Tiempo de participación judicial,2340,566,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,182,orden de la demora extrajudicial,2089,1295,62,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,183,182,151,1,0,0,0,0,64,1,-1--1--1,,1|(2122,1363)|
+10,184,Tiempo de participación extrajudicial,2327,1476,77,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,185,184,152,0,0,0,0,0,64,0,-1--1--1,,1|(2274,1451)|
+10,186,Sanciones propias terminadas,2398,267,58,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,187,Promedio de víctimas que participan por sanción propia,2482,345,82,28,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,188,Víctimas restauradas por finalización de sanciones propias,2633,483,79,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,189,186,188,1,0,0,0,0,64,0,-1--1--1,,1|(2420,418)|
+1,190,187,188,1,0,0,0,0,64,0,-1--1--1,,1|(2494,411)|
+1,191,188,107,1,0,0,0,0,64,0,-1--1--1,,1|(2593,555)|
+1,192,147,108,1,0,0,0,0,64,0,-1--1--1,,1|(2445,795)|
+1,193,151,108,1,0,0,0,0,64,0,-1--1--1,,1|(2439,1033)|
+10,194,Víctimas que requieren acompañamiento psicojurídico,1948,967,73,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,195,Víctimas que requieren acompañamiento psicosocial,2186,984,73,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,196,136,194,1,0,0,0,0,64,0,-1--1--1,,1|(1962,913)|
+1,197,136,195,1,0,0,0,0,64,0,-1--1--1,,1|(2138,739)|
+10,198,"Porcentaje que requiere acomp. psicojurídico",1825,954,66,28,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,199,198,194,1,0,0,0,0,64,0,-1--1--1,,1|(1852,930)|
+10,200,"Porcentaje de víctimas judiciales requiere acomp. psicosocial",2309,841,83,28,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,201,200,195,1,0,0,0,0,64,0,-1--1--1,,1|(2232,962)|
+10,202,Víctimas con atención psicojurídica,1885,1128,70,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,203,194,202,1,0,0,0,0,64,0,-1--1--1,,1|(1909,1025)|
+10,204,Víctimas con atención psicosocial,2124,1090,64,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,205,195,204,1,0,0,0,0,64,0,-1--1--1,,1|(2176,1038)|
+10,206,Víctimas extrajudiciales atendidas por equipo territorial,2433,1359,74,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,207,206,173,1,0,0,0,0,64,0,-1--1--1,,1|(2185,1596)|
+1,208,206,204,1,0,0,0,0,64,0,-1--1--1,,1|(2493,1137)|
+10,209,Personas que NO reconocen la legitimidad de la JEP,1788,140,73,31,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,210,Personas que reconocen la legitimidad de la JEP,1481,145,90,28,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,211,213,210,4,0,0,22,0,0,0,-1--1--1,,3|(1786,15)|(1786,14)|(1481,14)|
+1,212,213,209,100,0,0,22,0,0,0,-1--1--1,,1|(1788,15)|
+11,213,2444,1639,15,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,214,Nuevas personas que reconocen,1639,34,55,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,215,217,209,4,0,0,22,0,0,0,-1--1--1,,3|(1483,296)|(1483,295)|(1788,295)|
+1,216,217,210,100,0,0,22,0,0,0,-1--1--1,,1|(1481,296)|
+11,217,2488,1627,296,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,218,Nuevas personas que NO reconocen,1627,315,69,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,219,209,214,1,0,0,0,0,64,0,-1--1--1,,1|(1725,69)|
+1,220,210,217,1,0,0,0,0,64,0,-1--1--1,,1|(1602,243)|
+10,221,Efecto de la legitimidad en la participación extrajudicial,1550,1445,68,38,8,131,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,222,210,221,1,0,0,0,0,64,0,-1--1--1,,1|(1013,1085)|
+1,223,221,174,1,0,0,0,0,64,0,-1--1--1,,1|(1692,1505)|
+10,224,Efecto de la legitimidad en la presentación de informes,1005,1360,81,51,8,131,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,225,210,224,1,0,0,0,0,64,0,-1--1--1,,1|(876,1052)|
+10,226,Informes de víctimas presentados,1487,1317,66,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,227,Promedio de informes presentados,1486,1236,55,28,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,228,227,226,1,0,0,0,0,64,0,-1--1--1,,1|(1484,1275)|
+1,229,224,226,1,0,0,0,0,64,0,-1--1--1,,1|(1417,1336)|
+10,230,Efecto de las actividades de divulgación y pedagogía en la presentación de informes,1297,1581,93,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,231,230,226,0,0,0,0,0,64,0,-1--1--1,,1|(1392,1450)|
+1,232,120,230,1,0,0,0,0,64,0,-1--1--1,,1|(2080,2259)|
+10,233,Time,1110,1116,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+10,234,"% que empiezan a rechazar la legitimidad de la JEP",1549,574,80,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,235,234,218,1,0,0,0,0,64,0,-1--1--1,,1|(1599,507)|
+10,236,"% que empieza a aceptar la legitimidad de la JEP",1664,-132,80,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,237,236,213,1,0,0,0,0,64,0,-1--1--1,,1|(1684,-56)|
+10,238,Talento humano contratistas misionales de la JEP,2406,1970,56,40,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,239,48,2170,1947,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,240,242,238,4,0,0,22,0,0,0,-1--1--1,,1|(2310,1947)|
+1,241,242,239,100,0,0,22,0,0,0,-1--1--1,,1|(2220,1947)|
+11,242,48,2265,1947,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,243,Nuevo talento humano contratistas misionales de la JEP,2265,1997,59,42,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,244,48,2599,1946,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,245,247,244,4,0,0,22,0,0,0,-1--1--1,,1|(2563,1946)|
+1,246,247,238,100,0,0,22,0,0,0,-1--1--1,,1|(2493,1946)|
+11,247,48,2531,1946,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,248,Disolución talento humano contratistas misionales de la JEP,2531,1992,74,38,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,249,Requerimientos de equipos territoriales,1883,1770,62,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,250,Víctimas que participan judicialmente atendidas por equipo territorial,1730,1693,86,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,251,206,249,1,0,0,0,0,64,0,-1--1--1,,1|(2248,1666)|
+1,252,250,249,1,0,0,0,0,64,0,-1--1--1,,1|(1800,1740)|
+10,253,Tiempo de disolución de equipos,2622,2064,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,254,253,248,1,0,0,0,0,64,0,-1--1--1,,1|(2536,1979)|
+10,255,Efecto de legitimidad en las víctimas restauradas,2233,190,76,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,256,210,255,1,0,0,0,0,64,0,-1--1--1,,1|(1993,105)|
+1,257,255,107,1,0,0,0,0,64,0,-1--1--1,,1|(2457,559)|
+1,258,226,164,1,0,0,0,0,64,0,-1--1--1,,1|(1300,1285)|
+10,259,Informes que llegan a través de la justicia ordinaria,1235,1082,68,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,260,259,163,1,0,0,0,0,64,0,-1--1--1,,1|(1219,1134)|
+1,261,233,163,1,0,0,0,0,64,0,-1--1--1,,1|(1156,1157)|
+1,262,179,157,1,0,0,0,0,64,0,-1--1--1,,1|(1593,714)|
+1,263,137,249,1,0,0,0,0,64,0,-1--1--1,,1|(2027,1630)|
+1,264,136,249,1,0,0,0,0,64,0,-1--1--1,,1|(1740,1607)|
+1,265,136,202,1,0,0,0,0,64,0,-1--1--1,,1|(2041,994)|
+10,266,orden de la demora,2365,738,36,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,267,Efecto de la proporción de apropiación TI en la Memoria Histórica,3238,810,95,28,8,3,0,3,0,0,0,0,128-0-128,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,268,88,267,0,0,0,0,0,64,0,-1--1--1,,1|(3320,720)|
+1,269,267,80,1,0,0,0,0,64,0,-1--1--1,,1|(3188,849)|
+10,270,Comparecientes en proceso de registro,2926,-141,68,45,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,271,Comparecientes con información completa,3217,-140,67,38,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,272,274,271,4,0,0,22,0,0,0,-1--1--1,,1|(3114,-140)|
+1,273,274,270,100,0,0,22,0,0,0,-1--1--1,,1|(3030,-140)|
+11,274,5986,3072,-140,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,275,Nuevos comparecientes con información completa,3072,-96,61,36,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,276,48,2674,-143,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,277,279,270,4,0,0,22,0,0,0,-1--1--1,,1|(2817,-143)|
+1,278,279,276,100,0,0,22,0,0,0,-1--1--1,,1|(2724,-143)|
+11,279,48,2771,-143,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,280,Nuevos comparecientes,2771,-116,50,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,281,Efecto de la apropiación TI en la capacidad de evacuación,3282,-53,87,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,282,Capacidad de registro de información,2964,20,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,283,Capacidad promedio de registro,2750,-25,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,284,TOAR en procesamiento,2891,188,62,31,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,285,TOAR en ejecución,3039,445,46,32,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,286,48,2695,207,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,287,289,284,4,0,0,22,0,0,0,-1--1--1,,1|(2801,207)|
+1,288,289,286,100,0,0,22,0,0,0,-1--1--1,,1|(2733,207)|
+11,289,48,2767,207,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,290,Nuevos TOAR en procesamiento,2767,251,59,19,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,291,TOAR para revisión,2964,354,39,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,292,Tiempo de ejecución TOAR,3031,553,55,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,293,Promedio de nuevos TOAR,3153,370,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,294,291,290,1,0,0,0,0,64,0,-1--1--1,,1|(2855,344)|
+10,295,Porcentaje de TOAR revisados por la Secretaría Ejecutiva,2714,364,85,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,296,295,291,1,0,0,0,0,64,0,-1--1--1,,1|(2839,377)|
+1,297,283,282,1,0,0,0,0,64,0,-1--1--1,,1|(2838,-28)|
+1,298,282,275,0,0,0,0,0,64,0,-1--1--1,,1|(3004,-24)|
+10,299,Comparecientes provenientes de salas y secciones,2652,-231,73,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,300,299,279,1,0,0,0,0,64,0,-1--1--1,,1|(2743,-220)|
+1,301,281,282,1,0,0,0,0,64,0,-1--1--1,,1|(3182,-79)|
+10,302,Capacidad de certificación TOAR,3050,104,62,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,303,88,281,1,0,0,0,0,64,0,-1--1--1,,1|(3239,140)|
+1,304,281,302,0,0,0,0,0,64,0,-1--1--1,,1|(3165,26)|
+10,305,Capacidad de certificación promedio,2799,86,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,306,305,302,1,0,0,0,0,64,0,-1--1--1,,1|(2924,81)|
+12,307,48,3213,443,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,308,310,285,4,0,0,22,0,0,0,-1--1--1,,1|(3111,443)|
+1,309,310,307,100,0,0,22,0,0,0,-1--1--1,,1|(3176,443)|
+11,310,48,3144,443,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,311,Nuevos TOAR,3144,470,45,19,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+12,312,48,2838,443,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,313,315,312,4,0,0,22,0,0,0,-1--1--1,,1|(2881,443)|
+1,314,315,285,100,0,0,22,0,0,0,-1--1--1,,1|(2959,443)|
+11,315,48,2920,443,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,316,TOAR finalizados,2920,468,41,17,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,317,292,316,1,0,0,0,0,64,0,-1--1--1,,1|(2945,535)|
+1,318,285,316,1,0,0,0,0,64,0,-1--1--1,,1|(2979,488)|
+1,319,293,310,1,0,0,0,0,64,0,-1--1--1,,1|(3146,411)|
+1,320,315,291,1,0,0,0,0,64,0,-1--1--1,,1|(2974,388)|
+10,321,Efecto de las actividades de divulgación y pedagogía en los TOAR,3214,553,89,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,322,120,321,1,0,0,0,0,64,0,-1--1--1,,1|(3668,216)|
+1,323,321,311,0,0,0,0,0,64,0,-1--1--1,,1|(3179,513)|
+1,324,122,95,0,0,0,0,0,64,0,-1--1--1,,1|(3529,417)|
+1,325,130,92,0,0,0,0,0,64,0,-1--1--1,,1|(3621,809)|
+1,326,181,146,1,0,0,0,0,64,0,-1--1--1,,1|(2280,633)|
+10,327,Recursos de inversión,1154,2247,103,34,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,328,48,791,2261,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,329,331,327,4,0,0,22,0,0,0,-1--1--1,,1|(965,2261)|
+1,330,331,328,100,0,0,22,0,0,0,-1--1--1,,1|(834,2261)|
+11,331,48,873,2261,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,332,Nuevos recursos,873,2280,53,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,333,48,1069,2496,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,334,336,333,4,0,0,22,0,0,0,-1--1--1,,1|(1069,2442)|
+1,335,336,327,100,0,0,22,0,0,0,-1--1--1,,1|(1069,2331)|
+11,336,48,1069,2389,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,337,"Inversión en difusión de estructura, funciones y logros de la JEP",1069,2425,92,28,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,338,48,1513,2251,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,339,341,338,4,0,0,22,0,0,0,-1--1--1,,1|(1445,2251)|
+1,340,341,327,100,0,0,22,0,0,0,-1--1--1,,1|(1316,2251)|
+11,341,48,1380,2251,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,342,Inversión en SIVJRNR,1380,2278,39,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,343,48,1316,2120,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,344,346,343,4,0,0,22,0,0,0,-1--1--1,,3|(1299,2121)|(1299,2121)|(1303,2121)|
+1,345,346,327,100,0,0,22,0,0,0,-1--1--1,,1|(1227,2171)|
+11,346,48,1227,2121,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,347,Otras inversiones,1227,2095,38,18,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,348,Talento humano por asistencia técnica,1162,1849,62,26,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,349,48,949,1843,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,350,352,348,4,0,0,22,0,0,0,-1--1--1,,1|(1070,1849)|
+1,351,352,349,100,0,0,22,0,0,0,-1--1--1,,1|(994,1849)|
+11,352,48,1034,1849,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,353,Aumento talento humano asistencia técnica,1034,1885,57,28,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,354,48,1369,1846,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,355,357,354,4,0,0,22,0,0,0,-1--1--1,,1|(1329,1848)|
+1,356,357,348,100,0,0,22,0,0,0,-1--1--1,,1|(1256,1848)|
+11,357,48,1293,1848,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,358,Disminución talento humano asistencia técnica,1293,1886,81,19,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,359,Recursos para contratar nuevo talento humano,1475,2167,77,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,360,Porcentaje para contratar nuevo talento humano,1389,2073,81,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,361,360,359,1,0,0,0,0,64,0,-1--1--1,,1|(1455,2124)|
+1,362,341,359,0,0,0,0,0,64,0,-1--1--1,,1|(1414,2221)|
+10,363,Capacidad de inversión en talento humano,1616,2085,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,364,Brecha talento humano,1654,1934,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,365,249,364,1,0,0,0,0,64,0,-1--1--1,,1|(1720,1847)|
+1,366,238,364,1,0,0,0,0,64,0,-1--1--1,,1|(1818,1964)|
+1,367,348,364,1,0,0,0,0,64,0,-1--1--1,,1|(1390,1973)|
+1,368,364,363,1,0,0,0,0,64,0,-1--1--1,,1|(1636,2052)|
+1,369,359,363,1,0,0,0,0,64,0,-1--1--1,,1|(1590,2135)|
+1,370,363,242,1,0,0,0,0,64,0,-1--1--1,,1|(2009,2070)|
+10,371,Inversión por talento humano,1851,2327,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,372,238,371,0,0,0,0,0,64,0,-1--1--1,,1|(2122,2153)|
+10,373,TH en SAAD a defensa a comparecientes,2162,2215,77,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,374,TH SAAD representación victimas,2282,2353,74,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,375,TH Departamento de Enfoques Diferenciales,2489,2346,72,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,376,TH Departamento de Gestión Territorial,2654,2349,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,377,TH Departamento de Atención al Ciudadano,2801,2259,73,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,378,TH Departamento de Atención a Víctimas,2854,2109,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,379,Porcentaje de TH destinado a SAAD defensa a comparecientes,2071,2375,90,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,380,Porcentaje de TH destinado a SAAD representación víctimas,2278,2481,90,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,381,Porcentaje de TH destinado a SAAD Departamento de Enfoques Diferenciales,2528,2453,95,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,382,Porcentaje de TH destinado a Departamento de Gestión Territorial,2708,2429,95,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,383,Porcentaje de TH destinado a Departamento de Atención al Ciudadano,2966,2315,95,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,384,Porcentaje de TH destinado al Departamento de Atención a Víctimas,3081,2150,97,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,385,379,373,0,0,0,0,0,64,0,-1--1--1,,1|(2116,2296)|
+1,386,380,374,0,0,0,0,0,64,0,-1--1--1,,1|(2279,2419)|
+1,387,381,375,0,0,0,0,0,64,0,-1--1--1,,1|(2508,2402)|
+1,388,382,376,0,0,0,0,0,64,0,-1--1--1,,1|(2682,2390)|
+1,389,383,377,0,0,0,0,0,64,0,-1--1--1,,1|(2876,2284)|
+1,390,384,378,0,0,0,0,0,64,0,-1--1--1,,1|(2959,2128)|
+10,391,Presupuesto anual para inversión de la Secretaría Ejecutiva,716,2064,80,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,392,391,331,1,0,0,0,0,64,0,-1--1--1,,1|(905,2117)|
+10,393,Promedio de personas por equipo territorial,1876,1303,72,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,394,393,174,0,0,0,0,0,64,0,-1--1--1,,1|(1886,1393)|
+10,395,Nuevo talento humano total disponible,1850,1862,72,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,396,352,395,1,0,0,0,0,64,0,-1--1--1,,1|(1687,1778)|
+1,397,242,395,1,0,0,0,0,64,0,-1--1--1,,1|(1977,1853)|
+1,398,395,174,1,0,0,0,0,64,0,-1--1--1,,1|(1989,1744)|
+10,399,Aliados internacionales,259,1447,58,27,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,400,48,37,1449,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,401,403,399,4,0,0,22,0,0,0,-1--1--1,,1|(166,1449)|
+1,402,403,400,100,0,0,22,0,0,0,-1--1--1,,1|(83,1449)|
+11,403,48,124,1449,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,404,Nuevos aliados,124,1468,49,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,405,48,470,1447,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,406,408,405,4,0,0,22,0,0,0,-1--1--1,,1|(427,1447)|
+1,407,408,399,100,0,0,22,0,0,0,-1--1--1,,1|(350,1447)|
+11,408,48,388,1447,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,409,Fin de alianzas,388,1466,46,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,410,Fichas de proyecto,23,1566,31,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,411,410,404,1,0,0,0,0,64,0,-1--1--1,,1|(36,1505)|
+10,412,"% de fichas de proyectos gestionadas",229,1555,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,413,412,404,0,0,0,0,0,64,0,-1--1--1,,1|(178,1511)|
+10,414,Tiempo promedio de finalización de alianzas,418,1356,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,415,414,408,1,0,0,0,0,64,0,-1--1--1,,1|(432,1409)|
+1,416,399,408,1,0,0,0,0,64,0,-1--1--1,,1|(335,1408)|
+10,417,Proyectos con cooperantes,567,1686,66,27,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,418,48,342,1694,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,419,421,417,4,0,0,22,0,0,0,-1--1--1,,1|(464,1699)|
+1,420,421,418,100,0,0,22,0,0,0,-1--1--1,,1|(383,1699)|
+11,421,48,420,1699,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,422,"Nuevos proyectos.",420,1718,60,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,423,48,789,1685,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,424,426,423,4,0,0,22,0,0,0,-1--1--1,,1|(746,1685)|
+1,425,426,417,100,0,0,22,0,0,0,-1--1--1,,1|(667,1685)|
+11,426,48,706,1685,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,427,Fin de proyectos,706,1704,53,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,428,Proyectos por aliados internacionales,205,1787,70,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,429,404,428,1,0,0,0,0,64,0,-1--1--1,,1|(107,1672)|
+1,430,428,422,0,0,0,0,0,64,0,-1--1--1,,1|(319,1750)|
+10,431,"% de aliados con los que se hacen proyectos",170,1896,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,432,431,428,0,0,0,0,0,64,0,-1--1--1,,1|(186,1848)|
+10,433,"% proyectos que dan recursos financieros",558,2025,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,434,Recursos por proyectos de cooperación internacional,381,1958,77,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,435,422,434,1,0,0,0,0,64,0,-1--1--1,,1|(349,1882)|
+1,436,433,434,0,0,0,0,0,64,0,-1--1--1,,1|(489,1998)|
+1,437,434,331,1,0,0,0,0,64,0,-1--1--1,,1|(557,2121)|
+10,438,Tiempo de finalización de proyectos,859,1567,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,439,438,426,1,0,0,0,0,64,0,-1--1--1,,1|(774,1593)|
+1,440,417,426,1,0,0,0,0,64,0,-1--1--1,,1|(651,1655)|
+10,441,"% de proyectos de asistencia técnica",771,1764,61,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,442,441,433,1,0,0,0,0,64,0,-1--1--1,,1|(630,1867)|
+10,443,Proyectos de asistencia técnica,803,1872,55,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,444,422,443,1,0,0,0,0,64,0,-1--1--1,,1|(506,1888)|
+1,445,441,443,0,0,0,0,0,64,0,-1--1--1,,1|(785,1811)|
+10,446,Personas por proyecto de asistencia técnica,1038,1646,73,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,447,Talento humano por proyectos de asistencia técnica,997,1748,74,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,448,443,447,0,0,0,0,0,64,0,-1--1--1,,1|(888,1818)|
+1,449,446,447,0,0,0,0,0,64,0,-1--1--1,,1|(1023,1686)|
+1,450,447,352,0,0,0,0,0,64,0,-1--1--1,,1|(1018,1802)|
+12,451,48,560,1838,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,452,454,417,4,0,0,22,0,0,0,-1--1--1,,1|(563,1743)|
+1,453,454,451,100,0,0,22,0,0,0,-1--1--1,,1|(563,1807)|
+11,454,48,563,1779,8,6,33,3,0,0,2,0,0,0,0,0,0,0,0,0
+10,455,Nuevos proyectos por la JEP,496,1779,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,456,Efecto de la articulación interna en los nuevos aliados internacioanales,706,1292,90,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,457,456,403,1,0,0,0,0,64,0,-1--1--1,,1|(375,1276)|
+1,458,3,456,1,0,0,0,0,64,0,-1--1--1,,1|(1562,983)|
+10,459,Fichas de proyecto promedio,-77,1650,61,19,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,460,459,410,0,0,0,0,0,64,0,-1--1--1,,1|(-32,1612)|
+1,461,417,54,1,0,0,0,0,64,0,-1--1--1,,1|(1247,1035)|
+10,462,Convenios de intercambio de información,238,1125,66,34,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,463,48,-22,1122,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,464,466,462,4,0,0,22,0,0,0,-1--1--1,,1|(130,1117)|
+1,465,466,463,100,0,0,22,0,0,0,-1--1--1,,1|(32,1117)|
+11,466,48,82,1117,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,467,Nuevos convenios,82,1136,58,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,468,48,435,1129,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,469,471,468,4,0,0,22,0,0,0,-1--1--1,,1|(398,1129)|
+1,470,471,462,100,0,0,22,0,0,0,-1--1--1,,1|(331,1129)|
+11,471,48,364,1129,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,472,Fin de convenios,364,1148,53,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,473,Tiempo de finalización convenios,389,1013,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,474,462,471,1,0,0,0,0,64,0,-1--1--1,,1|(318,1084)|
+1,475,473,471,1,0,0,0,0,64,0,-1--1--1,,1|(403,1073)|
+10,476,Información disponible,234,843,65,35,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,477,48,7,852,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,478,480,476,4,0,0,22,0,0,0,-1--1--1,,1|(134,852)|
+1,479,480,477,100,0,0,22,0,0,0,-1--1--1,,1|(52,852)|
+11,480,48,93,852,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,481,Nueva información,93,871,59,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,482,48,437,844,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,483,485,482,4,0,0,22,0,0,0,-1--1--1,,1|(398,844)|
+1,484,485,476,100,0,0,22,0,0,0,-1--1--1,,1|(328,844)|
+11,485,48,363,844,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,486,Olvido de información,363,871,37,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,487,Tiempo de desactualización de la información,377,721,69,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,488,487,485,1,0,0,0,0,64,0,-1--1--1,,1|(383,759)|
+10,489,Efecto de la apropiación TI en la información disponible,665,634,88,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,490,88,489,1,0,0,0,0,64,0,-1--1--1,,1|(1753,1036)|
+1,491,489,480,1,0,0,0,0,64,0,-1--1--1,,1|(240,687)|
+10,492,Efecto de los convenios en la información disponible,91,950,85,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,493,492,481,0,0,0,0,0,64,0,-1--1--1,,1|(92,914)|
+10,494,Efecto de la legitimidad de la JEP en los convenios,155,1244,84,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,495,210,494,1,0,0,0,0,64,0,-1--1--1,,1|(568,1192)|
+1,496,494,467,0,0,0,0,0,64,0,-1--1--1,,1|(121,1191)|
+10,497,Total de instituciones para hacer convenios,-137,889,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,498,Brecha de instituciones por realizar convenios,-88,1037,73,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,499,497,498,1,0,0,0,0,64,0,-1--1--1,,1|(-111,994)|
+1,500,462,498,1,0,0,0,0,64,0,-1--1--1,,1|(78,1037)|
+1,501,498,466,1,0,0,0,0,64,0,-1--1--1,,1|(1,1095)|
+10,502,Efecto positivo de las actividades de divulgación y pedagogía a la sociedad en el reconocimiento de la legitimidad,2327,-73,119,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,503,Efecto de las víctimas restauradas en el reconocimiento de la legitimidad,2091,-428,102,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,504,Efecto de los proyectos con cooperantes en el reconocimiento de la legitmidad,1025,-259,100,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,505,Efecto de la Memoria Histórica en el reconocimiento de la legitimidad,1671,-485,96,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,506,Efecto de la Memoria Institucional en el reconocimiento de la legitimidad,2336,107,102,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,507,Efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes en la legitimidad,2273,-229,115,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,508,Efecto de las víctimas que participan judicialmente en el reconocimiento de la legitimidad,1128,152,80,37,8,131,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,509,Efecto de las victimas que participan extrajudicialmente en el reconocimiento de la legitimidad,1002,-31,107,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,510,Efecto positivo de los TOAR finalizados en el reconocimiento de la legitimidad,1354,-385,100,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,511,Peso del efecto de las víctimas restauradas,1912,-405,70,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,512,Peso del efecto de las actividades de divulgación y pedagogía a víctimas y comparecientes,2240,-324,107,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,513,Peso de las actividades de divulgación y pedagogía a la sociedad,2284,-155,89,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,514,Peso del efecto de la Memoria Institucional,2354,11,69,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,515,Peso del efecto de la Memoria Histórica,1853,-499,67,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,516,Peso del efecto positivo de los TOAR finalizados,1488,-458,78,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,517,Peso del efecto de los proyectos con cooperantes,1046,-343,86,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,518,Peso del efecto de las víctimas que participan judicialmente,830,101,72,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,519,Peso del efecto de las víctimas que participan extrajudicialmente,955,-146,72,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,520,Efecto ponderado de las víctimas que participan judicialmente,1144,45,78,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,521,518,520,0,0,0,0,0,64,0,-1--1--1,,1|(978,76)|
+1,522,508,520,1,0,0,0,0,64,0,-1--1--1,,1|(1140,120)|
+10,523,Efecto ponderado de las víctimas que participan extrajudicialmente,1190,-91,78,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,524,Efecto ponderado de los proyectos con cooperantes,1273,-239,86,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,525,Efecto positivo ponderado de los TOAR finalizados,1532,-302,84,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,526,Efecto ponderado de la Memoria Histórica,1712,-308,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,527,Efecto ponderado de las víctimas restauradas,1920,-275,78,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,528,Efecto ponderado de las actividades de divulgación y pedagogía a víctimas y comparecientes,2037,-210,89,38,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,529,Efecto ponderado de las actividades de divulgación y pedagogía a la sociedad,2101,-49,89,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,530,Efecto ponderado de la Memoria Institucional,2135,69,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,531,509,523,0,0,0,0,0,64,0,-1--1--1,,1|(1094,-60)|
+1,532,519,523,0,0,0,0,0,64,0,-1--1--1,,1|(1063,-121)|
+1,533,517,524,0,0,0,0,0,64,0,-1--1--1,,1|(1154,-293)|
+1,534,504,524,0,0,0,0,0,64,0,-1--1--1,,1|(1150,-248)|
+1,535,510,525,0,0,0,0,0,64,0,-1--1--1,,1|(1447,-342)|
+1,536,516,525,0,0,0,0,0,64,0,-1--1--1,,1|(1509,-386)|
+1,537,505,526,0,0,0,0,0,64,0,-1--1--1,,1|(1691,-398)|
+1,538,515,526,0,0,0,0,0,64,0,-1--1--1,,1|(1788,-409)|
+1,539,511,527,0,0,0,0,0,64,0,-1--1--1,,1|(1916,-346)|
+1,540,503,527,0,0,0,0,0,64,0,-1--1--1,,1|(2007,-352)|
+1,541,512,528,0,0,0,0,0,64,0,-1--1--1,,1|(2155,-275)|
+1,542,507,528,0,0,0,0,0,64,0,-1--1--1,,1|(2149,-219)|
+1,543,513,529,0,0,0,0,0,64,0,-1--1--1,,1|(2200,-105)|
+1,544,502,529,0,0,0,0,0,64,0,-1--1--1,,1|(2206,-60)|
+1,545,514,530,0,0,0,0,0,64,0,-1--1--1,,1|(2253,38)|
+1,546,506,530,0,0,0,0,0,64,0,-1--1--1,,1|(2229,88)|
+1,547,520,236,1,0,0,0,0,64,0,-1--1--1,,1|(1318,-100)|
+1,548,523,236,1,0,0,0,0,64,0,-1--1--1,,1|(1402,-158)|
+1,549,524,236,0,0,0,0,0,64,0,-1--1--1,,1|(1462,-187)|
+1,550,525,236,0,0,0,0,0,64,0,-1--1--1,,1|(1594,-222)|
+1,551,526,236,0,0,0,0,0,64,0,-1--1--1,,1|(1691,-226)|
+1,552,527,236,0,0,0,0,0,64,0,-1--1--1,,1|(1799,-206)|
+1,553,528,236,0,0,0,0,0,64,0,-1--1--1,,1|(1853,-171)|
+1,554,529,236,1,0,0,0,0,64,0,-1--1--1,,1|(1909,-120)|
+1,555,530,236,1,0,0,0,0,64,0,-1--1--1,,1|(1947,-57)|
+1,556,136,508,1,0,0,0,0,64,0,-1--1--1,,1|(1359,382)|
+1,557,137,509,1,0,0,0,0,64,0,-1--1--1,,1|(1061,295)|
+1,558,417,504,1,0,0,0,0,64,0,-1--1--1,,1|(734,83)|
+1,559,76,505,1,0,0,0,0,64,0,-1--1--1,,1|(2359,-521)|
+1,560,103,503,1,0,0,0,0,64,0,-1--1--1,,1|(2522,-225)|
+1,561,120,507,1,0,0,0,0,64,0,-1--1--1,,1|(3556,-289)|
+1,562,1,506,1,0,0,0,0,64,0,-1--1--1,,1|(2803,664)|
+1,563,337,502,1,0,0,0,0,64,0,-1--1--1,,1|(2543,56)|
+10,564,Efecto negativo de los TOAR finalizados en el rechazo de la legitimidad,1247,570,94,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,565,Efecto negativo de las actividades de divulgación y pedagogía a la sociedad,1169,810,89,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+10,566,Peso del efecto negativo de los TOAR finalizados,1095,467,78,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,567,Efecto negativo ponderado de los TOAR finalizados,1313,488,80,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,568,564,567,0,0,0,0,0,64,0,-1--1--1,,1|(1276,535)|
+1,569,566,567,0,0,0,0,0,64,0,-1--1--1,,1|(1197,477)|
+1,570,567,234,0,0,0,0,0,64,0,-1--1--1,,1|(1425,529)|
+10,571,Peso del efecto negativo de las actividades de divulgación y pedagogía,1385,783,98,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,572,Efecto negativo ponderado de las actividades de divulgación y pedagogía a la sociedad,1377,645,106,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,573,565,572,0,0,0,0,0,64,0,-1--1--1,,1|(1268,732)|
+1,574,571,572,0,0,0,0,0,64,0,-1--1--1,,1|(1382,721)|
+1,575,572,234,0,0,0,0,0,64,0,-1--1--1,,1|(1457,613)|
+10,576,Población colombiana,1640,494,37,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,577,"% que NO reconocen la legitimidad de la JEP",2108,308,78,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,578,576,577,1,0,0,0,0,64,0,-1--1--1,,1|(1955,448)|
+1,579,209,577,1,0,0,0,0,64,0,-1--1--1,,1|(2035,207)|
+10,580,"% que reconocen la legitimidad de la JEP",959,309,66,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,581,210,580,0,0,0,0,0,64,0,-1--1--1,,1|(1213,230)|
+1,582,576,580,1,0,0,0,0,64,0,-1--1--1,,1|(1113,378)|
+1,583,141,146,1,0,0,0,0,64,0,-1--1--1,,1|(2035,616)|
+1,584,266,147,1,0,0,0,0,64,1,-1--1--1,,1|(2306,746)|
+10,585,Valor inicial,2365,683,38,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,586,585,147,1,0,0,0,0,64,1,-1--1--1,,1|(2310,709)|
+10,587,Entrada de informes,1596,1187,35,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,588,587,227,1,0,0,0,0,64,0,-1--1--1,,1|(1541,1187)|
+1,589,126,122,0,0,0,0,0,64,0,-1--1--1,,1|(3390,380)|
+10,590,Time,3742,803,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,591,590,130,0,0,0,0,0,64,0,-1--1--1,,1|(3708,819)|
+10,592,Valor del presupuesto anual,559,2267,54,24,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,593,48,379,2270,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,594,596,592,4,0,0,22,0,0,0,-1--1--1,,1|(479,2272)|
+1,595,596,593,100,0,0,22,0,0,0,-1--1--1,,1|(415,2272)|
+11,596,48,447,2272,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,597,Presupuesto anual,447,2291,57,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,598,IPC proyección promedio,266,2399,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,599,592,596,1,0,0,0,0,64,0,-1--1--1,,1|(478,2238)|
+10,600,FINAL TIME,3413,1303,55,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,601,600,44,0,0,0,0,0,64,0,-1--1--1,,1|(3447,1327)|
+10,602,Time,278,2312,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+10,603,Presupuesto octubre 2018,853,2132,44,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,604,Entrada presupuesto,843,2195,39,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,605,Entrada presupuesto anual,143,2352,57,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,606,327,337,1,0,0,0,0,64,0,-1--1--1,,1|(1132,2308)|
+1,607,327,341,1,0,0,0,0,64,0,-1--1--1,,1|(1307,2220)|
+1,608,327,346,1,0,0,0,0,64,0,-1--1--1,,1|(1187,2159)|
+10,609,Porcentaje de inversión en difusión,986,2319,58,25,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,610,609,337,1,0,0,0,0,64,0,-1--1--1,,1|(988,2373)|
+10,611,Porcentaje de inversión en SIVJRNR,1537,2350,75,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,612,611,342,1,0,0,0,0,64,0,-1--1--1,,1|(1435,2327)|
+10,613,Porcentaje de otras inversiones,1088,2117,67,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,614,611,613,1,0,0,0,0,64,0,-1--1--1,,1|(1557,2232)|
+1,615,609,613,1,0,0,0,0,64,0,-1--1--1,,1|(1023,2167)|
+1,616,613,346,1,0,0,0,0,64,0,-1--1--1,,1|(1157,2124)|
+1,617,466,492,1,0,0,0,0,64,0,-1--1--1,,1|(67,1061)|
+10,618,Orden de la demora de información,484,797,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,619,Valor inicial de la demora de información disponible,533,889,81,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,620,619,486,1,0,0,0,0,64,1,-1--1--1,,1|(408,902)|
+1,621,618,485,0,0,0,0,0,64,1,-1--1--1,,1|(410,827)|
+1,622,480,485,1,0,0,0,0,64,0,-1--1--1,,1|(233,768)|
+10,623,Proyectos financiados por la JEP mensualmente,629,1890,80,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,624,623,454,1,0,0,0,0,64,0,-1--1--1,,1|(607,1811)|
+1,625,163,168,1,0,0,0,0,64,0,-1--1--1,,1|(1297,1112)|
+10,626,Orden demora informes de víctimas,1530,1128,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,627,Valor inicial demora informes de víctimas,1337,1272,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,628,627,169,0,0,0,0,0,64,1,-1--1--1,,1|(1357,1243)|
+1,629,626,168,0,0,0,0,0,64,1,-1--1--1,,1|(1439,1158)|
+10,630,Talento humano total para actividades misionales,2523,2204,67,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,631,348,630,1,0,0,0,0,64,0,-1--1--1,,1|(1444,2077)|
+1,632,238,630,1,0,0,0,0,64,0,-1--1--1,,1|(2383,2123)|
+1,633,630,374,0,0,0,0,0,64,0,-1--1--1,,1|(2400,2279)|
+1,634,630,375,0,0,0,0,0,64,0,-1--1--1,,1|(2506,2272)|
+1,635,630,376,0,0,0,0,0,64,0,-1--1--1,,1|(2587,2275)|
+1,636,630,377,0,0,0,0,0,64,0,-1--1--1,,1|(2652,2229)|
+1,637,630,378,0,0,0,0,0,64,0,-1--1--1,,1|(2681,2158)|
+1,638,630,373,0,0,0,0,0,64,0,-1--1--1,,1|(2354,2208)|
+1,639,630,204,1,0,0,0,0,64,0,-1--1--1,,1|(2399,1360)|
+1,640,630,202,1,0,0,0,0,64,0,-1--1--1,,1|(1584,1564)|
+1,641,250,202,1,0,0,0,0,64,0,-1--1--1,,1|(1654,1277)|
+10,642,Orden de la demora de talento humano personal JEP,2648,1849,77,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,643,Valor inicial talento humano personal JEP,2716,1911,69,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,644,642,247,1,0,0,0,0,64,1,-1--1--1,,1|(2541,1869)|
+1,645,643,247,1,0,0,0,0,64,1,-1--1--1,,1|(2611,1917)|
+1,646,242,247,1,0,0,0,0,64,0,-1--1--1,,1|(2348,1890)|
+10,647,Inicio de TOAR,3234,417,51,11,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,648,Time,3300,375,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,649,648,647,1,0,0,0,0,64,0,-1--1--1,,1|(3243,405)|
+1,650,647,310,1,0,0,0,0,64,0,-1--1--1,,1|(3219,445)|
+10,651,Brecha entre víctimas deseadas y víctimas participando,4086,1224,68,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,652,Meta de víctimas participando,4164,1322,55,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,653,Universo de víctimas,4021,1374,39,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,654,653,652,1,0,0,0,0,64,0,-1--1--1,,1|(4070,1382)|
+1,655,652,651,0,0,0,0,0,64,0,-1--1--1,,1|(4132,1282)|
+10,656,Porcentaje que se espera que participe,4191,1431,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,657,656,652,1,0,0,0,0,64,0,-1--1--1,,1|(4229,1363)|
+1,658,136,651,0,0,0,0,0,64,0,-1--1--1,,1|(3069,947)|
+10,659,Efecto de la participación en las actividades de divulgación y pedagogía,4209,819,99,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,660,659,120,1,0,0,0,0,64,0,-1--1--1,,1|(4103,781)|
+1,661,651,659,1,0,0,0,0,64,0,-1--1--1,,1|(4209,1124)|
+10,662,Efecto de las actividades de divulgación y pedagogia en la presentación de informes,1686,1248,93,28,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||128-0-128,0,0,0,0,0,0
+1,663,120,662,0,0,0,0,0,64,0,-1--1--1,,1|(2806,1020)|
+1,664,662,227,0,0,0,0,0,64,0,-1--1--1,,1|(1574,1241)|
+1,665,337,565,0,0,0,0,0,64,0,-1--1--1,,1|(1119,1624)|
+1,666,602,597,0,0,0,0,0,64,0,-1--1--1,,1|(341,2304)|
+10,667,Entrada del presupuesto octubre 2018,704,2136,65,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,668,603,667,1,0,0,0,0,64,0,-1--1--1,,1|(791,2122)|
+1,669,604,667,0,0,0,0,0,64,0,-1--1--1,,1|(793,2173)|
+10,670,Presupuesto 2019,482,2345,57,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,671,Entrada presupuesto 2019,538,2428,58,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,672,671,670,0,0,0,0,0,64,0,-1--1--1,,1|(512,2388)|
+12,673,48,747,2271,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,674,676,673,4,0,0,22,0,0,0,-1--1--1,,1|(708,2268)|
+1,675,676,592,100,0,0,22,0,0,0,-1--1--1,,1|(640,2268)|
+11,676,48,672,2268,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,677,Gasto presupuesto 2018,672,2295,58,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,678,48,565,2142,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,679,681,592,4,0,0,22,0,0,0,-1--1--1,,1|(570,2220)|
+1,680,681,678,100,0,0,22,0,0,0,-1--1--1,,1|(570,2168)|
+11,681,48,570,2192,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,682,Aumento presupuesto 2018,647,2192,69,28,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,683,670,597,1,0,0,0,0,64,0,-1--1--1,,1|(466,2290)|
+1,684,667,681,1,0,0,0,0,64,0,-1--1--1,,1|(592,2166)|
+1,685,681,677,1,0,0,0,0,64,0,-1--1--1,,1|(626,2223)|
+10,686,FINAL TIME,137,2445,55,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,687,686,605,0,0,0,0,0,64,0,-1--1--1,,1|(139,2409)|
+10,688,Tiempo de entrada presupuesto 2019,398,2417,60,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,689,688,670,0,0,0,0,0,64,0,-1--1--1,,1|(440,2381)|
+1,690,605,596,1,0,0,0,0,64,0,-1--1--1,,1|(343,2267)|
+10,691,Porcentaje de TOAR Finalizados con efecto positivo,2777,483,71,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,692,Porcentaje de TOAR finalizados con efecto negativo,2859,593,69,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,693,TOAR finalizados con efecto positivo,2716,581,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,694,TOAR finalizados con efecto negativo,2895,691,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,695,691,692,0,0,0,0,0,64,0,-1--1--1,,1|(2813,532)|
+1,696,316,693,0,0,0,0,0,64,0,-1--1--1,,1|(2826,521)|
+1,697,691,693,0,0,0,0,0,64,0,-1--1--1,,1|(2747,531)|
+1,698,316,694,0,0,0,0,0,64,0,-1--1--1,,1|(2908,572)|
+1,699,692,694,0,0,0,0,0,64,0,-1--1--1,,1|(2876,640)|
+1,700,693,510,1,0,0,0,0,64,0,-1--1--1,,1|(2182,-567)|
+1,701,694,564,0,0,0,0,0,64,0,-1--1--1,,1|(2090,633)|
+10,702,Orden de la demora nuevas víctimas acreditadas,1467,887,65,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,703,Tiempo de la demora nuevas víctimas acreditadas,1837,951,68,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,704,Valor inicial nuevas víctimas acreditadas,1771,878,64,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,705,702,158,0,0,0,0,0,64,1,-1--1--1,,1|(1543,856)|
+1,706,703,157,0,0,0,0,0,64,0,-1--1--1,,1|(1712,868)|
+1,707,704,158,0,0,0,0,0,64,1,-1--1--1,,1|(1695,854)|
+1,708,337,118,0,0,0,0,0,64,0,-1--1--1,,1|(2340,1781)|
+10,709,Apropiación por capacitación,3541,153,53,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,710,123,709,1,0,0,0,0,64,0,-1--1--1,,1|(3542,108)|
+1,711,709,96,1,0,0,0,0,64,0,-1--1--1,,1|(3609,312)|
+10,712,Incremento por capacitación en la apropiación,3680,37,57,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,713,712,709,1,0,0,0,0,64,0,-1--1--1,,1|(3635,106)|
+10,714,Valor inicio demora de apropiación por capacitaciones,3388,122,73,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,715,Orden de la demora de apropiación,3713,150,65,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,716,Tiempo de la demora de apropiación,3407,200,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,717,715,709,0,0,0,0,0,64,1,-1--1--1,,1|(3627,152)|
+1,718,714,709,0,0,0,0,0,64,1,-1--1--1,,1|(3467,138)|
+1,719,716,709,0,0,0,0,0,64,0,-1--1--1,,1|(3467,179)|
+10,720,Víctimas que han participado judicialmente ante la JEP,2262,494,60,30,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,721,48,2053,491,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,722,724,720,4,0,0,22,0,0,0,-1--1--1,,1|(2165,491)|
+1,723,724,721,100,0,0,22,0,0,0,-1--1--1,,1|(2089,491)|
+11,724,48,2121,491,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,725,Nuevos registros de víctimas que terminan participación judicial,2121,530,63,31,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,726,146,725,1,0,0,0,0,64,0,-1--1--1,,1|(2197,589)|
+10,727,Víctimas que han participado extrajudicialmente ante la JEP,2404,1229,63,33,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,728,48,2179,1229,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,729,731,727,4,0,0,22,0,0,0,-1--1--1,,1|(2291,1228)|
+1,730,731,728,100,0,0,22,0,0,0,-1--1--1,,1|(2209,1228)|
+11,731,48,2235,1228,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,732,Nuevos registros de víctimas que terminan participación extrajudicial,2235,1277,70,41,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,733,151,732,1,0,0,0,0,64,0,-1--1--1,,1|(2242,1349)|
+1,734,250,204,1,0,0,0,0,64,0,-1--1--1,,1|(2016,1151)|
+1,735,137,195,1,0,0,0,0,64,0,-1--1--1,,1|(2048,1093)|
+10,736,"Porcentaje de víctimas extrajudiciales que requiere acomp. psicosocial",2392,908,86,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,737,736,195,0,0,0,0,0,64,0,-1--1--1,,1|(2294,945)|
+1,738,393,202,0,0,0,0,0,64,0,-1--1--1,,1|(1881,1222)|
+1,739,393,204,0,0,0,0,0,64,0,-1--1--1,,1|(1995,1201)|
+10,740,Porcentaje inicial de las personas que NO reconocen la legitimidad de la JEP,1938,38,99,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,741,740,209,0,0,0,0,0,64,1,-1--1--1,,1|(1872,84)|
+1,742,576,209,1,0,0,0,0,64,1,-1--1--1,,1|(1887,347)|
+10,743,Porcentaje inicial de las personas que reconocen la legitimidad de la JEP,1361,41,85,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,744,743,210,0,0,0,0,0,64,1,-1--1--1,,1|(1416,89)|
+1,745,576,210,1,0,0,0,0,64,1,-1--1--1,,1|(1397,275)|
+1,746,740,743,1,0,0,0,0,64,0,-1--1--1,,1|(1652,-36)|
+10,747,Time,2578,-5,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,748,747,283,1,0,0,0,0,64,0,-1--1--1,,1|(2656,5)|
+1,749,747,305,1,0,0,0,0,64,0,-1--1--1,,1|(2630,53)|
+1,750,648,311,1,0,0,0,0,64,0,-1--1--1,,1|(3270,408)|
+10,751,Tiempo final de recepción de informes,1076,1029,70,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,752,751,163,1,0,0,0,0,64,0,-1--1--1,,1|(1170,1130)|
+1,753,648,293,1,0,0,0,0,64,0,-1--1--1,,1|(3228,350)|
+10,754,Salario promedio del Talento Humano,816,2691,73,28,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,755,48,598,2694,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,756,758,754,4,0,0,22,0,0,0,-1--1--1,,1|(713,2694)|
+1,757,758,755,100,0,0,22,0,0,0,-1--1--1,,1|(639,2694)|
+11,758,48,676,2694,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,759,Aumento salario,676,2713,51,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,760,598,597,0,0,0,0,0,64,0,-1--1--1,,1|(357,2344)|
+1,761,754,759,1,0,0,0,0,64,0,-1--1--1,,1|(723,2624)|
+1,762,598,758,1,0,0,0,0,64,0,-1--1--1,,1|(283,2508)|
+10,763,Entrada aumento salarial anual,201,2564,54,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,764,686,763,0,0,0,0,0,64,0,-1--1--1,,1|(164,2494)|
+1,765,763,759,1,0,0,0,0,64,0,-1--1--1,,1|(596,2742)|
+1,766,754,371,1,0,0,0,0,64,0,-1--1--1,,1|(1656,2486)|
+1,767,754,363,1,0,0,0,0,64,0,-1--1--1,,1|(1648,2303)|
+10,768,Dinero promedio recibido por proyecto de cooperación internacional,71,2107,100,44,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,769,48,-262,2114,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,770,772,768,4,0,0,22,0,0,0,-1--1--1,,1|(-88,2110)|
+1,771,772,769,100,0,0,22,0,0,0,-1--1--1,,1|(-205,2110)|
+11,772,48,-153,2110,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,773,Aumento de dinero recibido por proyecto de cooperación,-153,2137,93,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,774,763,773,1,0,0,0,0,64,0,-1--1--1,,1|(-183,2295)|
+1,775,598,773,1,0,0,0,0,64,0,-1--1--1,,1|(7,2205)|
+1,776,768,772,1,0,0,0,0,64,0,-1--1--1,,1|(-105,2009)|
+1,777,768,434,0,0,0,0,0,64,0,-1--1--1,,1|(237,2027)|
+10,778,Time,-123,1727,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128,0,0,0,0,0,0
+1,779,778,459,0,0,0,0,0,64,0,-1--1--1,,1|(-106,1698)|
+10,780,Incremento en el presupuesto,371,2197,53,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,781,780,596,1,0,0,0,0,64,0,-1--1--1,,1|(415,2219)|
+10,782,TOAR NO certificados,3292,79,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,783,TOAR certificados,3271,284,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,784,Porcentaje de TOAR certificados,3189,217,69,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,785,Porcentaje de TOAR NO certificados,3116,3,69,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,786,48,3101,191,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,787,789,786,4,0,0,22,0,0,0,-1--1--1,,1|(3059,191)|
+1,788,789,284,100,0,0,22,0,0,0,-1--1--1,,1|(2984,191)|
+11,789,48,3022,191,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,790,Finalización de procesamiento de TOAR,3022,218,81,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,791,302,789,1,0,0,0,0,64,0,-1--1--1,,1|(3032,132)|
+1,792,284,789,1,0,0,0,0,64,0,-1--1--1,,1|(2982,133)|
+12,793,48,3134,77,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,794,796,782,4,0,0,22,0,0,0,-1--1--1,,1|(3223,81)|
+1,795,796,793,100,0,0,22,0,0,0,-1--1--1,,1|(3163,81)|
+11,796,48,3189,81,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,797,Nuevos TOAR no certificados,3189,108,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,798,789,797,0,0,0,0,0,64,0,-1--1--1,,1|(3082,162)|
+1,799,785,796,1,0,0,0,0,64,0,-1--1--1,,1|(3172,23)|
+12,800,48,3129,283,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,801,803,783,4,0,0,22,0,0,0,-1--1--1,,1|(3204,285)|
+1,802,803,800,100,0,0,22,0,0,0,-1--1--1,,1|(3152,285)|
+11,803,48,3172,285,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,804,Nuevos TOAR certificados,3172,312,49,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,805,784,804,0,0,0,0,0,64,0,-1--1--1,,1|(3181,258)|
+1,806,790,803,1,0,0,0,0,64,0,-1--1--1,,1|(3117,246)|
+10,807,valor inicial demora víctimas que terminan participación extrajudicial,2181,1532,89,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,808,807,152,0,0,0,0,0,64,1,-1--1--1,,1|(2185,1479)|
+10,809,suma flujos de salida,1411,2411,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,810,346,809,0,0,0,0,0,64,0,-1--1--1,,1|(1311,2253)|
+1,811,342,809,0,0,0,0,0,64,0,-1--1--1,,1|(1394,2337)|
+1,812,337,809,0,0,0,0,0,64,0,-1--1--1,,1|(1257,2417)|
+1,813,784,785,1,0,0,0,0,64,0,-1--1--1,,1|(3106,23)|
+10,814,orden de la demora perdida buenas prácticas,3031,1603,79,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,815,Valor inicial demora perdida buenas prácticas,3192,1611,79,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,816,815,51,0,0,0,0,0,64,1,-1--1--1,,1|(3161,1577)|
+1,817,814,51,1,0,0,0,0,64,1,-1--1--1,,1|(3046,1552)|
+1,818,28,50,1,0,0,0,0,64,0,-1--1--1,,1|(3249,1434)|
+10,819,Histórico de informes de víctimas,1292,1343,53,24,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,820,48,1144,1335,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,821,823,819,4,0,0,22,0,0,0,-1--1--1,,1|(1221,1335)|
+1,822,823,820,100,0,0,22,0,0,0,-1--1--1,,1|(1173,1335)|
+11,823,48,1197,1335,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,824,Aumento de informes,1197,1362,40,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,825,169,823,1,0,0,0,0,64,0,-1--1--1,,1|(1228,1271)|
+10,826,"Promedio actividades divulgación y pedagogía/mes",4041,927,69,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,827,826,120,0,0,0,0,0,64,0,-1--1--1,,1|(3981,866)|
+10,828,Entrada octubre 2018,877,2371,52,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,829,828,332,0,0,0,0,0,64,0,-1--1--1,,1|(876,2328)|
+10,830,Entrada de recursos de presupuesto,996,2191,64,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,831,830,331,1,0,0,0,0,64,0,-1--1--1,,1|(933,2230)|
+10,832,Peso de las víctimas en participación judicial en el requerimiento,2123,1655,82,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,833,Peso de las víctimas en participación extrajudicial en el requerimiento,2126,1801,97,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,834,832,833,0,0,0,0,0,64,0,-1--1--1,,1|(2125,1721)|
+1,835,832,249,0,0,0,0,0,64,0,-1--1--1,,1|(2001,1713)|
+1,836,833,249,0,0,0,0,0,64,0,-1--1--1,,1|(1994,1783)|
+10,837,Orden de la demora disminución talento humano asistencia técnica,1497,1789,87,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,838,Valor inicial de la demora disminución talento humano,1211,1721,87,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,839,838,357,0,0,0,0,0,64,1,-1--1--1,,1|(1253,1785)|
+1,840,837,357,0,0,0,0,0,64,1,-1--1--1,,1|(1362,1828)|
+1,841,352,357,1,0,0,0,0,64,0,-1--1--1,,1|(1182,1766)|
+1,842,438,357,1,0,0,0,0,64,0,-1--1--1,,1|(1244,1634)|
+10,843,Talento humano por recursos,1707,2194,64,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,844,359,843,0,0,0,0,0,64,0,-1--1--1,,1|(1591,2179)|
+1,845,754,843,1,0,0,0,0,64,0,-1--1--1,,1|(1653,2395)|
+10,846,Total recursos inversión,387,2073,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,847,391,846,0,0,0,0,0,64,0,-1--1--1,,1|(542,2068)|
+1,848,434,846,1,0,0,0,0,64,0,-1--1--1,,1|(396,2015)|
+10,849,"% recursos cooperación",255,2061,40,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,850,"% recursos presupuesto de inversión SE",272,2145,49,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,851,434,849,0,0,0,0,0,64,0,-1--1--1,,1|(319,2009)|
+1,852,846,849,1,0,0,0,0,64,0,-1--1--1,,1|(330,2050)|
+1,853,391,850,0,0,0,0,0,64,0,-1--1--1,,1|(486,2105)|
+1,854,846,850,1,0,0,0,0,64,0,-1--1--1,,1|(323,2093)|
+1,855,592,391,1,0,0,0,0,64,0,-1--1--1,,1|(518,2164)|
+10,856,Impulso para cooperación internacional,-149,1522,42,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,857,856,410,0,0,0,0,0,64,0,-1--1--1,,1|(-64,1543)|
+10,858,Promedio de informes mensuales,1640,1320,61,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,859,858,227,0,0,0,0,0,64,0,-1--1--1,,1|(1579,1285)|
+///---\\\
+:GRAPH Participación_de_víctimas
+:TITLE Participación de víctimas
+:X-AXIS Time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR "Víctimas que participan judicialmente/mes"
+:LINE-WIDTH 2
+:VAR "Víctimas que participan extrajudicialmente/mes"
+:LINE-WIDTH 2
+:VAR Histórico de víctimas restauradas
+:LINE-WIDTH 2
+
+:GRAPH Articulación_y_relacionamiento_interinstitucional
+:TITLE Articulación y relacionamiento interinstitiucional
+:X-AXIS time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR Proyectos con cooperantes
+:LINE-WIDTH 2
+:VAR Convenios de intercambio de información
+:LINE-WIDTH 2
+
+:GRAPH Articulación_entre_unidades_y_dependencias
+:TITLE Articulación entre unidades y dependencias
+:X-AXIS time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR Articulación interna
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR Memoria institucional
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Justicia_digital
+:TITLE Justicia digital
+:X-AXIS time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR Memoria Histórica
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR "% de la organización que ha apropiado TI"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR "% de la organización que NO ha apropiado TI"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Imagen_y_visibilidad
+:TITLE Imagen y visibilidad
+:X-AXIS Time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR "% que reconocen la legitimidad de la JEP"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR "% que NO reconocen la legitimidad de la JEP"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Seguimiento_al_régimen_de_condicionalidad
+:TITLE Seguimiento al régimen de condiicionalidad
+:X-AXIS Time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR TOAR NO certificados
+:LINE-WIDTH 2
+:VAR TOAR certificados
+:LINE-WIDTH 2
+
+:GRAPH Talento_humano_-_Panel_general_
+:TITLE Talento humano
+:X-AXIS Time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR Talento humano contratistas misionales de la JEP
+:LINE-WIDTH 2
+:VAR Talento humano por asistencia técnica
+:LINE-WIDTH 2
+
+:GRAPH Memoria_histórica
+:TITLE Memoria histórica
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Memoria Histórica
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Apropiación_TI
+:TITLE Apropiación TI
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR "% de la organización que ha apropiado TI"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR "% de la organización que NO ha apropiado TI"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Memoria_institucional
+:TITLE Memoria institucional
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Memoria institucional
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Articulación_interna
+:TITLE Articulación interna
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Articulación interna
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Comparecientes_con_información_completa
+:TITLE Comparecientes con información completa
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Comparecientes con información completa
+:LINE-WIDTH 2
+
+:GRAPH Víctimas_que_participan_judicialmente_al_mes_
+:TITLE Víctimas que participan judicialmente al mes
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR "Víctimas que participan judicialmente/mes"
+:LINE-WIDTH 2
+
+:GRAPH Histórico_de_víctimas_restauradas
+:TITLE Histórico de víctimas restauradas
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Histórico de víctimas restauradas
+:LINE-WIDTH 2
+
+:GRAPH Legitimidad_de_la_JEP
+:TITLE Legitimidad de la JEP
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR "% que reconocen la legitimidad de la JEP"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+:VAR "% que NO reconocen la legitimidad de la JEP"
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Proyectos_con_cooperantes
+:TITLE Proyectos con cooperantes
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Proyectos con cooperantes
+:LINE-WIDTH 2
+
+:GRAPH Información_disponible
+:TITLE Información disponible
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Información disponible
+:Y-MIN 0
+:Y-MAX 1
+:LINE-WIDTH 2
+
+:GRAPH Talento_humano
+:TITLE Talento humano
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Talento humano contratistas misionales de la JEP
+:Y-MIN 0
+:LINE-WIDTH 2
+:VAR Talento humano por asistencia técnica
+:Y-MIN 0
+:LINE-WIDTH 2
+
+:GRAPH Recursos_de_inversión
+:TITLE Recursos de inversión
+:X-AXIS time
+:X-LABEL Meses
+:NO-LEGEND 2
+:SCALE
+:VAR Recursos por proyectos de cooperación internacional
+:LINE-WIDTH 2
+
+:GRAPH Atención_de_víctimas
+:TITLE Atención de víctimas
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Víctimas con atención psicojurídica
+:LINE-WIDTH 2
+:SCALE
+:VAR Víctimas con atención psicosocial
+:LINE-WIDTH 2
+
+:GRAPH Informes_de_víctimas
+:TITLE Informes de víctimas
+:X-AXIS time
+:SCALE
+:VAR Informes procesados
+:LINE-WIDTH 2
+
+:GRAPH Proporción_de_recursos
+:TITLE Proporción de recursos
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR "% recursos cooperación"
+:LINE-WIDTH 2
+:VAR "% recursos presupuesto de inversión SE"
+:LINE-WIDTH 2
+
+:GRAPH Víctimas_que_participan_extrajudicialmente_al_mes
+:TITLE Víctimas que participan extrajudicialmente al mes
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR "Víctimas que participan extrajudicialmente/mes"
+:LINE-WIDTH 2
+
+:GRAPH Histórico_de_víctimas_acreditadas
+:TITLE Histórico de víctimas acreditadas
+:X-AXIS Time
+:X-LABEL Meses
+:SCALE
+:VAR Víctimas acreditadas
+:LINE-WIDTH 2
+
+:GRAPH %_que_reconocen_la_legitmimdad_de_la_JEP
+:TITLE % que reconocen la legitmimdad de la JEP
+:X-LABEL Meses
+:SCALE
+:VAR "% que reconocen la legitimidad de la JEP"
+:DATASET Escenario Base
+:LINE-WIDTH 4
+:VAR "% que reconocen la legitimidad de la JEP"
+:DATASET Escenario 1
+:LINE-WIDTH 4
+:VAR "% que reconocen la legitimidad de la JEP"
+:DATASET Escenario 2
+:LINE-WIDTH 4
+
+:GRAPH %_no_reconocen_la_legitmidad_de_la_JEP
+:TITLE % no reconocen la legitmidad de la JEP
+:X-LABEL Meses
+:SCALE
+:VAR "% que NO reconocen la legitimidad de la JEP"
+:DATASET Escenario Base
+:LINE-WIDTH 4
+:VAR "% que NO reconocen la legitimidad de la JEP"
+:DATASET Escenario 1
+:LINE-WIDTH 4
+:VAR "% que NO reconocen la legitimidad de la JEP"
+:DATASET Escenario 2
+:LINE-WIDTH 4
+
+:GRAPH Proyectos_con_cooperantes_escenarios
+:TITLE Proyectos con cooperantes escenarios
+:X-LABEL Meses
+:SCALE
+:VAR Proyectos con cooperantes
+:DATASET Escenario Base
+:LINE-WIDTH 3
+:VAR Proyectos con cooperantes
+:DATASET Escenario 1
+:LINE-WIDTH 3
+:VAR Proyectos con cooperantes
+:DATASET Escenario 2
+:LINE-WIDTH 3
+
+:GRAPH talento_humano_escenarios
+:TITLE Talento humano por asistencia técnica
+:X-LABEL Meses
+:SCALE
+:VAR Talento humano contratistas misionales de la JEP
+:DATASET Escenario 1
+:LINE-WIDTH 3
+:VAR Talento humano contratistas misionales de la JEP
+:DATASET Escenario 2
+:LINE-WIDTH 3
+:VAR Talento humano contratistas misionales de la JEP
+:DATASET Escenario 3
+:LINE-WIDTH 3
+:L<%^E!@
+1:Base
+9:Base
+23:0
+15:0,0,0,0,0,0
+19:50,0
+27:0,
+34:0,
+42:1
+72:0
+73:0
+4:Time
+5:% de aliados con los que se hacen proyectos
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:2
+41:0
+76:0
+77:0
+78:0
+79:0
+80:0
+81:0
+24:0
+25:240
+26:240
+75:
+43:

@@ -52,7 +52,7 @@ export function ticketToAnnouncement(ticket) {
     id: `ann-pqr-${ticket.id}`,
     ticketId: ticket.id,
     month: MONTH_NAMES[d.getMonth()],
-    tag: 'Para: Ti (APTO. 303)',
+
     title: ticket.subject,
     subtitle: isWaiting ? 'Esperando respuesta' : 'Respondido por administración',
     time: formatTime(d),
@@ -74,6 +74,10 @@ export function getTickets() {
 
 export function getTicketById(id) {
   return tickets.find((t) => t.id === id) || null;
+}
+
+export function hasUnansweredTickets() {
+  return tickets.some((t) => t.status === 'esperando');
 }
 
 export function getChatMessages(ticket) {
@@ -120,4 +124,14 @@ export function createTicket({ type, subject, description }) {
   tickets = [ticket, ...tickets];
   notify();
   return ticket;
+}
+
+export function respondToTicket(ticketId, response) {
+  const ticket = tickets.find(t => t.id === ticketId);
+  if (!ticket) return false;
+  ticket.adminResponse = response.trim();
+  ticket.status = 'respondido';
+  ticket.respondedAt = new Date().toISOString();
+  notify();
+  return true;
 }

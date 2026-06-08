@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, TYPOGRAPHY } from '../theme';
+import { useAppTheme } from '../theme';
 import { usePqr } from '../context/PqrContext';
 import { PQR_TYPES } from '../services/pqrConstants';
 
@@ -21,6 +21,88 @@ export default function PqrCreateScreen({ navigation }) {
   const [type, setType] = useState('peticion');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
+  const { colors, typography, st, fw, minTarget } = useAppTheme();
+
+  const styles = useMemo(() => StyleSheet.create({
+    flex: { flex: 1 },
+    container: { flex: 1, backgroundColor: colors.mainGreen },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      marginTop: 10,
+    },
+    backButton: {
+      padding: 5,
+      minWidth: minTarget,
+      minHeight: minTarget,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerTitle: { fontSize: st(20), fontWeight: fw('700'), color: '#FFF' },
+    headerSpacer: { width: 34 },
+    contentContainer: {
+      flex: 1,
+      backgroundColor: colors.card,
+      borderTopLeftRadius: 35,
+      borderTopRightRadius: 35,
+      padding: 24,
+      paddingTop: 28,
+    },
+    label: {
+      ...typography.subtitle,
+      fontSize: st(15),
+      fontWeight: fw('700'),
+      color: colors.darkmodeGreenBlack,
+      marginBottom: 10,
+      marginTop: 8,
+    },
+    typeRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
+    typeChip: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: colors.mainGreen,
+      alignItems: 'center',
+      backgroundColor: colors.backgroundGreenWhite,
+      minHeight: minTarget,
+      justifyContent: 'center',
+    },
+    typeChipActive: { backgroundColor: colors.mainGreen },
+    typeChipText: { fontSize: st(12), fontWeight: fw('700'), color: colors.lettersAndIcons },
+    typeChipTextActive: { color: colors.darkmodeGreenBlack },
+    input: {
+      borderWidth: 1.5,
+      borderColor: colors.mainGreen,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: st(14),
+      color: colors.darkmodeGreenBlack,
+      marginBottom: 8,
+      minHeight: minTarget,
+    },
+    textArea: { minHeight: 120 },
+    submitButton: {
+      backgroundColor: colors.mainGreen,
+      paddingVertical: 16,
+      borderRadius: 28,
+      alignItems: 'center',
+      marginTop: 20,
+      marginBottom: 24,
+      alignSelf: 'center',
+      width: '75%',
+      minHeight: minTarget,
+      justifyContent: 'center',
+    },
+    submitButtonText: {
+      ...typography.subtitle,
+      fontWeight: fw('800'),
+      color: colors.darkmodeGreenBlack,
+    },
+  }), [colors, typography, st, fw, minTarget]);
 
   const handleSubmit = () => {
     if (!subject.trim()) {
@@ -77,7 +159,7 @@ export default function PqrCreateScreen({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Ej. Solicitud de documentos"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textSoft}
               value={subject}
               onChangeText={setSubject}
               maxLength={80}
@@ -87,7 +169,7 @@ export default function PqrCreateScreen({ navigation }) {
             <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="Cuéntanos tu caso..."
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textSoft}
               value={description}
               onChangeText={setDescription}
               multiline
@@ -105,73 +187,3 @@ export default function PqrCreateScreen({ navigation }) {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: COLORS.mainGreen },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  backButton: { padding: 5 },
-  headerTitle: { fontSize: 20, fontWeight: '700', color: '#FFF' },
-  headerSpacer: { width: 34 },
-  contentContainer: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
-    padding: 24,
-    paddingTop: 28,
-  },
-  label: {
-    ...TYPOGRAPHY.subtitle,
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.darkmodeGreenBlack,
-    marginBottom: 10,
-    marginTop: 8,
-  },
-  typeRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  typeChip: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: COLORS.mainGreen,
-    alignItems: 'center',
-    backgroundColor: COLORS.backgroundGreenWhite,
-  },
-  typeChipActive: { backgroundColor: COLORS.mainGreen },
-  typeChipText: { fontSize: 12, fontWeight: '700', color: COLORS.lettersAndIcons },
-  typeChipTextActive: { color: COLORS.darkmodeGreenBlack },
-  input: {
-    borderWidth: 1.5,
-    borderColor: COLORS.mainGreen,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: COLORS.darkmodeGreenBlack,
-    marginBottom: 8,
-  },
-  textArea: { minHeight: 120 },
-  submitButton: {
-    backgroundColor: COLORS.mainGreen,
-    paddingVertical: 16,
-    borderRadius: 28,
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 24,
-    alignSelf: 'center',
-    width: '75%',
-  },
-  submitButtonText: {
-    ...TYPOGRAPHY.subtitle,
-    fontWeight: '800',
-    color: COLORS.darkmodeGreenBlack,
-  },
-});

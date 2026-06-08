@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, TYPOGRAPHY } from '../theme';
+import { useAppTheme } from '../theme';
 import { usePqr } from '../context/PqrContext';
 import { PQR_TYPES } from '../services/pqrConstants';
 import PqrStatusBadge from '../components/PqrStatusBadge';
@@ -15,6 +15,95 @@ import PqrStatusBadge from '../components/PqrStatusBadge';
 export default function PqrHomeScreen({ navigation }) {
   const { getTickets } = usePqr();
   const tickets = getTickets();
+  const { colors, typography, st, fw, minTarget } = useAppTheme();
+
+  const styles = useMemo(() => StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.mainGreen },
+    contentWrap: {
+      flex: 1,
+      backgroundColor: colors.backgroundGreenWhite,
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
+      marginTop: 40,
+      padding: 20,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 16,
+    },
+    backButton: {
+      position: 'absolute',
+      left: 10,
+      padding: 10,
+      minWidth: minTarget,
+      minHeight: minTarget,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    backButtonText: { fontSize: st(24), color: colors.mainGreen },
+    title: {
+      ...typography.subtitle,
+      color: colors.lettersAndIcons,
+      fontSize: st(20),
+      fontWeight: fw('700'),
+    },
+    newButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.oceanBlueButton,
+      paddingVertical: 14,
+      borderRadius: 24,
+      marginBottom: 16,
+      gap: 8,
+      minHeight: minTarget,
+    },
+    newButtonText: {
+      color: colors.backgroundGreenWhite,
+      ...typography.subtitle,
+      fontWeight: fw('700'),
+    },
+    list: { paddingBottom: 24 },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      borderRadius: 18,
+      padding: 14,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: colors.lightGreen,
+    },
+    cardIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.lightBlueButton,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    cardBody: { flex: 1 },
+    cardTitle: {
+      fontSize: st(15),
+      fontWeight: fw('700'),
+      color: colors.darkmodeGreenBlack,
+      marginBottom: 4,
+    },
+    cardMeta: {
+      fontSize: st(11),
+      color: colors.lettersAndIcons,
+      marginBottom: 8,
+    },
+    empty: {
+      textAlign: 'center',
+      color: colors.lettersAndIcons,
+      marginTop: 40,
+      ...typography.paragraph,
+    },
+  }), [colors, typography, st, fw, minTarget]);
 
   return (
     <View style={styles.container}>
@@ -30,7 +119,7 @@ export default function PqrHomeScreen({ navigation }) {
           style={styles.newButton}
           onPress={() => navigation.navigate('PqrCreate')}
         >
-          <Ionicons name="add-circle" size={22} color={COLORS.backgroundGreenWhite} />
+          <Ionicons name="add-circle" size={22} color={colors.backgroundGreenWhite} />
           <Text style={styles.newButtonText}>Nueva solicitud</Text>
         </TouchableOpacity>
 
@@ -57,7 +146,7 @@ export default function PqrHomeScreen({ navigation }) {
                     </Text>
                     <PqrStatusBadge statusId={item.status} />
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color={COLORS.mainGreen} />
+                  <Ionicons name="chevron-forward" size={20} color={colors.mainGreen} />
                 </TouchableOpacity>
               );
             })
@@ -67,82 +156,3 @@ export default function PqrHomeScreen({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.mainGreen },
-  contentWrap: {
-    flex: 1,
-    backgroundColor: COLORS.backgroundGreenWhite,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: 40,
-    padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 16,
-  },
-  backButton: { position: 'absolute', left: 10, padding: 10 },
-  backButtonText: { fontSize: 24, color: COLORS.mainGreen },
-  title: {
-    ...TYPOGRAPHY.subtitle,
-    color: COLORS.lettersAndIcons,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  newButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.oceanBlueButton,
-    paddingVertical: 14,
-    borderRadius: 24,
-    marginBottom: 16,
-    gap: 8,
-  },
-  newButtonText: {
-    color: COLORS.backgroundGreenWhite,
-    ...TYPOGRAPHY.subtitle,
-    fontWeight: '700',
-  },
-  list: { paddingBottom: 24 },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 18,
-    padding: 14,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.lightGreen,
-  },
-  cardIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.lightBlueButton,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  cardBody: { flex: 1 },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.darkmodeGreenBlack,
-    marginBottom: 4,
-  },
-  cardMeta: {
-    fontSize: 11,
-    color: COLORS.lettersAndIcons,
-    marginBottom: 8,
-  },
-  empty: {
-    textAlign: 'center',
-    color: COLORS.lettersAndIcons,
-    marginTop: 40,
-    ...TYPOGRAPHY.paragraph,
-  },
-});

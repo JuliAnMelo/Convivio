@@ -35,3 +35,7 @@ yarn-error.log*
 
 # Cursor
 .cursor/
+
+# Claude / artefactos locales
+front/.claude/
+front/nul
