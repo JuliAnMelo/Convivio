@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, TYPOGRAPHY } from '../theme';
+import { useAppTheme } from '../theme';
 import { useBooking } from '../context/BookingContext';
+import { AuthContext } from '../context/AuthContext';
 import { formatDateLabel, parseTimeRange } from '../utils/calendar';
+import { areaRequiresApproval } from '../services/areasService';
 
 export default function AreaFormScreen({ navigation, route }) {
   const {
@@ -27,13 +29,132 @@ export default function AreaFormScreen({ navigation, route }) {
   } = route.params || {};
 
   const { submitReservation } = useBooking();
+  const { user } = useContext(AuthContext);
+  const { colors, typography, st, fw, minTarget } = useAppTheme();
   const [eventTitle, setEventTitle] = useState('');
   const [people, setPeople] = useState('');
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const needsApproval = areaRequiresApproval(areaName);
+
   const { start, end } = parseTimeRange(time);
   const dateLabel = formatDateLabel(day, month);
+
+  const styles = useMemo(() => StyleSheet.create({
+    flex: { flex: 1 },
+    container: { flex: 1, backgroundColor: colors.mainGreen },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      paddingHorizontal: 16,
+      marginTop: 10,
+      paddingBottom: 12,
+    },
+    backButton: {
+      padding: 5,
+      marginTop: 2,
+      minWidth: minTarget,
+      minHeight: minTarget,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerTitle: {
+      flex: 1,
+      fontSize: st(19),
+      fontWeight: fw('700'),
+      color: '#FFF',
+      textAlign: 'center',
+      paddingHorizontal: 8,
+    },
+    headerSpacer: { width: 34 },
+    contentContainer: {
+      flex: 1,
+      backgroundColor: colors.card,
+      borderTopLeftRadius: 35,
+      borderTopRightRadius: 35,
+      paddingHorizontal: 24,
+      paddingTop: 28,
+      paddingBottom: 24,
+    },
+    fieldGroup: { marginBottom: 22 },
+    label: {
+      ...typography.subtitle,
+      fontSize: st(15),
+      fontWeight: fw('700'),
+      color: colors.darkmodeGreenBlack,
+      marginBottom: 10,
+    },
+    readOnlyField: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderWidth: 1.5,
+      borderColor: colors.mainGreen,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      backgroundColor: colors.backgroundGreenWhite,
+      minHeight: minTarget,
+    },
+    readOnlyText: {
+      ...typography.paragraph,
+      fontSize: st(14),
+      fontWeight: fw('600'),
+      color: colors.darkmodeGreenBlack,
+      flex: 1,
+      marginRight: 8,
+    },
+    input: {
+      borderWidth: 1.5,
+      borderColor: colors.mainGreen,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: st(14),
+      color: colors.darkmodeGreenBlack,
+      backgroundColor: colors.card,
+      minHeight: minTarget,
+    },
+    textArea: { minHeight: 110, paddingTop: 14 },
+    submitButton: {
+      backgroundColor: colors.mainGreen,
+      paddingVertical: 16,
+      borderRadius: 28,
+      alignItems: 'center',
+      marginTop: 12,
+      marginBottom: 24,
+      alignSelf: 'center',
+      width: '75%',
+      minHeight: minTarget,
+      justifyContent: 'center',
+    },
+    submitButtonDisabled: { opacity: 0.6 },
+    submitButtonText: {
+      ...typography.subtitle,
+      fontWeight: fw('800'),
+      color: colors.darkmodeGreenBlack,
+      fontSize: st(15),
+    },
+    approvalBanner: {
+      backgroundColor: '#FF9F4318',
+      borderRadius: 12,
+      padding: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      marginBottom: 16,
+      borderWidth: 1,
+      borderColor: '#FF9F4340',
+    },
+    approvalBannerText: {
+      ...typography.paragraph,
+      color: '#C0700A',
+      fontSize: st(12),
+      flex: 1,
+      lineHeight: 17,
+    },
+  }), [colors, typography, st, fw, minTarget]);
 
   const handleSubmit = () => {
     if (!eventTitle.trim()) {
@@ -56,18 +177,17 @@ export default function AreaFormScreen({ navigation, route }) {
       eventTitle: eventTitle.trim(),
       people: people.trim(),
       description,
+      requiresApproval: needsApproval,
+      userName: user?.name || '',
+      userPhotoUri: user?.photoUri || null,
     });
 
-    Alert.alert(
-      'Solicitud enviada',
-      `Tu solicitud de reserva para ${areaName} fue registrada. Aparecerá en tus anuncios.`,
-      [
-        {
-          text: 'Ver inicio',
-          onPress: () => navigation.popToTop(),
-        },
-      ],
-    );
+    const title = needsApproval ? 'Solicitud pendiente' : 'Solicitud enviada';
+    const msg = needsApproval
+      ? `Tu solicitud para ${areaName} fue enviada al administrador para aprobación. Te notificaremos cuando sea aprobada.`
+      : `Tu reserva de ${areaName} fue confirmada. Aparecerá en tus anuncios.`;
+
+    Alert.alert(title, msg, [{ text: 'Entendido', onPress: () => navigation.popToTop() }]);
     setSubmitting(false);
   };
 
@@ -91,11 +211,19 @@ export default function AreaFormScreen({ navigation, route }) {
 
         <View style={styles.contentContainer}>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            {needsApproval && (
+              <View style={styles.approvalBanner}>
+                <Ionicons name="shield-checkmark-outline" size={20} color="#C0700A" />
+                <Text style={styles.approvalBannerText}>
+                  Esta área requiere aprobación del administrador. Tu reserva quedará pendiente hasta que sea aprobada.
+                </Text>
+              </View>
+            )}
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>Fecha</Text>
               <View style={styles.readOnlyField}>
                 <Text style={styles.readOnlyText}>{dateLabel}</Text>
-                <Ionicons name="calendar-outline" size={22} color={COLORS.oceanBlueButton} />
+                <Ionicons name="calendar-outline" size={22} color={colors.oceanBlueButton} />
               </View>
             </View>
 
@@ -105,7 +233,7 @@ export default function AreaFormScreen({ navigation, route }) {
                 <Text style={styles.readOnlyText}>
                   Desde {start} Hasta {end}
                 </Text>
-                <Ionicons name="time-outline" size={22} color={COLORS.oceanBlueButton} />
+                <Ionicons name="time-outline" size={22} color={colors.oceanBlueButton} />
               </View>
             </View>
 
@@ -114,7 +242,7 @@ export default function AreaFormScreen({ navigation, route }) {
               <TextInput
                 style={styles.input}
                 placeholder="Ej. Cumpleaños familiar"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSoft}
                 value={eventTitle}
                 onChangeText={setEventTitle}
                 maxLength={60}
@@ -126,7 +254,7 @@ export default function AreaFormScreen({ navigation, route }) {
               <TextInput
                 style={styles.input}
                 placeholder="Ej. 10"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSoft}
                 keyboardType="number-pad"
                 value={people}
                 onChangeText={setPeople}
@@ -139,7 +267,7 @@ export default function AreaFormScreen({ navigation, route }) {
               <TextInput
                 style={[styles.input, styles.textArea]}
                 placeholder="Describe brevemente el evento..."
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSoft}
                 value={description}
                 onChangeText={setDescription}
                 multiline
@@ -161,89 +289,3 @@ export default function AreaFormScreen({ navigation, route }) {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: COLORS.mainGreen },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingHorizontal: 16,
-    marginTop: 10,
-    paddingBottom: 12,
-  },
-  backButton: { padding: 5, marginTop: 2 },
-  headerTitle: {
-    flex: 1,
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#FFF',
-    textAlign: 'center',
-    paddingHorizontal: 8,
-  },
-  headerSpacer: { width: 34 },
-  contentContainer: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 24,
-  },
-  fieldGroup: { marginBottom: 22 },
-  label: {
-    ...TYPOGRAPHY.subtitle,
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.darkmodeGreenBlack,
-    marginBottom: 10,
-  },
-  readOnlyField: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1.5,
-    borderColor: COLORS.mainGreen,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: COLORS.backgroundGreenWhite,
-  },
-  readOnlyText: {
-    ...TYPOGRAPHY.paragraph,
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.darkmodeGreenBlack,
-    flex: 1,
-    marginRight: 8,
-  },
-  input: {
-    borderWidth: 1.5,
-    borderColor: COLORS.mainGreen,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: COLORS.darkmodeGreenBlack,
-    backgroundColor: '#FFF',
-  },
-  textArea: { minHeight: 110, paddingTop: 14 },
-  submitButton: {
-    backgroundColor: COLORS.mainGreen,
-    paddingVertical: 16,
-    borderRadius: 28,
-    alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 24,
-    alignSelf: 'center',
-    width: '75%',
-  },
-  submitButtonDisabled: { opacity: 0.6 },
-  submitButtonText: {
-    ...TYPOGRAPHY.subtitle,
-    fontWeight: '800',
-    color: COLORS.darkmodeGreenBlack,
-    fontSize: 15,
-  },
-});

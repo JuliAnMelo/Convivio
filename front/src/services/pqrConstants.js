@@ -18,7 +18,7 @@ export const PQR_STATUS = {
     id: 'respondido',
     label: 'Respondido por administración',
     color: COLORS.mainGreen,
-    bg: 'rgba(0, 208, 158, 0.2)',
+    bg: 'rgba(0, 150, 113, 0.2)',
   },
 };
 

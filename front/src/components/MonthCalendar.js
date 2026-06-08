@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { COLORS } from '../theme';
+import { useAppTheme } from '../theme';
 import { WEEKDAY_LABELS, buildMonthGrid } from '../utils/calendar';
 
 export default function MonthCalendar({
@@ -10,6 +10,33 @@ export default function MonthCalendar({
   unavailableDays = [],
   onSelectDay,
 }) {
+  const { colors, st, fw } = useAppTheme();
+  const styles = useMemo(() => StyleSheet.create({
+    wrap: { marginBottom: 28 },
+    monthTitle: { fontSize: st(16), color: colors.mainGreen, fontWeight: fw('700'), marginBottom: 15 },
+    daysHeader: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
+    dayOfWeek: {
+      fontSize: st(14),
+      color: colors.oceanBlueButton,
+      fontWeight: fw('700'),
+      width: '14.28%',
+      textAlign: 'center',
+    },
+    grid: { flexDirection: 'row', flexWrap: 'wrap' },
+    dayCell: {
+      width: '14.28%',
+      aspectRatio: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 6,
+    },
+    dayCellUnavailable: {
+      backgroundColor: colors.darkmodeGreenBlack,
+      borderRadius: 20,
+    },
+    dayText: { fontSize: st(13), color: colors.text, fontWeight: fw('500') },
+    dayTextUnavailable: { color: colors.card },
+  }), [colors, st, fw]);
   const cells = buildMonthGrid(year, monthIndex);
 
   return (
@@ -49,29 +76,3 @@ export default function MonthCalendar({
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: { marginBottom: 28 },
-  monthTitle: { fontSize: 16, color: COLORS.mainGreen, fontWeight: '700', marginBottom: 15 },
-  daysHeader: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
-  dayOfWeek: {
-    fontSize: 14,
-    color: COLORS.oceanBlueButton,
-    fontWeight: 'bold',
-    width: '14.28%',
-    textAlign: 'center',
-  },
-  grid: { flexDirection: 'row', flexWrap: 'wrap' },
-  dayCell: {
-    width: '14.28%',
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  dayCellUnavailable: {
-    backgroundColor: COLORS.darkmodeGreenBlack,
-    borderRadius: 20,
-  },
-  dayText: { fontSize: 13, color: '#333', fontWeight: '500' },
-  dayTextUnavailable: { color: '#FFF' },
-});
