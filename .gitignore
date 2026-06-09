@@ -1,6 +1,9 @@
 # Dependencias
 node_modules/
 front/node_modules/
+backend/venv/
+__pycache__/
+*.pyc
 
 # Expo / React Native
 .expo/

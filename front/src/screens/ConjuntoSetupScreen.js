@@ -184,12 +184,12 @@ export default function ConjuntoSetupScreen({ navigation, route }) {
     if (!result.canceled) setPhotoUri(result.assets[0].uri);
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!conjuntoName.trim()) {
       Alert.alert('Error', 'Ingresa el nombre del conjunto');
       return;
     }
-    const conjunto = createConjunto(conjuntoName.trim(), { address, photoUri });
+    const conjunto = await createConjunto(conjuntoName.trim(), { address, photoUri });
     if (isAddMode) {
       // Admin already logged in — just add the new conjunto
       addConjunto({ conjuntoId: conjunto.id, conjuntoCode: conjunto.code, conjuntoName: conjunto.name });

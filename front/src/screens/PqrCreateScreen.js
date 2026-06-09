@@ -104,7 +104,9 @@ export default function PqrCreateScreen({ navigation }) {
     },
   }), [colors, typography, st, fw, minTarget]);
 
-  const handleSubmit = () => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
     if (!subject.trim()) {
       Alert.alert('Datos incompletos', 'Escribe el asunto de tu solicitud.');
       return;
@@ -114,12 +116,26 @@ export default function PqrCreateScreen({ navigation }) {
       return;
     }
 
-    const ticket = createTicket({ type, subject, description });
-    Alert.alert(
-      'Solicitud enviada',
-      'Tu PQR fue radicada. Aparecerá en inicio como esperando respuesta.',
-      [{ text: 'OK', onPress: () => navigation.replace('PqrDetail', { ticketId: ticket.id }) }],
-    );
+    setSubmitting(true);
+    try {
+      const response = await fetch('http://10.0.2.2:5000/api/pqr/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, subject, description, author_id: 1 })
+      });
+      if (!response.ok) throw new Error('Error backend');
+      const ticket = await response.json();
+      
+      Alert.alert(
+        'Solicitud enviada',
+        'Tu PQR fue radicada correctamente en el backend.',
+        [{ text: 'OK', onPress: () => navigation.goBack() }],
+      );
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión al backend.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -178,8 +194,14 @@ export default function PqrCreateScreen({ navigation }) {
               maxLength={500}
             />
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-              <Text style={styles.submitButtonText}>Enviar solicitud</Text>
+            <TouchableOpacity
+              style={[styles.submitButton, submitting && { opacity: 0.6 }]}
+              onPress={handleSubmit}
+              disabled={submitting}
+            >
+              <Text style={styles.submitButtonText}>
+                {submitting ? 'Enviando...' : 'Enviar solicitud'}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

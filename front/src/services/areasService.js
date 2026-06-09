@@ -1,7 +1,9 @@
-// Per-area admin-configurable settings
-let areaSettings = {};
+import { api } from './api';
 
+// ── Cache local ───────────────────────────────────────────────────────────────
+let areaSettings = {};
 const subscribers = new Set();
+
 function notify() { subscribers.forEach(fn => fn()); }
 
 export function subscribe(fn) {
@@ -11,28 +13,22 @@ export function subscribe(fn) {
 
 const DEFAULT = {
   disabled: false,
-  disabledUntil: null,     // ISO string or null (null = indefinitely)
+  disabledUntil: null,
   disabledMessage: '',
   requiresApproval: false,
   photoUri: null,
 };
 
+// ── Lecturas síncronas ────────────────────────────────────────────────────────
 export function getAreaSettings(areaName) {
   return { ...DEFAULT, ...areaSettings[areaName] };
-}
-
-export function setAreaSettings(areaName, updates) {
-  areaSettings[areaName] = { ...getAreaSettings(areaName), ...updates };
-  notify();
 }
 
 export function isAreaDisabled(areaName) {
   const s = getAreaSettings(areaName);
   if (!s.disabled) return false;
-  if (s.disabledUntil) {
-    return new Date() < new Date(s.disabledUntil);
-  }
-  return true;  // indefinitely disabled
+  if (s.disabledUntil) return new Date() < new Date(s.disabledUntil);
+  return true;
 }
 
 export function areaRequiresApproval(areaName) {
@@ -43,19 +39,42 @@ export function getAreaImage(areaName) {
   return getAreaSettings(areaName).photoUri || null;
 }
 
-export function setAreaImage(areaName, uri) {
-  setAreaSettings(areaName, { photoUri: uri });
+// ── Carga remota de settings de un área ───────────────────────────────────────
+export async function loadAreaSettings(areaName) {
+  try {
+    const data = await api.get(`/areas/${encodeURIComponent(areaName)}`);
+    areaSettings[areaName] = data;
+    notify();
+  } catch (e) {
+    // keep default on error
+  }
 }
 
-// Disable helpers
-export function disableArea(areaName, { message = '', durationMs = null } = {}) {
-  setAreaSettings(areaName, {
+// ── Escrituras async ──────────────────────────────────────────────────────────
+export async function setAreaSettings(areaName, updates) {
+  areaSettings[areaName] = { ...getAreaSettings(areaName), ...updates };
+  notify();
+  try {
+    const data = await api.put(`/areas/${encodeURIComponent(areaName)}`, updates);
+    areaSettings[areaName] = data;
+    notify();
+  } catch (e) {
+    // already updated locally; server sync failed silently
+  }
+}
+
+export async function setAreaImage(areaName, uri) {
+  return setAreaSettings(areaName, { photoUri: uri });
+}
+
+export async function disableArea(areaName, { message = '', durationMs = null } = {}) {
+  return setAreaSettings(areaName, {
     disabled: true,
     disabledUntil: durationMs ? new Date(Date.now() + durationMs).toISOString() : null,
     disabledMessage: message,
   });
 }
 
-export function enableArea(areaName) {
-  setAreaSettings(areaName, { disabled: false, disabledUntil: null, disabledMessage: '' });
+export async function enableArea(areaName) {
+  return setAreaSettings(areaName, { disabled: false, disabledUntil: null, disabledMessage: '' });
 }

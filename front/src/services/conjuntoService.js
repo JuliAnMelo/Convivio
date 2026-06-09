@@ -1,65 +1,9 @@
-const DEMO_CONJUNTO = {
-  id: 'C001',
-  name: 'Conjunto Residencial El Prado',
-  code: 'CONV01',
-  address: 'Calle 45 # 23-67',
-  city: 'Bogotá, Colombia',
-  phone: '(601) 234-5678',
-  email: 'admin@elprado.com.co',
-  hours: 'Lun - Vie: 8:00 am - 5:00 pm',
-  imageKey: 'home',
-};
+import { api } from './api';
 
-const DEMO_CONJUNTO_2 = {
-  id: 'C002',
-  name: 'Torres del Parque',
-  code: 'TPARK1',
-  address: 'Carrera 7 # 32-16',
-  city: 'Bogotá, Colombia',
-  phone: '(601) 345-6789',
-  email: 'admin@torresdelparque.com.co',
-  hours: 'Lun - Sáb: 7:00 am - 6:00 pm',
-  imageKey: 'salon',
-};
-
-let conjuntos = [DEMO_CONJUNTO, DEMO_CONJUNTO_2];
-
-// Pre-seeded demo pending requests so badges show counts on first load
-let pendingRequests = [
-  {
-    requestId: 'demo-req-1',
-    userData: { name: 'María García', email: 'maria@example.com', phone: '3001234567', dob: '05/03/1990' },
-    role: 'residente',
-    conjuntoId: 'C001',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    requestId: 'demo-req-2',
-    userData: { name: 'Pedro López', email: 'pedro@example.com', phone: '3107654321', dob: '12/08/1985' },
-    role: 'residente',
-    conjuntoId: 'C001',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    requestId: 'demo-req-3',
-    userData: { name: 'Andrés Ruiz', email: 'andres@example.com', phone: '3156789012', dob: '20/11/1992' },
-    role: 'guarda',
-    conjuntoId: 'C001',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-  {
-    requestId: 'demo-req-4',
-    userData: { name: 'Sofía Morales', email: 'sofia@example.com', phone: '3209876543', dob: '15/06/1995' },
-    role: 'residente',
-    conjuntoId: 'C002',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 7200000).toISOString(),
-  },
-];
-
+// ── Cache local ───────────────────────────────────────────────────────────────
+let conjuntos = [];
+let pendingRequests = [];
+let _loaded = false;
 const subscribers = new Set();
 
 function notify() {
@@ -71,29 +15,24 @@ export function subscribe(fn) {
   return () => subscribers.delete(fn);
 }
 
-function generateCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+// ── Inicialización ────────────────────────────────────────────────────────────
+export async function load() {
+  if (_loaded) return;
+  _loaded = true;
+  try {
+    conjuntos = await api.get('/conjuntos/');
+    notify();
+  } catch (e) {
+    // keep empty on error
+  }
 }
 
-export function createConjunto(name, options = {}) {
-  const code = generateCode();
-  const conjunto = {
-    id: `C${Date.now()}`,
-    name: name.trim(),
-    code,
-    address: options.address?.trim() || '',
-    city: 'Colombia',
-    phone: '',
-    email: '',
-    hours: '',
-    imageKey: 'home',       // default fallback
-    photoUri: options.photoUri || null,
-  };
-  conjuntos.push(conjunto);
-  return conjunto;
+export async function reload() {
+  _loaded = false;
+  await load();
 }
 
+// ── Lecturas síncronas ────────────────────────────────────────────────────────
 export function findConjuntoByCode(code) {
   return conjuntos.find(c => c.code.toUpperCase() === code.trim().toUpperCase()) || null;
 }
@@ -102,32 +41,8 @@ export function getConjuntoById(id) {
   return conjuntos.find(c => c.id === id) || null;
 }
 
-export function updateConjunto(id, updates) {
-  const conjunto = conjuntos.find(c => c.id === id);
-  if (conjunto) {
-    Object.assign(conjunto, updates);
-    notify();
-  }
-  return conjunto || null;
-}
-
 export function getConjuntosByIds(ids = []) {
   return ids.map(id => getConjuntoById(id)).filter(Boolean);
-}
-
-export function requestJoin({ userData, role, conjuntoId }) {
-  const requestId = `req-${Date.now()}`;
-  pendingRequests.push({
-    requestId,
-    userData,
-    role,
-    conjuntoId,
-    status: 'pending',
-    createdAt: new Date().toISOString(),
-  });
-
-  notify();
-  return requestId;
 }
 
 export function getPendingRequests(conjuntoId) {
@@ -138,16 +53,6 @@ export function getAllRequests(conjuntoId) {
   return pendingRequests.filter(r => r.conjuntoId === conjuntoId);
 }
 
-export function approveRequest(requestId) {
-  const req = pendingRequests.find(r => r.requestId === requestId);
-  if (req) { req.status = 'approved'; notify(); }
-}
-
-export function rejectRequest(requestId) {
-  const req = pendingRequests.find(r => r.requestId === requestId);
-  if (req) { req.status = 'rejected'; notify(); }
-}
-
 export function checkRequestStatus(requestId) {
   const req = pendingRequests.find(r => r.requestId === requestId);
   if (!req) return null;
@@ -156,4 +61,81 @@ export function checkRequestStatus(requestId) {
 
 export function getNotificationCount(conjuntoId) {
   return getPendingRequests(conjuntoId).length;
+}
+
+// ── Carga de solicitudes para un conjunto (llamar desde pantalla admin) ────────
+export async function loadRequests(conjuntoId) {
+  try {
+    const data = await api.get(`/conjuntos/${conjuntoId}/requests`);
+    pendingRequests = [
+      ...pendingRequests.filter(r => r.conjuntoId !== conjuntoId),
+      ...data,
+    ];
+    notify();
+  } catch (e) {
+    // keep existing cache
+  }
+}
+
+// ── Escrituras async ──────────────────────────────────────────────────────────
+export async function createConjunto(name, options = {}) {
+  const conjunto = await api.post('/conjuntos/', {
+    name: name.trim(),
+    address: options.address?.trim() || '',
+    city: 'Colombia',
+    imageKey: 'home',
+    photoUri: options.photoUri || null,
+  });
+  conjuntos = [...conjuntos, conjunto];
+  notify();
+  return conjunto;
+}
+
+export async function updateConjunto(id, updates) {
+  const conjunto = await api.put(`/conjuntos/${id}`, updates);
+  conjuntos = conjuntos.map(c => c.id === id ? { ...c, ...conjunto } : c);
+  notify();
+  return conjunto;
+}
+
+export async function findConjuntoByCodeRemote(code) {
+  try {
+    const c = await api.get(`/conjuntos/${code.trim().toUpperCase()}`);
+    if (!conjuntos.find(x => x.id === c.id)) {
+      conjuntos = [...conjuntos, c];
+    }
+    return c;
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function requestJoin({ userData, role, conjuntoId }) {
+  const req = await api.post('/conjuntos/requests', {
+    name: userData.name,
+    email: userData.email,
+    phone: userData.phone,
+    dob: userData.dob,
+    role,
+    conjuntoId,
+  });
+  pendingRequests = [...pendingRequests, req];
+  notify();
+  return req.requestId;
+}
+
+export async function approveRequest(requestId) {
+  await api.put(`/conjuntos/requests/${requestId}`, { status: 'approved' });
+  pendingRequests = pendingRequests.map(r =>
+    r.requestId === requestId ? { ...r, status: 'approved' } : r
+  );
+  notify();
+}
+
+export async function rejectRequest(requestId) {
+  await api.put(`/conjuntos/requests/${requestId}`, { status: 'rejected' });
+  pendingRequests = pendingRequests.map(r =>
+    r.requestId === requestId ? { ...r, status: 'rejected' } : r
+  );
+  notify();
 }

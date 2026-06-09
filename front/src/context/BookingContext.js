@@ -6,19 +6,24 @@ const BookingContext = createContext(null);
 
 export function BookingProvider({ children }) {
   const [tick, setTick] = useState(0);
+  const [loadingData, setLoadingData] = useState(true);
   const { user } = useContext(AuthContext);
   const hasConjunto = !!user?.conjuntoId;
 
-  useEffect(() => bookingService.subscribe(() => setTick((t) => t + 1)), []);
+  useEffect(() => {
+    const unsub = bookingService.subscribe(() => setTick((t) => t + 1));
+    bookingService.load().finally(() => setLoadingData(false));
+    return unsub;
+  }, []);
 
   const value = useMemo(
     () => ({
       tick,
+      loadingData,
       getCalendarMonths: bookingService.getCalendarMonths,
       isDateUnavailable: bookingService.isDateUnavailable,
       getUnavailableDaysForMonth: bookingService.getUnavailableDaysForMonth,
       getSlotsForDate: bookingService.getSlotsForDate,
-      // No conjunto yet — there are no announcements to show
       getAnnouncements: () => (hasConjunto ? bookingService.getAnnouncements() : []),
       submitReservation: bookingService.submitReservation,
       getReservationsForArea: bookingService.getReservationsForArea,
@@ -26,7 +31,7 @@ export function BookingProvider({ children }) {
       approveReservation: bookingService.approveReservation,
       cancelReservation: bookingService.cancelReservation,
     }),
-    [tick, hasConjunto],
+    [tick, loadingData, hasConjunto],
   );
 
   return (

@@ -39,7 +39,7 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
   const { getReservationsForArea, approveReservation, cancelReservation } = useBooking();
 
   const [settings, setSettings] = useState(() => areasService.getAreaSettings(areaName));
-  const [reservations, setReservations] = useState(() => getReservationsForArea(areaName));
+  const [reservations, setReservations] = useState([]);
   const [disableModalVisible, setDisableModalVisible] = useState(false);
   const [disableMessage, setDisableMessage] = useState('');
   const [cancellingId, setCancellingId] = useState(null);
@@ -52,28 +52,38 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
     });
   }, [areaName]);
 
-  // Refresh reservations when tick changes (BookingContext already re-renders parent)
-  const refreshReservations = () => setReservations(getReservationsForArea(areaName));
+  // Fetch directly from backend
+  const refreshReservations = async () => {
+    try {
+      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${encodeURIComponent(areaName)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setReservations(data);
+      }
+    } catch (e) {
+      console.log('Error fetching reservations', e);
+    }
+  };
   useEffect(() => { refreshReservations(); }, []);
 
   const isDisabled = areasService.isAreaDisabled(areaName);
 
-  const handleToggleDisable = () => {
+  const handleToggleDisable = async () => {
     if (isDisabled) {
-      areasService.enableArea(areaName);
+      await areasService.enableArea(areaName);
     } else {
       setDisableMessage('');
       setDisableModalVisible(true);
     }
   };
 
-  const handleDisableConfirm = (option) => {
+  const handleDisableConfirm = async (option) => {
     setDisableModalVisible(false);
-    areasService.disableArea(areaName, { message: disableMessage, durationMs: option.ms });
+    await areasService.disableArea(areaName, { message: disableMessage, durationMs: option.ms });
   };
 
-  const handleToggleApproval = (val) => {
-    areasService.setAreaSettings(areaName, { requiresApproval: val });
+  const handleToggleApproval = async (val) => {
+    await areasService.setAreaSettings(areaName, { requiresApproval: val });
   };
 
   const handleEditPhoto = async () => {
@@ -89,13 +99,18 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
       quality: 0.85,
     });
     if (!result.canceled) {
-      areasService.setAreaImage(areaName, result.assets[0].uri);
+      await areasService.setAreaImage(areaName, result.assets[0].uri);
     }
   };
 
-  const handleApprove = (id) => {
-    approveReservation(id);
-    refreshReservations();
+  const handleApprove = async (id) => {
+    try {
+      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${id}/approve`, { method: 'POST' });
+      if (!res.ok) throw new Error('Failed');
+      refreshReservations();
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo aprobar la reserva.');
+    }
   };
 
   const handleCancelStart = (id) => {
@@ -103,15 +118,25 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
     setCancelMessage('');
   };
 
-  const handleCancelConfirm = () => {
+  const handleCancelConfirm = async () => {
     if (!cancelMessage.trim()) {
       Alert.alert('Requerido', 'Escribe un mensaje para notificar al residente.');
       return;
     }
-    cancelReservation(cancellingId, cancelMessage.trim());
-    setCancellingId(null);
-    setCancelMessage('');
-    refreshReservations();
+    try {
+      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${cancellingId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: cancelMessage.trim() })
+      });
+      if (!res.ok) throw new Error('Failed');
+      
+      setCancellingId(null);
+      setCancelMessage('');
+      refreshReservations();
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo cancelar la reserva.');
+    }
   };
 
   const fallbackImage = AREA_IMAGES[areaName] || AREA_IMAGES['Gym'];

@@ -165,12 +165,12 @@ export default function LoginScreen({ navigation }) {
     },
   }), [colors, typography, st, fw, minTarget]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Por favor llena todos los campos');
       return;
     }
-    const success = login(email, password);
+    const success = await login(email, password);
     if (!success) {
       Alert.alert('Error', 'Credenciales inválidas. Intenta de nuevo.');
     }

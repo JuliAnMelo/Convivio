@@ -6,9 +6,6 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { AuthContext } from '../context/AuthContext';
-import {
-  subscribe, getAllRequests, approveRequest, rejectRequest,
-} from '../services/conjuntoService';
 import { getPersonaImageByName } from '../utils/personaImages';
 
 const ROLE_LABELS = {
@@ -29,11 +26,21 @@ export default function AdminMembersScreen({ navigation }) {
   const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState('pending');
 
-  useEffect(() => {
+  const fetchRequests = async () => {
     if (!user?.conjuntoId) return;
-    const update = () => setRequests(getAllRequests(user.conjuntoId));
-    update();
-    return subscribe(update);
+    try {
+      const res = await fetch(`http://10.0.2.2:5000/api/conjuntos/${user.conjuntoId}/requests`);
+      if (res.ok) {
+        const data = await res.json();
+        setRequests(data);
+      }
+    } catch (e) {
+      console.log('Error fetching requests', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
   }, [user?.conjuntoId]);
 
   const filtered = requests.filter(r => filter === 'all' || r.status === filter);
@@ -197,13 +204,27 @@ export default function AdminMembersScreen({ navigation }) {
     },
   }), [colors, typography, st, fw, minTarget]);
 
+  const updateRequestStatus = async (reqId, status) => {
+    try {
+      const res = await fetch(`http://10.0.2.2:5000/api/conjuntos/requests/${reqId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error('Failed');
+      fetchRequests();
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo actualizar la solicitud.');
+    }
+  };
+
   const handleApprove = (req) => {
     Alert.alert(
       'Aprobar Solicitud',
       `¿Aprobar a ${req.userData.name} como ${ROLE_LABELS[req.role]}?`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Aprobar', onPress: () => approveRequest(req.requestId) },
+        { text: 'Aprobar', onPress: () => updateRequestStatus(req.requestId, 'approved') },
       ]
     );
   };
@@ -214,7 +235,7 @@ export default function AdminMembersScreen({ navigation }) {
       `¿Rechazar la solicitud de ${req.userData.name}?`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Rechazar', style: 'destructive', onPress: () => rejectRequest(req.requestId) },
+        { text: 'Rechazar', style: 'destructive', onPress: () => updateRequestStatus(req.requestId, 'rejected') },
       ]
     );
   };
