@@ -6,15 +6,20 @@ const PqrContext = createContext(null);
 
 export function PqrProvider({ children }) {
   const [tick, setTick] = useState(0);
+  const [loadingData, setLoadingData] = useState(true);
   const { user } = useContext(AuthContext);
   const hasConjunto = !!user?.conjuntoId;
 
-  useEffect(() => pqrService.subscribe(() => setTick((t) => t + 1)), []);
+  useEffect(() => {
+    const unsub = pqrService.subscribe(() => setTick((t) => t + 1));
+    pqrService.load().finally(() => setLoadingData(false));
+    return unsub;
+  }, []);
 
   const value = useMemo(
     () => ({
       tick,
-      // No conjunto yet — there are no PQRs to show
+      loadingData,
       getTickets: () => (hasConjunto ? pqrService.getTickets() : []),
       getTicketById: pqrService.getTicketById,
       hasUnansweredTickets: () => hasConjunto && pqrService.hasUnansweredTickets(),
@@ -23,7 +28,7 @@ export function PqrProvider({ children }) {
       createTicket: pqrService.createTicket,
       respondToTicket: pqrService.respondToTicket,
     }),
-    [tick, hasConjunto],
+    [tick, loadingData, hasConjunto],
   );
 
   return <PqrContext.Provider value={value}>{children}</PqrContext.Provider>;

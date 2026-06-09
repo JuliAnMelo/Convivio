@@ -156,7 +156,7 @@ export default function AreaFormScreen({ navigation, route }) {
     },
   }), [colors, typography, st, fw, minTarget]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!eventTitle.trim()) {
       Alert.alert('Datos incompletos', 'Escribe un título para tu reserva.');
       return;
@@ -167,28 +167,36 @@ export default function AreaFormScreen({ navigation, route }) {
     }
 
     setSubmitting(true);
-    submitReservation({
-      areaName,
-      year,
-      monthIndex,
-      monthName: month,
-      day,
-      timeSlot: time,
-      eventTitle: eventTitle.trim(),
-      people: people.trim(),
-      description,
-      requiresApproval: needsApproval,
-      userName: user?.name || '',
-      userPhotoUri: user?.photoUri || null,
-    });
+    try {
+      const response = await fetch('http://10.0.2.2:5000/api/bookings/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          areaName,
+          year,
+          monthIndex,
+          day,
+          timeSlot: time,
+          eventTitle: eventTitle.trim(),
+          people: parseInt(people.trim()),
+          description,
+          requiresApproval: needsApproval,
+          userName: user?.name || ''
+        })
+      });
+      if (!response.ok) throw new Error('Error backend');
+      
+      const title = needsApproval ? 'Solicitud pendiente' : 'Solicitud enviada';
+      const msg = needsApproval
+        ? `Tu solicitud para ${areaName} fue enviada al administrador en el backend.`
+        : `Tu reserva de ${areaName} fue confirmada en el backend.`;
 
-    const title = needsApproval ? 'Solicitud pendiente' : 'Solicitud enviada';
-    const msg = needsApproval
-      ? `Tu solicitud para ${areaName} fue enviada al administrador para aprobación. Te notificaremos cuando sea aprobada.`
-      : `Tu reserva de ${areaName} fue confirmada. Aparecerá en tus anuncios.`;
-
-    Alert.alert(title, msg, [{ text: 'Entendido', onPress: () => navigation.popToTop() }]);
-    setSubmitting(false);
+      Alert.alert(title, msg, [{ text: 'Entendido', onPress: () => navigation.popToTop() }]);
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión al backend.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

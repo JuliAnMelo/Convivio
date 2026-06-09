@@ -1,31 +1,9 @@
+import { api } from './api';
 import { MONTH_NAMES } from './pqrConstants';
 
-let tickets = [
-  {
-    id: 'pqr-demo-1',
-    code: 'PQR-001',
-    type: 'peticion',
-    subject: 'Certificado de paz y salvo',
-    description: 'Necesito el certificado para trámite bancario del apartamento 303.',
-    status: 'esperando',
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    adminResponse: null,
-    respondedAt: null,
-  },
-  {
-    id: 'pqr-demo-2',
-    code: 'PQR-002',
-    type: 'queja',
-    subject: 'Ruido en horario nocturno',
-    description: 'Se presentan reuniones después de las 10 pm en el apartamento 502.',
-    status: 'respondido',
-    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-    adminResponse:
-      'Se envió comunicado al residente del 502 y vigilancia hará seguimiento los fines de semana.',
-    respondedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  },
-];
-
+// ── Cache local ──────────────────────────────────────────────────────────────
+let tickets = [];
+let _loaded = false;
 let listeners = [];
 
 function notify() {
@@ -39,6 +17,20 @@ export function subscribe(listener) {
   };
 }
 
+// ── Inicialización (llamada por PqrContext al montar) ─────────────────────────
+export async function load() {
+  if (_loaded) return;
+  _loaded = true;
+  try {
+    const data = await api.get('/pqr/');
+    tickets = data;
+    notify();
+  } catch (e) {
+    // keep empty cache on network error
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function formatTime(date) {
   const d = new Date(date);
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
@@ -47,12 +39,10 @@ function formatTime(date) {
 export function ticketToAnnouncement(ticket) {
   const d = new Date(ticket.createdAt);
   const isWaiting = ticket.status === 'esperando';
-
   return {
     id: `ann-pqr-${ticket.id}`,
     ticketId: ticket.id,
     month: MONTH_NAMES[d.getMonth()],
-
     title: ticket.subject,
     subtitle: isWaiting ? 'Esperando respuesta' : 'Respondido por administración',
     time: formatTime(d),
@@ -64,6 +54,7 @@ export function ticketToAnnouncement(ticket) {
   };
 }
 
+// ── Lecturas síncronas (desde cache) ──────────────────────────────────────────
 export function getAnnouncementsForHome() {
   return tickets.map(ticketToAnnouncement);
 }
@@ -82,7 +73,6 @@ export function hasUnansweredTickets() {
 
 export function getChatMessages(ticket) {
   if (!ticket) return [];
-
   const messages = [
     {
       id: `${ticket.id}-resident`,
@@ -93,7 +83,6 @@ export function getChatMessages(ticket) {
       at: ticket.createdAt,
     },
   ];
-
   if (ticket.adminResponse) {
     messages.push({
       id: `${ticket.id}-admin`,
@@ -103,35 +92,20 @@ export function getChatMessages(ticket) {
       at: ticket.respondedAt || ticket.createdAt,
     });
   }
-
   return messages;
 }
 
-export function createTicket({ type, subject, description }) {
-  const now = new Date();
-  const ticket = {
-    id: `pqr-${Date.now()}`,
-    code: `PQR-${String(tickets.length + 1).padStart(3, '0')}`,
-    type,
-    subject: subject.trim(),
-    description: description.trim(),
-    status: 'esperando',
-    createdAt: now.toISOString(),
-    adminResponse: null,
-    respondedAt: null,
-  };
-
+// ── Escrituras async ──────────────────────────────────────────────────────────
+export async function createTicket({ type, subject, description }) {
+  const ticket = await api.post('/pqr/', { type, subject, description });
   tickets = [ticket, ...tickets];
   notify();
   return ticket;
 }
 
-export function respondToTicket(ticketId, response) {
-  const ticket = tickets.find(t => t.id === ticketId);
-  if (!ticket) return false;
-  ticket.adminResponse = response.trim();
-  ticket.status = 'respondido';
-  ticket.respondedAt = new Date().toISOString();
+export async function respondToTicket(ticketId, response) {
+  const updated = await api.post(`/pqr/${ticketId}/respond`, { response });
+  tickets = tickets.map(t => t.id === ticketId ? { ...t, ...updated } : t);
   notify();
   return true;
 }
