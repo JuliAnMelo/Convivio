@@ -7,6 +7,7 @@ bp = Blueprint('pqr', __name__, url_prefix='/pqr')
 def _serialize(t):
     return {
         'id': t.id,
+        'conjuntoId': t.conjunto_id,
         'code': t.code,
         'type': t.type,
         'subject': t.subject,
@@ -20,7 +21,8 @@ def _serialize(t):
 
 @bp.route('/', methods=['GET'])
 def get_all():
-    tickets = PQRService.get_all()
+    conjunto_id = request.args.get('conjuntoId')
+    tickets = PQRService.get_all(conjunto_id)
     return jsonify([_serialize(t) for t in tickets])
 
 

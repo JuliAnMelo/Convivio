@@ -170,7 +170,9 @@ export default function RegisterScreen({ navigation }) {
       Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
-    navigation.navigate('RoleSelection', { userData: { email, name, phone, dob } });
+    navigation.navigate('RoleSelection', {
+      userData: { email, name, phone, dob },
+    });
   };
 
   return (
@@ -254,6 +256,8 @@ export default function RegisterScreen({ navigation }) {
                 />
               </View>
             </View>
+
+
 
             <View style={styles.inputBlock}>
               <Text style={styles.label}>Contraseña</Text>

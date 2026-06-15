@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useContext, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useAppTheme } from '../theme';
 import IconVector from '../components/IconVector';
+import { AuthContext } from '../context/AuthContext';
+import { useBooking } from '../context/BookingContext';
 
 function VideoAttachment({ uri, name, style }) {
   const player = useVideoPlayer(uri, (p) => {
@@ -45,7 +47,34 @@ const videoStyles = StyleSheet.create({
 
 export default function AnnouncementDetailScreen({ navigation, route }) {
   const { item } = route.params || {};
+  const { user } = useContext(AuthContext);
+  const { deleteAnnouncement } = useBooking();
   const { colors, typography, st, fw, minTarget } = useAppTheme();
+
+  // Solo el admin puede borrar, y solo anuncios reales (no notificaciones de PQR).
+  const canDelete = user?.role === 'administrador' && item && item.type !== 'pqr';
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Eliminar anuncio',
+      `¿Seguro que deseas eliminar "${item.title}"? Esta acción no se puede deshacer.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAnnouncement(item.id);
+              navigation.goBack();
+            } catch (e) {
+              Alert.alert('Error', 'No se pudo eliminar el anuncio. Intenta de nuevo.');
+            }
+          },
+        },
+      ],
+    );
+  };
   const styles = useMemo(() => StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.mainGreen },
     contentWrap: {
@@ -72,6 +101,15 @@ export default function AnnouncementDetailScreen({ navigation, route }) {
       alignItems: 'center',
     },
     backText: { fontSize: st(24), color: colors.mainGreen },
+    deleteBtn: {
+      position: 'absolute',
+      right: 10,
+      padding: 10,
+      minWidth: minTarget,
+      minHeight: minTarget,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     titleScreen: {
       ...typography.subtitle,
       fontSize: st(20),
@@ -148,6 +186,11 @@ export default function AnnouncementDetailScreen({ navigation, route }) {
             <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.titleScreen}>Detalle del Anuncio</Text>
+          {canDelete && (
+            <TouchableOpacity onPress={handleDelete} style={styles.deleteBtn}>
+              <Ionicons name="trash-outline" size={22} color={colors.errorRed} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>

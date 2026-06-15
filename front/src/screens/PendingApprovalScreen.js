@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useContext } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
+import { checkRequestStatusRemote, getConjuntoById } from '../services/conjuntoService';
 import { AuthContext } from '../context/AuthContext';
-import { subscribe, checkRequestStatus, getConjuntoById } from '../services/conjuntoService';
 
 export default function PendingApprovalScreen({ navigation, route }) {
   const { requestId, userData, role, conjuntoId, conjuntoCode, conjuntoName, mode } = route.params;
   const isAddMode = mode === 'add';
   const isHomeJoin = mode === 'homeJoin';
-
   const { register, addConjunto, updateUser } = useContext(AuthContext);
+
   const { colors, typography, st, fw, shouldAnimate } = useAppTheme();
   const [status, setStatus] = useState('pending');
 
@@ -31,11 +31,19 @@ export default function PendingApprovalScreen({ navigation, route }) {
   }, [shouldAnimate, pulseAnim]);
 
   useEffect(() => {
-    const unsubscribe = subscribe(() => {
-      const result = checkRequestStatus(requestId);
-      if (result) setStatus(result.status);
-    });
-    return unsubscribe;
+    let isMounted = true;
+    const fetchStatus = async () => {
+      const data = await checkRequestStatusRemote(requestId);
+      if (isMounted && data) {
+        setStatus(data.status);
+      }
+    };
+    fetchStatus();
+    const intervalId = setInterval(fetchStatus, 3000);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, [requestId]);
 
   useEffect(() => {
@@ -44,12 +52,14 @@ export default function PendingApprovalScreen({ navigation, route }) {
     const resolvedCode = conjunto?.code || conjuntoCode;
     const resolvedName = conjunto?.name || conjuntoName;
 
+    const aptValue = userData.apt || '';
+
     if (isAddMode) {
       addConjunto({ conjuntoId, conjuntoCode: resolvedCode, conjuntoName: resolvedName });
+      updateUser({ apt: aptValue });
       navigation.navigate('Inicio');
     } else if (isHomeJoin) {
-      // Already registered — just attach the conjunto
-      updateUser({ conjuntoId, conjuntoIds: [conjuntoId], conjuntoCode: resolvedCode, conjuntoName: resolvedName });
+      updateUser({ conjuntoId, conjuntoIds: [conjuntoId], conjuntoCode: resolvedCode, conjuntoName: resolvedName, apt: aptValue });
       navigation.navigate('Inicio');
     } else {
       register({
@@ -59,7 +69,7 @@ export default function PendingApprovalScreen({ navigation, route }) {
         conjuntoIds: [conjuntoId],
         conjuntoCode: resolvedCode,
         conjuntoName: resolvedName,
-        apt: 'Por asignar',
+        apt: aptValue,
       });
     }
   }, [status]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,16 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useAppTheme } from '../theme';
+import { AuthContext } from '../context/AuthContext';
+import { getConjuntoById } from '../services/conjuntoService';
 
-const RECEPTION_PHONE = 'tel:+573000000000';
 const GUARD_AVATAR = require('../../assets/Images/guardia.webp');
 
 export default function ReceptionScreen({ navigation }) {
   const { colors, typography, st, fw, minTarget, shouldAnimate } = useAppTheme();
+  const { user } = useContext(AuthContext);
+  const conjunto = getConjuntoById(user?.conjuntoId);
+  const guardPhone = conjunto?.phone ? `tel:${conjunto.phone}` : null;
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
 
@@ -192,17 +196,26 @@ export default function ReceptionScreen({ navigation }) {
   }), [colors, typography, st, fw, minTarget]);
 
   const handleCall = async () => {
+    if (!guardPhone) {
+      Alert.alert('Sin número registrado', 'El conjunto no tiene número de celador configurado. Contacta al administrador.');
+      return;
+    }
     try {
-      const supported = await Linking.canOpenURL(RECEPTION_PHONE);
+      const supported = await Linking.canOpenURL(guardPhone);
       if (!supported) {
         Alert.alert('Llamada no disponible', 'Tu dispositivo no puede realizar llamadas.');
         return;
       }
-      await Linking.openURL(RECEPTION_PHONE);
+      await Linking.openURL(guardPhone);
     } catch (error) {
       Alert.alert('Error', 'No se pudo iniciar la llamada.');
     }
   };
+
+  if (user?.role === 'guarda') {
+    navigation.replace('GuardChatList');
+    return null;
+  }
 
   return (
     <View style={styles.container}>

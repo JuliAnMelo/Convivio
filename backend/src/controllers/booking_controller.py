@@ -10,6 +10,7 @@ MONTH_NAMES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
 def _serialize_reservation(r):
     return {
         'id': r.id,
+        'conjuntoId': r.conjunto_id,
         'areaName': r.area_name,
         'year': r.year,
         'monthIndex': r.month_index,
@@ -20,6 +21,7 @@ def _serialize_reservation(r):
         'people': r.people,
         'description': r.description or '',
         'userName': r.user_name or '',
+        'userPhotoUri': r.user_photo_uri or None,
         'status': r.status,
         'cancelledMessage': r.cancelled_message or '',
         'createdAt': r.created_at.isoformat() if r.created_at else None,
@@ -30,6 +32,7 @@ def _serialize_announcement(a):
     d = a.created_at
     return {
         'id': a.id,
+        'conjuntoId': a.conjunto_id,
         'title': a.title,
         'subtitle': a.subtitle or '',
         'tag': a.tag or '',
@@ -51,19 +54,22 @@ def create():
 
 @bp.route('/', methods=['GET'])
 def get_all():
-    reservations = BookingService.get_all_reservations()
+    conjunto_id = request.args.get('conjuntoId')
+    reservations = BookingService.get_all_reservations(conjunto_id)
     return jsonify([_serialize_reservation(r) for r in reservations])
 
 
 @bp.route('/pending', methods=['GET'])
 def get_pending():
-    reservations = BookingService.get_pending_reservations()
+    conjunto_id = request.args.get('conjuntoId')
+    reservations = BookingService.get_pending_reservations(conjunto_id)
     return jsonify([_serialize_reservation(r) for r in reservations])
 
 
 @bp.route('/announcements', methods=['GET'])
 def get_announcements():
-    announcements = BookingService.get_announcements()
+    conjunto_id = request.args.get('conjuntoId')
+    announcements = BookingService.get_announcements(conjunto_id)
     return jsonify([_serialize_announcement(a) for a in announcements])
 
 
@@ -73,9 +79,18 @@ def create_announcement():
     return jsonify(_serialize_announcement(ann)), 201
 
 
+@bp.route('/announcements/<ann_id>', methods=['DELETE'])
+def delete_announcement(ann_id):
+    # Borrado idempotente: si ya no existe, igual respondemos OK para que el
+    # cliente pueda quitarlo de su lista sin mostrar un error.
+    deleted = BookingService.delete_announcement(ann_id)
+    return jsonify({'id': ann_id, 'deleted': deleted})
+
+
 @bp.route('/<area_name>', methods=['GET'])
 def get_reservations(area_name):
-    reservations = BookingService.get_reservations(area_name)
+    conjunto_id = request.args.get('conjuntoId')
+    reservations = BookingService.get_reservations(area_name, conjunto_id)
     return jsonify([_serialize_reservation(r) for r in reservations])
 
 

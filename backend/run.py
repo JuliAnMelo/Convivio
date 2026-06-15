@@ -26,10 +26,20 @@ def seed_conjuntos():
 
 def migrate_schema():
     from sqlalchemy import text
+    statements = [
+        "ALTER TABLE conjuntos ADD COLUMN IF NOT EXISTS photo_url TEXT",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS torre VARCHAR(50)",
+        "ALTER TABLE join_requests ADD COLUMN IF NOT EXISTS user_apt VARCHAR(50)",
+        "ALTER TABLE join_requests ADD COLUMN IF NOT EXISTS user_torre VARCHAR(50)",
+        "ALTER TABLE chat_messages ADD COLUMN IF NOT EXISTS sender_apt VARCHAR(100)",
+        "ALTER TABLE announcements ADD COLUMN IF NOT EXISTS conjunto_id VARCHAR(50)",
+        "ALTER TABLE reservations ADD COLUMN IF NOT EXISTS conjunto_id VARCHAR(50)",
+        "ALTER TABLE tickets ADD COLUMN IF NOT EXISTS conjunto_id VARCHAR(50)",
+        "ALTER TABLE reservations ADD COLUMN IF NOT EXISTS user_photo_uri TEXT",
+    ]
     with db.engine.connect() as conn:
-        conn.execute(text(
-            "ALTER TABLE conjuntos ADD COLUMN IF NOT EXISTS photo_url TEXT"
-        ))
+        for stmt in statements:
+            conn.execute(text(stmt))
         conn.commit()
 
 if __name__ == '__main__':

@@ -8,13 +8,23 @@ export function BookingProvider({ children }) {
   const [tick, setTick] = useState(0);
   const [loadingData, setLoadingData] = useState(true);
   const { user } = useContext(AuthContext);
-  const hasConjunto = !!user?.conjuntoId;
+  const conjuntoId = user?.conjuntoId || null;
+  const hasConjunto = !!conjuntoId;
 
   useEffect(() => {
     const unsub = bookingService.subscribe(() => setTick((t) => t + 1));
-    bookingService.load().finally(() => setLoadingData(false));
-    return unsub;
-  }, []);
+    setLoadingData(true);
+    bookingService.load(conjuntoId).finally(() => setLoadingData(false));
+
+    const interval = setInterval(() => {
+      bookingService.reload(conjuntoId);
+    }, 30000);
+
+    return () => {
+      unsub();
+      clearInterval(interval);
+    };
+  }, [conjuntoId]);
 
   const value = useMemo(
     () => ({
@@ -26,6 +36,7 @@ export function BookingProvider({ children }) {
       getSlotsForDate: bookingService.getSlotsForDate,
       getAnnouncements: () => (hasConjunto ? bookingService.getAnnouncements() : []),
       submitReservation: bookingService.submitReservation,
+      deleteAnnouncement: bookingService.deleteAnnouncement,
       getReservationsForArea: bookingService.getReservationsForArea,
       getPendingReservations: bookingService.getPendingReservations,
       approveReservation: bookingService.approveReservation,

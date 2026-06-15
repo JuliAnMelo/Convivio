@@ -4,6 +4,7 @@ import { MONTH_NAMES } from './pqrConstants';
 // ── Cache local ──────────────────────────────────────────────────────────────
 let tickets = [];
 let _loaded = false;
+let conjuntoId = null;
 let listeners = [];
 
 function notify() {
@@ -18,16 +19,29 @@ export function subscribe(listener) {
 }
 
 // ── Inicialización (llamada por PqrContext al montar) ─────────────────────────
-export async function load() {
-  if (_loaded) return;
+export async function load(cid = conjuntoId) {
+  if (_loaded && cid === conjuntoId) return;
+  conjuntoId = cid;
   _loaded = true;
+
+  if (!cid) {
+    tickets = [];
+    notify();
+    return;
+  }
+
   try {
-    const data = await api.get('/pqr/');
+    const data = await api.get(`/pqr/?conjuntoId=${encodeURIComponent(cid)}`);
     tickets = data;
     notify();
   } catch (e) {
     // keep empty cache on network error
   }
+}
+
+export async function reload(cid = conjuntoId) {
+  _loaded = false;
+  await load(cid);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -97,7 +111,7 @@ export function getChatMessages(ticket) {
 
 // ── Escrituras async ──────────────────────────────────────────────────────────
 export async function createTicket({ type, subject, description }) {
-  const ticket = await api.post('/pqr/', { type, subject, description });
+  const ticket = await api.post('/pqr/', { conjuntoId, type, subject, description });
   tickets = [ticket, ...tickets];
   notify();
   return ticket;

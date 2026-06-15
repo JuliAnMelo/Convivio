@@ -25,11 +25,31 @@ const INFO_ROWS = [
 ];
 
 export default function ConjuntoInfoScreen({ navigation }) {
-  const { user } = useContext(AuthContext);
+  const { user, leaveConjunto } = useContext(AuthContext);
   const { colors, typography, st, fw, minTarget } = useAppTheme();
 
   const isAdmin = user?.role === 'administrador';
+  const canLeave = !!user?.conjuntoId;
   const conjunto = getConjuntoById(user?.conjuntoId) || {};
+
+  const handleLeaveConjunto = () => {
+    const conjuntoName = conjunto.name || user?.conjuntoName || 'este conjunto';
+    Alert.alert(
+      'Salir del conjunto',
+      `¿Seguro que deseas salir de "${conjuntoName}"? Dejarás de ver sus anuncios, áreas y demás información.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Salir',
+          style: 'destructive',
+          onPress: () => {
+            leaveConjunto(user?.conjuntoId);
+            navigation.navigate('Inicio');
+          },
+        },
+      ],
+    );
+  };
 
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
@@ -206,6 +226,30 @@ export default function ConjuntoInfoScreen({ navigation }) {
       fontWeight: fw('700'),
       fontSize: st(15),
     },
+    leaveSection: {
+      marginTop: 28,
+      borderTopWidth: 1,
+      borderTopColor: 'rgba(240,76,76,0.2)',
+      paddingTop: 20,
+    },
+    leaveButton: {
+      backgroundColor: 'rgba(240,76,76,0.12)',
+      borderRadius: 25,
+      paddingVertical: 14,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 10,
+      borderWidth: 1,
+      borderColor: colors.errorRed,
+      minHeight: minTarget,
+    },
+    leaveButtonText: {
+      ...typography.subtitle,
+      color: colors.errorRed,
+      fontWeight: fw('700'),
+      fontSize: st(15),
+    },
   }), [colors, typography, st, fw, minTarget]);
 
   const fallback = {
@@ -296,6 +340,19 @@ export default function ConjuntoInfoScreen({ navigation }) {
           <Ionicons name="document-text-outline" size={22} color={colors.darkmodeGreenBlack} />
           <Text style={styles.manualButtonText}>Ver Manual de Convivencia</Text>
         </TouchableOpacity>
+
+        {canLeave && (
+          <View style={styles.leaveSection}>
+            <TouchableOpacity
+              style={styles.leaveButton}
+              onPress={handleLeaveConjunto}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="exit-outline" size={22} color={colors.errorRed} />
+              <Text style={styles.leaveButtonText}>Salir del conjunto</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

@@ -14,3 +14,16 @@ def login():
     if error:
         return jsonify({'error': error}), 401
     return jsonify(user_data)
+
+
+@bp.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.json or {}
+    identifier = data.get('identifier', '').strip()
+    new_password = data.get('newPassword', '')
+    if not identifier or not new_password:
+        return jsonify({'error': 'Faltan datos'}), 400
+    ok, error = AuthService.reset_password(identifier, new_password)
+    if not ok:
+        return jsonify({'error': error}), 400
+    return jsonify({'message': 'Contraseña actualizada correctamente'})

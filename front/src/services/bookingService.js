@@ -19,6 +19,7 @@ const MONTH_NAMES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
 let reservations = [];
 let announcements = [];
 let _loaded = false;
+let conjuntoId = null;
 let listeners = [];
 
 function notify() {
@@ -33,13 +34,25 @@ export function subscribe(listener) {
 }
 
 // ── Inicialización ────────────────────────────────────────────────────────────
-export async function load() {
-  if (_loaded) return;
+export async function load(cid = conjuntoId) {
+  // Si ya cargamos para este mismo conjunto, no repetimos.
+  if (_loaded && cid === conjuntoId) return;
+  conjuntoId = cid;
   _loaded = true;
+
+  // Sin conjunto seleccionado: cache vacía.
+  if (!cid) {
+    reservations = [];
+    announcements = [];
+    notify();
+    return;
+  }
+
   try {
+    const q = `?conjuntoId=${encodeURIComponent(cid)}`;
     const [resData, annData] = await Promise.all([
-      api.get('/bookings/'),
-      api.get('/bookings/announcements'),
+      api.get(`/bookings/${q}`),
+      api.get(`/bookings/announcements${q}`),
     ]);
     reservations = resData;
     announcements = annData;
@@ -47,6 +60,11 @@ export async function load() {
   } catch (e) {
     // keep empty cache on network error
   }
+}
+
+export async function reload(cid = conjuntoId) {
+  _loaded = false;
+  await load(cid);
 }
 
 // ── Calendario ────────────────────────────────────────────────────────────────
@@ -133,12 +151,14 @@ export async function submitReservation({
   userName = '', userPhotoUri = null,
 }) {
   const reservation = await api.post('/bookings/', {
+    conjuntoId,
     areaName, year, monthIndex, day, timeSlot,
     eventTitle: eventTitle.trim(),
     people: Number(people) || 0,
     description: description?.trim() || '',
     requiresApproval,
     userName,
+    userPhotoUri,
   });
 
   const local = {
@@ -156,7 +176,7 @@ export async function submitReservation({
     const now = new Date();
     announcements = [
       {
-        id: reservation.id,
+        id: `ann-${reservation.id}`,
         month: monthName || MONTH_NAMES_ES[monthIndex],
         tag: '',
         title: reservation.eventTitle,
@@ -209,6 +229,7 @@ export async function cancelReservation(id, message = '') {
 
 export async function createAnnouncement({ title, description, tag, category, attachment = null, icon = 'megaphone' }) {
   const ann = await api.post('/bookings/announcements', {
+    conjuntoId,
     title, description, tag, category, icon,
   });
 
@@ -221,4 +242,16 @@ export async function createAnnouncement({ title, description, tag, category, at
   announcements = [local, ...announcements];
   notify();
   return local;
+}
+
+export async function deleteAnnouncement(id) {
+  // Intentamos borrar en el backend; pase lo que pase, lo quitamos de la
+  // caché local para que desaparezca de la lista sin mostrar un error.
+  try {
+    await api.delete(`/bookings/announcements/${id}`);
+  } catch (e) {
+    // ignoramos: el backend es idempotente y de todas formas lo quitamos abajo
+  }
+  announcements = announcements.filter((a) => a.id !== id);
+  notify();
 }

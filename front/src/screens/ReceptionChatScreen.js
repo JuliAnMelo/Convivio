@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '../theme';
 import { useReceptionChat } from '../context/ReceptionChatContext';
 
@@ -24,6 +25,7 @@ function formatTime(iso) {
 export default function ReceptionChatScreen({ navigation }) {
   const { messages, isTyping: typing, sendMessage, setChatIsOpen } = useReceptionChat();
   const { colors, st, fw, minTarget } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const [draft, setDraft] = useState('');
   const [typingDots, setTypingDots] = useState('');
   const scrollRef = useRef(null);
@@ -93,7 +95,8 @@ export default function ReceptionChatScreen({ navigation }) {
       flexDirection: 'row',
       alignItems: 'flex-end',
       paddingHorizontal: 12,
-      paddingVertical: 12,
+      paddingTop: 12,
+      paddingBottom: 12 + Math.max(insets.bottom, 8),
       borderTopWidth: 1,
       borderTopColor: colors.separator,
       backgroundColor: colors.card,
@@ -176,7 +179,7 @@ export default function ReceptionChatScreen({ navigation }) {
       fontSize: st(12),
       color: colors.textSoft,
     },
-  }), [colors, st, fw, minTarget]);
+  }), [colors, st, fw, minTarget, insets.bottom]);
 
   const ChatBubble = ({ message }) => {
     const isResident = message.sender === 'resident';

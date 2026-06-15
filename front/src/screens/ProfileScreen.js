@@ -1,15 +1,38 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Animated, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { AuthContext } from '../context/AuthContext';
+import { getConjuntoById } from '../services/conjuntoService';
 
 const GUARD_AVATAR = require('../../assets/Images/guardia.webp');
 const DEFAULT_AVATAR_URI = 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=200&q=80';
 
 export default function ProfileScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, leaveConjunto } = useContext(AuthContext);
   const { colors, typography, st, fw, minTarget, shouldAnimate } = useAppTheme();
+
+  const canLeave = !!user?.conjuntoId;
+
+  const handleLeaveConjunto = () => {
+    const conjunto = getConjuntoById(user?.conjuntoId);
+    const conjuntoName = conjunto?.name || user?.conjuntoName || 'este conjunto';
+    Alert.alert(
+      'Salir del conjunto',
+      `¿Seguro que deseas salir de "${conjuntoName}"? Dejarás de ver sus anuncios, áreas y demás información.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Salir',
+          style: 'destructive',
+          onPress: () => {
+            leaveConjunto(user?.conjuntoId);
+            navigation.navigate('Inicio');
+          },
+        },
+      ],
+    );
+  };
 
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
@@ -261,6 +284,15 @@ export default function ProfileScreen({ navigation }) {
               </View>
               <Text style={styles.menuText}>Configuración</Text>
             </TouchableOpacity>
+
+            {canLeave && (
+              <TouchableOpacity style={styles.menuItem} onPress={handleLeaveConjunto}>
+                <View style={[styles.menuIconBox, { backgroundColor: colors.errorRed }]}>
+                  <Ionicons name="exit-outline" size={20} color="#FFF" />
+                </View>
+                <Text style={styles.menuText}>Salir del conjunto</Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity style={styles.menuItem} onPress={logout}>
               <View style={[styles.menuIconBox, { backgroundColor: '#57A3FD' }]}>

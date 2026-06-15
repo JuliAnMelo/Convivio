@@ -118,21 +118,14 @@ export default function PqrCreateScreen({ navigation }) {
 
     setSubmitting(true);
     try {
-      const response = await fetch('http://10.0.2.2:5000/api/pqr/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, subject, description, author_id: 1 })
-      });
-      if (!response.ok) throw new Error('Error backend');
-      const ticket = await response.json();
-      
+      await createTicket({ type, subject, description });
       Alert.alert(
         'Solicitud enviada',
-        'Tu PQR fue radicada correctamente en el backend.',
+        'Tu PQR fue radicada correctamente.',
         [{ text: 'OK', onPress: () => navigation.goBack() }],
       );
     } catch (e) {
-      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión al backend.');
+      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión.');
     } finally {
       setSubmitting(false);
     }

@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   SafeAreaView, Alert, KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
-import { findConjuntoByCode, requestJoin } from '../services/conjuntoService';
+import { findConjuntoByCode, findConjuntoByCodeRemote, requestJoin } from '../services/conjuntoService';
 
 const ROLE_LABELS = {
   residente: 'Residente',
@@ -16,7 +17,16 @@ const ROLE_LABELS = {
 export default function ConjuntoJoinScreen({ navigation, route }) {
   const { userData, role } = route.params;
   const [code, setCode] = useState('');
+  const [apt, setApt] = useState('');
   const { colors, typography, st, fw, minTarget } = useAppTheme();
+  const isFocused = useIsFocused();
+  const inputRef = useRef(null);
+
+  React.useEffect(() => {
+    if (!isFocused) return;
+    const t = setTimeout(() => inputRef.current?.focus(), 350);
+    return () => clearTimeout(t);
+  }, [isFocused]);
 
   const styles = useMemo(() => StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.mainGreen },
@@ -129,28 +139,40 @@ export default function ConjuntoJoinScreen({ navigation, route }) {
     },
   }), [colors, typography, st, fw, minTarget]);
 
-  const handleJoin = () => {
-    if (!code.trim()) {
-      Alert.alert('Error', 'Ingresa el código del conjunto');
+  const [joining, setJoining] = React.useState(false);
+
+  const handleJoin = async () => {
+    if (!code.trim() || !apt.trim()) {
+      Alert.alert('Error', 'Ingresa el código del conjunto y tu apartamento');
       return;
     }
-    const conjunto = findConjuntoByCode(code.trim());
-    if (!conjunto) {
-      Alert.alert('Código incorrecto', 'No se encontró ningún conjunto con ese código. Verifica e intenta de nuevo.');
-      return;
+    setJoining(true);
+    try {
+      let conjunto = findConjuntoByCode(code.trim());
+      if (!conjunto) {
+        conjunto = await findConjuntoByCodeRemote(code.trim());
+      }
+      if (!conjunto) {
+        Alert.alert('Código incorrecto', 'No se encontró ningún conjunto con ese código. Verifica e intenta de nuevo.');
+        return;
+      }
+      const requestId = await requestJoin({ userData: { ...userData, apt: apt.trim() }, role, conjuntoId: conjunto.id });
+      const isInApp = route.params?.mode === 'add' || route.params?.mode === 'homeJoin';
+      const targetScreen = isInApp ? 'InAppPendingApproval' : 'PendingApproval';
+      navigation.navigate(targetScreen, {
+        requestId,
+        userData: { ...userData, apt: apt.trim() },
+        role,
+        conjuntoId: conjunto.id,
+        conjuntoCode: conjunto.code,
+        conjuntoName: conjunto.name,
+        mode: route.params?.mode,
+      });
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo procesar la solicitud. Verifica tu conexión e intenta de nuevo.');
+    } finally {
+      setJoining(false);
     }
-    const requestId = requestJoin({ userData, role, conjuntoId: conjunto.id });
-    const isInApp = route.params?.mode === 'add' || route.params?.mode === 'homeJoin';
-    const targetScreen = isInApp ? 'InAppPendingApproval' : 'PendingApproval';
-    navigation.navigate(targetScreen, {
-      requestId,
-      userData,
-      role,
-      conjuntoId: conjunto.id,
-      conjuntoCode: conjunto.code,
-      conjuntoName: conjunto.name,
-      mode: route.params?.mode,
-    });
   };
 
   return (
@@ -176,6 +198,7 @@ export default function ConjuntoJoinScreen({ navigation, route }) {
             <Text style={styles.label}>Código del Conjunto</Text>
             <View style={styles.inputContainer}>
               <TextInput
+                ref={inputRef}
                 style={styles.input}
                 placeholder="XXXXXX"
                 placeholderTextColor="rgba(9, 48, 48, 0.3)"
@@ -183,12 +206,23 @@ export default function ConjuntoJoinScreen({ navigation, route }) {
                 onChangeText={txt => setCode(txt.toUpperCase())}
                 autoCapitalize="characters"
                 maxLength={8}
-                autoFocus
               />
             </View>
 
-            <TouchableOpacity style={styles.primaryButton} onPress={handleJoin}>
-              <Text style={styles.primaryButtonText}>Enviar Solicitud</Text>
+            <Text style={styles.label}>Apartamento / Torre</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Ej. T1 Apto 202"
+                placeholderTextColor="rgba(9, 48, 48, 0.3)"
+                value={apt}
+                onChangeText={setApt}
+                maxLength={30}
+              />
+            </View>
+
+            <TouchableOpacity style={[styles.primaryButton, joining && { opacity: 0.6 }]} onPress={handleJoin} disabled={joining}>
+              <Text style={styles.primaryButtonText}>{joining ? 'Enviando...' : 'Enviar Solicitud'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.backLink} onPress={() => navigation.goBack()}>

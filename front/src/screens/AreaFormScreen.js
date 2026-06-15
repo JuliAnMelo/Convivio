@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,13 @@ import { useAppTheme } from '../theme';
 import { useBooking } from '../context/BookingContext';
 import { AuthContext } from '../context/AuthContext';
 import { formatDateLabel, parseTimeRange } from '../utils/calendar';
-import { areaRequiresApproval } from '../services/areasService';
+import {
+  areaRequiresApproval,
+  isAreaDisabled,
+  getAreaSettings,
+  loadAreaSettings,
+  subscribe,
+} from '../services/areasService';
 
 export default function AreaFormScreen({ navigation, route }) {
   const {
@@ -36,7 +42,15 @@ export default function AreaFormScreen({ navigation, route }) {
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const needsApproval = areaRequiresApproval(areaName);
+  // La configuración del área (aprobación / deshabilitada) se carga del backend;
+  // mantenemos el valor en estado para reaccionar cuando llegue.
+  const [needsApproval, setNeedsApproval] = useState(areaRequiresApproval(areaName));
+
+  useEffect(() => {
+    loadAreaSettings(areaName).finally(() => setNeedsApproval(areaRequiresApproval(areaName)));
+    const unsub = subscribe(() => setNeedsApproval(areaRequiresApproval(areaName)));
+    return unsub;
+  }, [areaName]);
 
   const { start, end } = parseTimeRange(time);
   const dateLabel = formatDateLabel(day, month);
@@ -157,6 +171,15 @@ export default function AreaFormScreen({ navigation, route }) {
   }), [colors, typography, st, fw, minTarget]);
 
   const handleSubmit = async () => {
+    if (isAreaDisabled(areaName)) {
+      const msg = getAreaSettings(areaName).disabledMessage;
+      Alert.alert(
+        'Área no disponible',
+        msg || 'Esta área fue deshabilitada por el administrador y no se puede reservar.',
+        [{ text: 'Entendido', onPress: () => navigation.popToTop() }],
+      );
+      return;
+    }
     if (!eventTitle.trim()) {
       Alert.alert('Datos incompletos', 'Escribe un título para tu reserva.');
       return;
@@ -168,32 +191,29 @@ export default function AreaFormScreen({ navigation, route }) {
 
     setSubmitting(true);
     try {
-      const response = await fetch('http://10.0.2.2:5000/api/bookings/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          areaName,
-          year,
-          monthIndex,
-          day,
-          timeSlot: time,
-          eventTitle: eventTitle.trim(),
-          people: parseInt(people.trim()),
-          description,
-          requiresApproval: needsApproval,
-          userName: user?.name || ''
-        })
+      await submitReservation({
+        areaName,
+        year,
+        monthIndex,
+        monthName: month,
+        day,
+        timeSlot: time,
+        eventTitle: eventTitle.trim(),
+        people: parseInt(people.trim(), 10),
+        description,
+        requiresApproval: needsApproval,
+        userName: user?.name || '',
+        userPhotoUri: user?.photoUri || null,
       });
-      if (!response.ok) throw new Error('Error backend');
-      
+
       const title = needsApproval ? 'Solicitud pendiente' : 'Solicitud enviada';
       const msg = needsApproval
-        ? `Tu solicitud para ${areaName} fue enviada al administrador en el backend.`
-        : `Tu reserva de ${areaName} fue confirmada en el backend.`;
+        ? `Tu solicitud para ${areaName} fue enviada al administrador.`
+        : `Tu reserva de ${areaName} fue confirmada.`;
 
       Alert.alert(title, msg, [{ text: 'Entendido', onPress: () => navigation.popToTop() }]);
     } catch (e) {
-      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión al backend.');
+      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica tu conexión.');
     } finally {
       setSubmitting(false);
     }

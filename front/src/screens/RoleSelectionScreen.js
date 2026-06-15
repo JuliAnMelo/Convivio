@@ -117,7 +117,8 @@ export default function RoleSelectionScreen({ navigation, route }) {
       register({
         ...userData,
         role,
-        apt: 'Por asignar',
+        apt: userData.apt || 'Por asignar',
+        torre: userData.torre || '',
         conjuntoId: null,
         conjuntoIds: [],
       });

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { AuthContext } from '../context/AuthContext';
-import { subscribe, getAreaImage, isAreaDisabled } from '../services/areasService';
+import { subscribe, getAreaImage, isAreaDisabled, getAreaSettings, loadAreaSettings } from '../services/areasService';
 
 const AREAS = [
   { name: 'Gym',               image: require('../../assets/Images/gym residencial.jpg'),           navName: 'Gym' },
@@ -24,6 +24,11 @@ export default function AreasScreen({ navigation }) {
 
   // Re-render when area settings change (disabled status, photos)
   useEffect(() => subscribe(() => setTick(t => t + 1)), []);
+
+  // Cargamos la configuración real (deshabilitada/foto) de cada área del backend
+  useEffect(() => {
+    AREAS.forEach((a) => loadAreaSettings(a.navName));
+  }, []);
 
   useEffect(() => {
     if (!shouldAnimate) { anim1.setValue(0); anim2.setValue(0); return undefined; }
@@ -127,9 +132,17 @@ export default function AreasScreen({ navigation }) {
   const handleAreaPress = (area) => {
     if (isAdmin) {
       navigation.navigate('AdminAreaManagement', { areaName: area.navName });
-    } else {
-      navigation.navigate('AreaCalendar', { areaName: area.navName });
+      return;
     }
+    if (isAreaDisabled(area.navName)) {
+      const msg = getAreaSettings(area.navName).disabledMessage;
+      Alert.alert(
+        'Área no disponible',
+        msg || 'Esta área fue deshabilitada por el administrador.',
+      );
+      return;
+    }
+    navigation.navigate('AreaCalendar', { areaName: area.navName });
   };
 
   return (

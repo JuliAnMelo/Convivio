@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '../theme';
 import { useReceptionChat } from '../context/ReceptionChatContext';
 
@@ -61,6 +62,8 @@ function MessageBubble({ msg, residentAvatar }) {
     avatarWrap: {
       width: 32, height: 32, borderRadius: 16,
       overflow: 'hidden', marginRight: 8, alignSelf: 'flex-end',
+      backgroundColor: colors.mainGreen,
+      justifyContent: 'center', alignItems: 'center',
     },
   }), [colors, typography, st, fw, isGuardMsg]);
 
@@ -68,11 +71,17 @@ function MessageBubble({ msg, residentAvatar }) {
     <View style={s.row}>
       {!isGuardMsg && (
         <View style={s.avatarWrap}>
-          <Image source={residentAvatar || FALLBACK_AVATAR} style={{ width: 32, height: 32 }} contentFit="cover" />
+          {residentAvatar ? (
+            <Image source={residentAvatar} style={{ width: 32, height: 32 }} contentFit="cover" />
+          ) : (
+            <Ionicons name="person" size={18} color="#FFF" />
+          )}
         </View>
       )}
       <View style={s.bubble}>
-        <Text style={s.senderName}>{msg.name}</Text>
+        <Text style={s.senderName}>
+          {msg.name}{!isGuardMsg && msg.apt ? ` · ${msg.apt}` : ''}
+        </Text>
         <Text style={s.text}>{msg.text}</Text>
         <Text style={s.time}>{formatTime(msg.at)}</Text>
       </View>
@@ -83,6 +92,7 @@ function MessageBubble({ msg, residentAvatar }) {
 export default function GuardReceptionScreen({ navigation, route }) {
   const { threads, typingThreadId, sendGuardMessage, setGuardChatIsOpen } = useReceptionChat();
   const { colors, typography, st, fw, minTarget } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
   const scrollRef = useRef(null);
 
@@ -139,7 +149,8 @@ export default function GuardReceptionScreen({ navigation, route }) {
     },
     inputRow: {
       flexDirection: 'row', alignItems: 'flex-end',
-      paddingHorizontal: 16, paddingVertical: 10,
+      paddingHorizontal: 16, paddingTop: 10,
+      paddingBottom: 10 + Math.max(insets.bottom, 8),
       borderTopWidth: 1, borderTopColor: colors.lightGreen,
       backgroundColor: colors.backgroundGreenWhite,
       gap: 10,
@@ -164,7 +175,7 @@ export default function GuardReceptionScreen({ navigation, route }) {
       justifyContent: 'center', alignItems: 'center',
     },
     sendBtnDisabled: { backgroundColor: colors.lightGreen },
-  }), [colors, typography, st, fw, minTarget]);
+  }), [colors, typography, st, fw, minTarget, insets.bottom]);
 
   return (
     <KeyboardAvoidingView
@@ -197,8 +208,12 @@ export default function GuardReceptionScreen({ navigation, route }) {
             ))}
             {isTyping && (
               <View style={styles.typingRow}>
-                <View style={[styles.sendBtn, { backgroundColor: colors.lightGreen, width: 32, height: 32, borderRadius: 16, overflow: 'hidden' }]}>
-                  <Image source={thread?.avatar || FALLBACK_AVATAR} style={{ width: 32, height: 32 }} contentFit="cover" />
+                <View style={[styles.sendBtn, { backgroundColor: colors.mainGreen, width: 32, height: 32, borderRadius: 16, overflow: 'hidden' }]}>
+                  {thread?.avatar ? (
+                    <Image source={thread.avatar} style={{ width: 32, height: 32 }} contentFit="cover" />
+                  ) : (
+                    <Ionicons name="person" size={18} color="#FFF" />
+                  )}
                 </View>
                 <Text style={styles.typingDot}>{(thread?.residentName || 'Residente') + ' está escribiendo...'}</Text>
               </View>
