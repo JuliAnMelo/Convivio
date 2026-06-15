@@ -1,4 +1,6 @@
-import { COLORS } from '../theme';
+// Color literal inlined (was COLORS.mainGreen) to avoid a require cycle:
+// theme -> AccessibilityContext -> AuthContext -> pqrService -> pqrConstants -> theme
+const MAIN_GREEN = 'rgba(0, 150, 113, 1)';
 
 export const PQR_TYPES = {
   peticion: { id: 'peticion', label: 'Petición', icon: 'document-text' },
@@ -17,7 +19,7 @@ export const PQR_STATUS = {
   respondido: {
     id: 'respondido',
     label: 'Respondido por administración',
-    color: COLORS.mainGreen,
+    color: MAIN_GREEN,
     bg: 'rgba(0, 150, 113, 0.2)',
   },
 };

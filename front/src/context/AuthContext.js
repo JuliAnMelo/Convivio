@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
-import { load as loadConjuntos, reload as reloadConjuntos } from '../services/conjuntoService';
+import { load as loadConjuntos, reload as reloadConjuntos, loadRequests, getConjuntoById } from '../services/conjuntoService';
+import { reload as reloadBookings } from '../services/bookingService';
+import { reload as reloadPqrs } from '../services/pqrService';
 
 export const AuthContext = createContext();
 
@@ -11,6 +13,24 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     loadConjuntos().finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    let interval;
+    if (user) {
+      interval = setInterval(() => {
+        if (user.role === 'administrador' && user.conjuntoIds) {
+          user.conjuntoIds.forEach(id => {
+            loadRequests(id).catch(() => {});
+          });
+        }
+        if (user.conjuntoId || user.conjuntoIds?.length > 0) {
+          reloadBookings().catch(() => {});
+          reloadPqrs().catch(() => {});
+        }
+      }, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [user]);
 
   const login = async (username, password) => {
     try {
@@ -51,6 +71,23 @@ export const AuthProvider = ({ children }) => {
     setUser(prev => ({ ...prev, conjuntoId, conjuntoCode, conjuntoName }));
   };
 
+  const leaveConjunto = (conjuntoId) => {
+    setUser(prev => {
+      if (!prev) return prev;
+      const remainingIds = (prev.conjuntoIds || []).filter(id => id !== conjuntoId);
+      const next = { ...prev, conjuntoIds: remainingIds };
+      // Si el conjunto del que sale era el activo, seleccionamos otro o lo dejamos vacío.
+      if (prev.conjuntoId === conjuntoId) {
+        const fallbackId = remainingIds[0] || null;
+        const fallback = fallbackId ? getConjuntoById(fallbackId) : null;
+        next.conjuntoId = fallbackId;
+        next.conjuntoCode = fallback?.code || null;
+        next.conjuntoName = fallback?.name || null;
+      }
+      return next;
+    });
+  };
+
   const logout = () => {
     setUser(null);
   };
@@ -58,7 +95,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user, login, register, updateUser,
-      addConjunto, selectConjunto, logout, loading,
+      addConjunto, selectConjunto, leaveConjunto, logout, loading,
     }}>
       {children}
     </AuthContext.Provider>

@@ -8,8 +8,11 @@ class PQRRepository(BaseRepository):
         return Ticket.query.count()
 
     @staticmethod
-    def get_all_tickets():
-        return Ticket.query.order_by(Ticket.created_at.desc()).all()
+    def get_all_tickets(conjunto_id=None):
+        q = Ticket.query
+        if conjunto_id:
+            q = q.filter_by(conjunto_id=conjunto_id)
+        return q.order_by(Ticket.created_at.desc()).all()
 
     @staticmethod
     def get_ticket_by_id(ticket_id):

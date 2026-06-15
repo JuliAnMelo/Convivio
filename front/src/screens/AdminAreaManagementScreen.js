@@ -1,15 +1,18 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView,
   Switch, Alert, TextInput, Modal,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { getPersonaImageByName } from '../utils/personaImages';
+// Misma foto por defecto que usa el perfil del residente cuando no subió una propia
+const DEFAULT_RESIDENT_AVATAR = 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=200&q=80';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAppTheme } from '../theme';
 import { useBooking } from '../context/BookingContext';
+import { AuthContext } from '../context/AuthContext';
 import * as areasService from '../services/areasService';
+import { api } from '../services/api';
 
 const AREA_IMAGES = {
   Gym:               require('../../assets/Images/gym residencial.jpg'),
@@ -37,6 +40,7 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
   const { areaName } = route.params;
   const { colors, typography, st, fw, minTarget } = useAppTheme();
   const { getReservationsForArea, approveReservation, cancelReservation } = useBooking();
+  const { user } = useContext(AuthContext);
 
   const [settings, setSettings] = useState(() => areasService.getAreaSettings(areaName));
   const [reservations, setReservations] = useState([]);
@@ -55,11 +59,9 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
   // Fetch directly from backend
   const refreshReservations = async () => {
     try {
-      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${encodeURIComponent(areaName)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReservations(data);
-      }
+      const q = user?.conjuntoId ? `?conjuntoId=${encodeURIComponent(user.conjuntoId)}` : '';
+      const data = await api.get(`/bookings/${encodeURIComponent(areaName)}${q}`);
+      setReservations(data);
     } catch (e) {
       console.log('Error fetching reservations', e);
     }
@@ -105,8 +107,7 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
 
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${id}/approve`, { method: 'POST' });
-      if (!res.ok) throw new Error('Failed');
+      await api.post(`/bookings/${id}/approve`, {});
       refreshReservations();
     } catch (e) {
       Alert.alert('Error', 'No se pudo aprobar la reserva.');
@@ -124,13 +125,8 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
       return;
     }
     try {
-      const res = await fetch(`http://10.0.2.2:5000/api/bookings/${cancellingId}/cancel`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: cancelMessage.trim() })
-      });
-      if (!res.ok) throw new Error('Failed');
-      
+      await api.post(`/bookings/${cancellingId}/cancel`, { message: cancelMessage.trim() });
+
       setCancellingId(null);
       setCancelMessage('');
       refreshReservations();
@@ -443,7 +439,7 @@ export default function AdminAreaManagementScreen({ navigation, route }) {
                     <View style={{ position: 'relative' }}>
                       <View style={styles.resAvatar}>
                         <Image
-                          source={res.userPhotoUri ? { uri: res.userPhotoUri } : getPersonaImageByName(res.userName)}
+                          source={{ uri: res.userPhotoUri || DEFAULT_RESIDENT_AVATAR }}
                           style={{ width: 38, height: 38 }}
                           contentFit="cover"
                         />

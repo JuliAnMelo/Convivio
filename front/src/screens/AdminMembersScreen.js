@@ -6,7 +6,9 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { AuthContext } from '../context/AuthContext';
-import { getPersonaImageByName } from '../utils/personaImages';
+const GUARD_AVATAR = require('../../assets/Images/guardia.webp');
+const DEFAULT_AVATAR_URI = 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=200&q=80';
+import { api } from '../services/api';
 
 const ROLE_LABELS = {
   residente: 'Residente',
@@ -29,11 +31,8 @@ export default function AdminMembersScreen({ navigation }) {
   const fetchRequests = async () => {
     if (!user?.conjuntoId) return;
     try {
-      const res = await fetch(`http://10.0.2.2:5000/api/conjuntos/${user.conjuntoId}/requests`);
-      if (res.ok) {
-        const data = await res.json();
-        setRequests(data);
-      }
+      const data = await api.get(`/conjuntos/${user.conjuntoId}/requests`);
+      setRequests(data);
     } catch (e) {
       console.log('Error fetching requests', e);
     }
@@ -143,6 +142,13 @@ export default function AdminMembersScreen({ navigation }) {
       fontSize: st(12),
       opacity: 0.7,
     },
+    cardLocation: {
+      ...typography.paragraph,
+      color: colors.mainGreen,
+      fontSize: st(12),
+      fontWeight: fw('700'),
+      marginTop: 2,
+    },
     statusBadge: {
       borderRadius: 12,
       paddingHorizontal: 10,
@@ -194,6 +200,24 @@ export default function AdminMembersScreen({ navigation }) {
       fontWeight: fw('700'),
       fontSize: st(13),
     },
+    removeBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
+      backgroundColor: '#F04C4C20',
+      borderRadius: 12,
+      paddingVertical: 10,
+      borderWidth: 1,
+      borderColor: '#F04C4C',
+      minHeight: minTarget,
+    },
+    removeBtnText: {
+      ...typography.paragraph,
+      color: '#F04C4C',
+      fontWeight: fw('700'),
+      fontSize: st(13),
+    },
     emptyText: {
       ...typography.paragraph,
       color: colors.lettersAndIcons,
@@ -206,16 +230,31 @@ export default function AdminMembersScreen({ navigation }) {
 
   const updateRequestStatus = async (reqId, status) => {
     try {
-      const res = await fetch(`http://10.0.2.2:5000/api/conjuntos/requests/${reqId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-      if (!res.ok) throw new Error('Failed');
+      await api.put(`/conjuntos/requests/${reqId}`, { status });
       fetchRequests();
     } catch (e) {
       Alert.alert('Error', 'No se pudo actualizar la solicitud.');
     }
+  };
+
+  const removeMember = async (reqId) => {
+    try {
+      await api.delete(`/conjuntos/requests/${reqId}`);
+      fetchRequests();
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo sacar al miembro del conjunto.');
+    }
+  };
+
+  const handleRemove = (req) => {
+    Alert.alert(
+      'Sacar del conjunto',
+      `¿Seguro que deseas sacar a ${req.userData.name} del conjunto? Esta acción no se puede deshacer.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Sacar', style: 'destructive', onPress: () => removeMember(req.requestId) },
+      ]
+    );
   };
 
   const handleApprove = (req) => {
@@ -242,13 +281,20 @@ export default function AdminMembersScreen({ navigation }) {
 
   const renderItem = ({ item }) => {
     const statusCfg = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+    
+    const avatarSource = item.userData?.photoUri
+      ? { uri: item.userData.photoUri }
+      : item.role === 'guarda'
+        ? GUARD_AVATAR
+        : { uri: DEFAULT_AVATAR_URI };
+
     return (
       <View style={styles.card}>
         <View style={styles.cardTop}>
           <View style={{ position: 'relative' }}>
             <View style={styles.avatar}>
               <Image
-                source={getPersonaImageByName(item.userData.name)}
+                source={avatarSource}
                 style={styles.avatarImg}
                 contentFit="cover"
               />
@@ -260,6 +306,14 @@ export default function AdminMembersScreen({ navigation }) {
           <View style={styles.cardInfo}>
             <Text style={styles.cardName}>{item.userData.name}</Text>
             <Text style={styles.cardEmail}>{item.userData.email}</Text>
+            {(item.userData.torre || item.userData.apt) ? (
+              <Text style={styles.cardLocation}>
+                {[
+                  item.userData.torre ? `Torre ${item.userData.torre}` : null,
+                  item.userData.apt ? `Apto ${item.userData.apt}` : null,
+                ].filter(Boolean).join(' · ')}
+              </Text>
+            ) : null}
           </View>
           <View style={[styles.statusBadge, { backgroundColor: statusCfg.color }]}>
             <Text style={styles.statusText}>{statusCfg.label}</Text>
@@ -277,6 +331,13 @@ export default function AdminMembersScreen({ navigation }) {
               <Text style={styles.rejectBtnText}>✕ Rechazar</Text>
             </TouchableOpacity>
           </View>
+        )}
+
+        {item.status !== 'pending' && (
+          <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(item)}>
+            <Ionicons name="person-remove-outline" size={16} color="#F04C4C" />
+            <Text style={styles.removeBtnText}>Sacar del conjunto</Text>
+          </TouchableOpacity>
         )}
       </View>
     );

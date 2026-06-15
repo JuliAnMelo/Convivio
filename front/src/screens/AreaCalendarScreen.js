@@ -4,23 +4,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { useBooking } from '../context/BookingContext';
 import MonthCalendar from '../components/MonthCalendar';
-import { isAreaDisabled, getAreaSettings } from '../services/areasService';
+import { isAreaDisabled, getAreaSettings, loadAreaSettings } from '../services/areasService';
 
 export default function AreaCalendarScreen({ navigation, route }) {
   const areaName = route.params?.areaName || 'Área Común';
   const { getCalendarMonths, getUnavailableDaysForMonth } = useBooking();
   const months = getCalendarMonths();
 
-  // Block access if area is disabled
+  // Cargamos la configuración del área del backend y, una vez lista,
+  // bloqueamos el acceso si el administrador la deshabilitó.
   useEffect(() => {
-    if (isAreaDisabled(areaName)) {
-      const msg = getAreaSettings(areaName).disabledMessage;
-      Alert.alert(
-        'Área no disponible',
-        msg || 'Esta área está temporalmente deshabilitada por el administrador.',
-        [{ text: 'Entendido', onPress: () => navigation.goBack() }]
-      );
-    }
+    let active = true;
+    loadAreaSettings(areaName).finally(() => {
+      if (active && isAreaDisabled(areaName)) {
+        const msg = getAreaSettings(areaName).disabledMessage;
+        Alert.alert(
+          'Área no disponible',
+          msg || 'Esta área está temporalmente deshabilitada por el administrador.',
+          [{ text: 'Entendido', onPress: () => navigation.goBack() }]
+        );
+      }
+    });
+    return () => { active = false; };
   }, [areaName]);
   const { colors, st, fw, minTarget } = useAppTheme();
   const styles = useMemo(() => StyleSheet.create({

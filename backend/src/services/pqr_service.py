@@ -11,6 +11,7 @@ class PQRService:
         
         ticket = Ticket(
             id=f"pqr-{uuid.uuid4().hex[:8]}",
+            conjunto_id=data.get('conjuntoId'),
             code=code,
             type=data.get('type'),
             subject=data.get('subject'),
@@ -20,8 +21,8 @@ class PQRService:
         return PQRRepository.save(ticket)
 
     @staticmethod
-    def get_all():
-        return PQRRepository.get_all_tickets()
+    def get_all(conjunto_id=None):
+        return PQRRepository.get_all_tickets(conjunto_id)
 
     @staticmethod
     def get_by_id(ticket_id):

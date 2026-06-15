@@ -27,6 +27,8 @@ def _serialize_request(r):
             'email': r.user_email,
             'phone': r.user_phone or '',
             'dob': r.user_dob or '',
+            'apt': r.user_apt or '',
+            'torre': r.user_torre or '',
         },
         'role': r.role,
         'conjuntoId': r.conjunto_id,
@@ -89,11 +91,18 @@ def get_request(req_id):
 
 @bp.route('/requests/<req_id>', methods=['PUT'])
 def handle_request(req_id):
-    status = request.json.get('status')
-    req = ConjuntoService.handle_request(req_id, status)
+    req = ConjuntoService.handle_request(req_id, request.json or {})
     if not req:
         return jsonify({'error': 'Not found'}), 404
     return jsonify(_serialize_request(req))
+
+
+@bp.route('/requests/<req_id>', methods=['DELETE'])
+def delete_request(req_id):
+    ok = ConjuntoService.delete_request(req_id)
+    if not ok:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify({'message': 'Miembro eliminado del conjunto'})
 
 
 @bp.route('/<conjunto_id>/requests', methods=['GET'])

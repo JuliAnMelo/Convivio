@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, SafeAreaView,
+  Animated, SafeAreaView, PanResponder,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { AuthContext } from '../context/AuthContext';
 import { getConjuntosByIds, subscribe, getNotificationCount } from '../services/conjuntoService';
+import HomeNavIcons from '../components/HomeNavIcons';
 
 const ALL_IMAGES = {
   'home':     require('../../assets/Images/imagen home.png'),
@@ -120,6 +121,19 @@ export default function AdminHomeScreen({ navigation }) {
 
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
+
+  // Deslizar horizontalmente (hacia la izquierda) para ir a la sección de Perfil.
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_evt, gesture) =>
+        Math.abs(gesture.dx) > 24 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.5,
+      onPanResponderRelease: (_evt, gesture) => {
+        if (gesture.dx < -60) {
+          navigation.navigate('Perfil');
+        }
+      },
+    }),
+  ).current;
 
   useEffect(() => {
     return subscribe(() => setTick(t => t + 1));
@@ -254,7 +268,8 @@ export default function AdminHomeScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} {...panResponder.panHandlers}>
+      <HomeNavIcons navigation={navigation} active="Inicio" showHome={false} />
       <Animated.View style={[styles.bgCircle1, {
         transform: [
           { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-70, 100] }) },

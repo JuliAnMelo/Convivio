@@ -116,7 +116,7 @@ export default function PqrChatBubble({ message }) {
       </View>
 
       {isResident && (
-        <Image source={{ uri: RESIDENT_AVATAR }} style={styles.avatarPhoto} contentFit="cover" />
+        <Image source={RESIDENT_AVATAR} style={styles.avatarPhoto} contentFit="cover" />
       )}
     </View>
   );

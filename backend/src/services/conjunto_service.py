@@ -60,6 +60,8 @@ class ConjuntoService:
             user_email=data.get('email'),
             user_phone=data.get('phone'),
             user_dob=data.get('dob'),
+            user_apt=data.get('apt'),
+            user_torre=data.get('torre'),
             role=data.get('role'),
             conjunto_id=data.get('conjuntoId'),
             status='pending'
@@ -71,13 +73,24 @@ class ConjuntoService:
         return ConjuntoRepository.get_request_by_id(req_id)
 
     @staticmethod
-    def handle_request(req_id, status):
+    def handle_request(req_id, data):
         req = ConjuntoRepository.get_request_by_id(req_id)
         if req:
-            req.status = status
+            if data.get('status') is not None:
+                req.status = data['status']
+            if data.get('apt') is not None:
+                req.user_apt = data['apt']
             ConjuntoRepository.commit()
         return req
 
     @staticmethod
     def get_requests_for_conjunto(conjunto_id, status_filter=None):
         return ConjuntoRepository.get_requests_for_conjunto(conjunto_id, status_filter)
+
+    @staticmethod
+    def delete_request(req_id):
+        req = ConjuntoRepository.get_request_by_id(req_id)
+        if not req:
+            return False
+        ConjuntoRepository.delete(req)
+        return True

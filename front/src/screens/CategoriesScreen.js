@@ -13,6 +13,7 @@ export default function CategoriesScreen({ navigation }) {
   const { hasUnansweredTickets } = usePqr();
   const { colors, typography, st, fw, minTarget } = useAppTheme();
   const isGuard = user?.role === 'guarda';
+  const hasConjunto = !!user?.conjuntoId;
 
   // Dismiss the categories sheet (slides down) before opening the chosen section
   const openSection = (screen, params) => {
@@ -70,6 +71,49 @@ export default function CategoriesScreen({ navigation }) {
       borderWidth: 2,
       borderColor: colors.card,
     },
+    emptyWrap: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 32,
+      gap: 16,
+    },
+    emptyIconCircle: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: colors.lightGreen,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyTitle: {
+      ...typography.subtitle,
+      color: colors.lettersAndIcons,
+      fontWeight: fw('700'),
+      fontSize: st(16),
+      textAlign: 'center',
+    },
+    emptySubtitle: {
+      ...typography.paragraph,
+      color: colors.lettersAndIcons,
+      fontSize: st(13),
+      textAlign: 'center',
+      opacity: 0.65,
+      lineHeight: 20,
+    },
+    joinBtn: {
+      marginTop: 8,
+      backgroundColor: colors.mainGreen,
+      borderRadius: 22,
+      paddingVertical: 12,
+      paddingHorizontal: 28,
+    },
+    joinBtnText: {
+      ...typography.subtitle,
+      color: colors.darkmodeGreenBlack,
+      fontWeight: fw('700'),
+      fontSize: st(14),
+    },
   }), [colors, typography, st, fw]);
 
   const CategoryButton = ({ title, onPress, svgSource, iconName, isActive, hasBadge }) => (
@@ -90,6 +134,38 @@ export default function CategoriesScreen({ navigation }) {
       <Text style={styles.catText}>{title}</Text>
     </TouchableOpacity>
   );
+
+  if (!hasConjunto) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.contentWrap}>
+          <Text style={styles.title}>Categorías</Text>
+          <View style={styles.emptyWrap}>
+            <View style={styles.emptyIconCircle}>
+              <Ionicons name="business-outline" size={38} color={colors.mainGreen} />
+            </View>
+            <Text style={styles.emptyTitle}>Únete a un conjunto</Text>
+            <Text style={styles.emptySubtitle}>
+              Necesitas pertenecer a un conjunto residencial para acceder a las categorías.
+            </Text>
+            <TouchableOpacity
+              style={styles.joinBtn}
+              onPress={() => {
+                navigation.goBack();
+                navigation.navigate('InAppConjuntoJoin', {
+                  mode: 'homeJoin',
+                  userData: { name: user?.name, email: user?.email, phone: user?.phone, dob: user?.dob, torre: user?.torre },
+                  role: user?.role,
+                });
+              }}
+            >
+              <Text style={styles.joinBtnText}>Unirme ahora</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

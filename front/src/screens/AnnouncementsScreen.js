@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Animated,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useAppTheme } from '../theme';
 import { useBooking } from '../context/BookingContext';
+import { AuthContext } from '../context/AuthContext';
 import IconVector from '../components/IconVector';
 import { VideoThumbnail, DocumentThumbnail } from '../components/AttachmentThumbnails';
 
@@ -60,9 +62,32 @@ function resolveCategory(item) {
 }
 
 export default function AnnouncementsScreen({ navigation }) {
-  const { getAnnouncements } = useBooking();
+  const { getAnnouncements, deleteAnnouncement } = useBooking();
   const announcements = getAnnouncements();
+  const { user } = useContext(AuthContext);
+  const isAdmin = user?.role === 'administrador';
   const { colors, typography, st, fw, minTarget, shouldAnimate } = useAppTheme();
+
+  const handleDelete = (item) => {
+    Alert.alert(
+      'Eliminar anuncio',
+      `¿Seguro que deseas eliminar "${item.title}"? Esta acción no se puede deshacer.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAnnouncement(item.id);
+            } catch (e) {
+              Alert.alert('Error', 'No se pudo eliminar el anuncio. Intenta de nuevo.');
+            }
+          },
+        },
+      ],
+    );
+  };
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
 
@@ -232,6 +257,13 @@ export default function AnnouncementsScreen({ navigation }) {
       backgroundColor: colors.mainGreen,
       borderRadius: 8, paddingHorizontal: 5, paddingVertical: 2,
     },
+    deleteButton: {
+      minWidth: minTarget,
+      minHeight: minTarget,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 4,
+    },
     playOverlay: {
       position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
       justifyContent: 'center', alignItems: 'center',
@@ -303,6 +335,16 @@ export default function AnnouncementsScreen({ navigation }) {
             <AttachIcon attachment={item.attachment} />
           </View>
         </View>
+        {isAdmin ? (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDelete(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`Eliminar anuncio ${item.title}`}
+          >
+            <Ionicons name="trash-outline" size={20} color={colors.errorRed} />
+          </TouchableOpacity>
+        ) : null}
       </TouchableOpacity>
     );
   };

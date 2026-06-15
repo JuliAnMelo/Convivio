@@ -11,6 +11,7 @@ class User(db.Model):
     phone = db.Column(db.String(50))
     dob = db.Column(db.String(50))
     apt = db.Column(db.String(50))
+    torre = db.Column(db.String(50))
     role = db.Column(db.String(50))
     conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'))
 
@@ -34,6 +35,8 @@ class JoinRequest(db.Model):
     user_email = db.Column(db.String(150))
     user_phone = db.Column(db.String(50))
     user_dob = db.Column(db.String(50))
+    user_apt = db.Column(db.String(50))
+    user_torre = db.Column(db.String(50))
     role = db.Column(db.String(50))
     conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'))
     status = db.Column(db.String(50), default="pending")
@@ -51,6 +54,7 @@ class AreaSetting(db.Model):
 class Reservation(db.Model):
     __tablename__ = 'reservations'
     id = db.Column(db.String(50), primary_key=True)
+    conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'))
     area_name = db.Column(db.String(100))
     year = db.Column(db.Integer)
     month_index = db.Column(db.Integer)
@@ -61,12 +65,14 @@ class Reservation(db.Model):
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_name = db.Column(db.String(150))
+    user_photo_uri = db.Column(db.Text)
     status = db.Column(db.String(50), default="confirmed")
     cancelled_message = db.Column(db.String(250))
 
 class Announcement(db.Model):
     __tablename__ = 'announcements'
     id = db.Column(db.String(50), primary_key=True)
+    conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'))
     title = db.Column(db.String(250), nullable=False)
     subtitle = db.Column(db.Text)
     tag = db.Column(db.String(100))
@@ -78,6 +84,7 @@ class Announcement(db.Model):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.String(50), primary_key=True)
+    conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'))
     code = db.Column(db.String(50), unique=True)
     type = db.Column(db.String(50))
     subject = db.Column(db.String(250))
@@ -86,3 +93,13 @@ class Ticket(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     admin_response = db.Column(db.Text)
     responded_at = db.Column(db.DateTime, nullable=True)
+
+class ChatMessage(db.Model):
+    __tablename__ = 'chat_messages'
+    id = db.Column(db.String(50), primary_key=True)
+    conjunto_id = db.Column(db.String(50), db.ForeignKey('conjuntos.id'), nullable=False)
+    sender_role = db.Column(db.String(50), nullable=False)
+    sender_name = db.Column(db.String(150), nullable=False)
+    sender_apt = db.Column(db.String(100))
+    text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

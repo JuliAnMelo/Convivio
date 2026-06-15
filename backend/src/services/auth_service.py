@@ -18,6 +18,20 @@ class AuthService:
         return AuthService._serialize(user), None
 
     @staticmethod
+    def reset_password(identifier, new_password):
+        identifier = (identifier or '').strip()
+        if not identifier or not new_password:
+            return False, 'Datos incompletos'
+        if len(new_password) < 4:
+            return False, 'La contraseña debe tener al menos 4 caracteres'
+        user = AuthRepository.get_by_username(identifier) or AuthRepository.get_by_email(identifier)
+        if not user:
+            return False, 'No existe una cuenta con ese usuario o correo'
+        user.password_hash = generate_password_hash(new_password)
+        BaseRepository.commit()
+        return True, None
+
+    @staticmethod
     def _serialize(user):
         conjunto = db.session.get(Conjunto, user.conjunto_id) if user.conjunto_id else None
         return {
@@ -28,6 +42,7 @@ class AuthService:
             'phone': user.phone or '',
             'dob': user.dob or '',
             'apt': user.apt or 'Por asignar',
+            'torre': user.torre or '',
             'role': user.role,
             'conjuntoId': user.conjunto_id,
             'conjuntoIds': [user.conjunto_id] if user.conjunto_id else [],

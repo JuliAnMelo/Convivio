@@ -1,5 +1,6 @@
 import React, { useRef, useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Animated, BackHandler, Alert, Platform } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,10 +28,12 @@ import AccessibilityScreen from './src/screens/AccessibilityScreen';
 import LaunchScreen from './src/screens/LaunchScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import RoleSelectionScreen from './src/screens/RoleSelectionScreen';
 import ConjuntoSetupScreen from './src/screens/ConjuntoSetupScreen';
 import ConjuntoJoinScreen from './src/screens/ConjuntoJoinScreen';
 import PendingApprovalScreen from './src/screens/PendingApprovalScreen';
+import ApartmentNumberScreen from './src/screens/ApartmentNumberScreen';
 import AdminConjuntoPanel from './src/screens/AdminConjuntoPanel';
 import AdminAreaManagementScreen from './src/screens/AdminAreaManagementScreen';
 import AdminMembersScreen from './src/screens/AdminMembersScreen';
@@ -65,6 +68,8 @@ function AppNavigator() {
   const isAdmin = user?.role === 'administrador';
 
   useEffect(() => {
+    // La barra inferior solo se usa para residentes/guardas.
+    if (isAdmin) return undefined;
     const isVisible = TAB_ROUTES.includes(currentRoute);
     if (shouldAnimate) {
       Animated.timing(slideAnim, {
@@ -75,7 +80,7 @@ function AppNavigator() {
     } else {
       slideAnim.setValue(isVisible ? 0 : 150);
     }
-  }, [currentRoute, shouldAnimate]);
+  }, [currentRoute, shouldAnimate, isAdmin]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -103,10 +108,12 @@ function AppNavigator() {
           <AuthStack.Screen name="Launch" component={LaunchScreen} />
           <AuthStack.Screen name="Login" component={LoginScreen} />
           <AuthStack.Screen name="Register" component={RegisterScreen} />
+          <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <AuthStack.Screen name="RoleSelection" component={RoleSelectionScreen} />
           <AuthStack.Screen name="ConjuntoSetup" component={ConjuntoSetupScreen} />
           <AuthStack.Screen name="ConjuntoJoin" component={ConjuntoJoinScreen} />
           <AuthStack.Screen name="PendingApproval" component={PendingApprovalScreen} />
+          <AuthStack.Screen name="ApartmentNumber" component={ApartmentNumberScreen} />
         </AuthStack.Navigator>
       </NavigationContainer>
     );
@@ -158,6 +165,7 @@ function AppNavigator() {
         <RootStack.Screen name="InAppConjuntoSetup"      component={ConjuntoSetupScreen}          options={{ animation: 'slide_from_bottom' }} />
         <RootStack.Screen name="InAppConjuntoJoin"       component={ConjuntoJoinScreen}           options={{ animation: 'slide_from_right' }} />
         <RootStack.Screen name="InAppPendingApproval"    component={PendingApprovalScreen}        options={{ animation: 'slide_from_right' }} />
+        <RootStack.Screen name="InAppApartmentNumber"    component={ApartmentNumberScreen}        options={{ animation: 'slide_from_right' }} />
         {/* Shared screens */}
         <RootStack.Screen name="ConjuntoInfo"            component={ConjuntoInfoScreen}           options={{ animation: 'slide_from_right' }} />
         <RootStack.Screen name="ManualConvivencia"       component={ManualConvivenciaScreen}      options={{ animation: 'slide_from_right' }} />
@@ -166,55 +174,58 @@ function AppNavigator() {
 
       {!isAdmin && <FloatingChatBubble navigationRef={navigationRef} />}
 
-      {/* Bottom tab bar — Inicio / Perfil (admins only see it on the conjuntos hub and profile) */}
-      <Animated.View
-        style={[
-          styles.tabBar,
-          { backgroundColor: colors.backgroundGreenWhite, transform: [{ translateY: slideAnim }] },
-        ]}
-      >
-        <TouchableOpacity
+      {/* Barra inferior con toggle Inicio / Perfil — solo residentes y guardas */}
+      {!isAdmin && (
+        <Animated.View
           style={[
-            styles.iconContainer,
-            { width: iconSize, height: iconSize },
-            currentRoute === 'Inicio' && [styles.activeIconContainer, { backgroundColor: colors.mainGreen }],
+            styles.tabBar,
+            { backgroundColor: colors.backgroundGreenWhite, transform: [{ translateY: slideAnim }] },
           ]}
-          onPress={() => navigationRef.current?.navigate('Inicio')}
-          accessibilityRole="button"
-          accessibilityLabel="Inicio"
-          accessibilityState={{ selected: currentRoute === 'Inicio' }}
         >
-          <Ionicons
-            name={currentRoute === 'Inicio' ? 'home' : 'home-outline'}
-            size={26}
-            color={colors.darkmodeGreenBlack}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.iconContainer,
+              { width: iconSize, height: iconSize },
+              currentRoute === 'Inicio' && { backgroundColor: colors.mainGreen },
+            ]}
+            onPress={() => navigationRef.current?.navigate('Inicio')}
+            accessibilityRole="button"
+            accessibilityLabel="Inicio"
+            accessibilityState={{ selected: currentRoute === 'Inicio' }}
+          >
+            <Ionicons
+              name={currentRoute === 'Inicio' ? 'home' : 'home-outline'}
+              size={26}
+              color={colors.darkmodeGreenBlack}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.iconContainer,
-            { width: iconSize, height: iconSize },
-            currentRoute === 'Perfil' && [styles.activeIconContainer, { backgroundColor: colors.mainGreen }],
-          ]}
-          onPress={() => navigationRef.current?.navigate('Perfil')}
-          accessibilityRole="button"
-          accessibilityLabel="Perfil"
-          accessibilityState={{ selected: currentRoute === 'Perfil' }}
-        >
-          <Ionicons
-            name={currentRoute === 'Perfil' ? 'person' : 'person-outline'}
-            size={26}
-            color={colors.darkmodeGreenBlack}
-          />
-        </TouchableOpacity>
-      </Animated.View>
+          <TouchableOpacity
+            style={[
+              styles.iconContainer,
+              { width: iconSize, height: iconSize },
+              currentRoute === 'Perfil' && { backgroundColor: colors.mainGreen },
+            ]}
+            onPress={() => navigationRef.current?.navigate('Perfil')}
+            accessibilityRole="button"
+            accessibilityLabel="Perfil"
+            accessibilityState={{ selected: currentRoute === 'Perfil' }}
+          >
+            <Ionicons
+              name={currentRoute === 'Perfil' ? 'person' : 'person-outline'}
+              size={26}
+              color={colors.darkmodeGreenBlack}
+            />
+          </TouchableOpacity>
+        </Animated.View>
+      )}
     </NavigationContainer>
   );
 }
 
 export default function App() {
   return (
+    <SafeAreaProvider>
     <View style={Platform.OS === 'web' ? styles.webAppContainer : styles.mobileAppContainer}>
       <AuthProvider>
         <AccessibilityProvider>
@@ -230,6 +241,7 @@ export default function App() {
         </AccessibilityProvider>
       </AuthProvider>
     </View>
+    </SafeAreaProvider>
   );
 }
 
@@ -270,7 +282,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 14,
-  },
-  activeIconContainer: {
   },
 });

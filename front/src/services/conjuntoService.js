@@ -63,6 +63,22 @@ export function getNotificationCount(conjuntoId) {
   return getPendingRequests(conjuntoId).length;
 }
 
+export async function checkRequestStatusRemote(requestId) {
+  try {
+    const data = await api.get(`/conjuntos/requests/${requestId}`);
+    const index = pendingRequests.findIndex(r => r.requestId === requestId);
+    if (index !== -1) {
+      pendingRequests[index] = data;
+    } else {
+      pendingRequests = [...pendingRequests, data];
+    }
+    notify();
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
 // ── Carga de solicitudes para un conjunto (llamar desde pantalla admin) ────────
 export async function loadRequests(conjuntoId) {
   try {
@@ -116,6 +132,8 @@ export async function requestJoin({ userData, role, conjuntoId }) {
     email: userData.email,
     phone: userData.phone,
     dob: userData.dob,
+    apt: userData.apt,
+    torre: userData.torre,
     role,
     conjuntoId,
   });
@@ -128,6 +146,16 @@ export async function approveRequest(requestId) {
   await api.put(`/conjuntos/requests/${requestId}`, { status: 'approved' });
   pendingRequests = pendingRequests.map(r =>
     r.requestId === requestId ? { ...r, status: 'approved' } : r
+  );
+  notify();
+}
+
+export async function setRequestApt(requestId, apt) {
+  await api.put(`/conjuntos/requests/${requestId}`, { apt });
+  pendingRequests = pendingRequests.map(r =>
+    r.requestId === requestId
+      ? { ...r, userData: { ...r.userData, apt } }
+      : r
   );
   notify();
 }

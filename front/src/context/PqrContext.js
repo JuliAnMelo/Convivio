@@ -8,13 +8,23 @@ export function PqrProvider({ children }) {
   const [tick, setTick] = useState(0);
   const [loadingData, setLoadingData] = useState(true);
   const { user } = useContext(AuthContext);
-  const hasConjunto = !!user?.conjuntoId;
+  const conjuntoId = user?.conjuntoId || null;
+  const hasConjunto = !!conjuntoId;
 
   useEffect(() => {
     const unsub = pqrService.subscribe(() => setTick((t) => t + 1));
-    pqrService.load().finally(() => setLoadingData(false));
-    return unsub;
-  }, []);
+    setLoadingData(true);
+    pqrService.load(conjuntoId).finally(() => setLoadingData(false));
+
+    const interval = setInterval(() => {
+      pqrService.reload(conjuntoId);
+    }, 30000);
+
+    return () => {
+      unsub();
+      clearInterval(interval);
+    };
+  }, [conjuntoId]);
 
   const value = useMemo(
     () => ({

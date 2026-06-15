@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../theme';
 import { useReceptionChat } from '../context/ReceptionChatContext';
 
+const FALLBACK_AVATAR = require('../../assets/Images/residente.jpg');
+
 function formatPreviewTime(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -37,7 +39,9 @@ function ConversationRow({ thread, onPress, colors, typography, st, fw }) {
       height: 54,
       borderRadius: 27,
       overflow: 'hidden',
-      backgroundColor: colors.lightGreen,
+      backgroundColor: colors.mainGreen,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     avatar: { width: 54, height: 54 },
     body: { flex: 1 },
@@ -83,7 +87,11 @@ function ConversationRow({ thread, onPress, colors, typography, st, fw }) {
   return (
     <TouchableOpacity style={s.row} onPress={onPress} activeOpacity={0.7}>
       <View style={s.avatarWrap}>
-        <Image source={thread.avatar} style={s.avatar} contentFit="cover" />
+        {thread.avatar ? (
+          <Image source={thread.avatar} style={s.avatar} contentFit="cover" />
+        ) : (
+          <Ionicons name="person" size={28} color="#FFF" />
+        )}
       </View>
       <View style={s.body}>
         <View style={s.topRow}>
